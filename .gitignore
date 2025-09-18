@@ -49,3 +49,6 @@ logs/
 tmp/
 temp/
 node_modules
+
+# Playwright MCP
+.playwright-mcp
