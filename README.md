@@ -198,13 +198,13 @@ All components are built with accessibility in mind:
 - Screen reader support
 - WCAG 2.1 AA compliance
 
-## 📝 License
-
-MIT © Databricks
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🔗 Links
 
