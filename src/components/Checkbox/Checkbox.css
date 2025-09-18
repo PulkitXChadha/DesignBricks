@@ -1,0 +1,166 @@
+.db-checkbox {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.db-checkbox__wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.db-checkbox--disabled .db-checkbox__wrapper {
+  cursor: not-allowed;
+}
+
+.db-checkbox__input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.db-checkbox__box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #DDE0E5;
+  border-radius: 2px;
+  background-color: #FFFFFF;
+  transition: all 150ms ease-in-out;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Sizes */
+.db-checkbox--small .db-checkbox__box {
+  width: 14px;
+  height: 14px;
+}
+
+.db-checkbox--small .db-checkbox__label {
+  font-size: 12px;
+}
+
+.db-checkbox--medium .db-checkbox__box {
+  width: 16px;
+  height: 16px;
+}
+
+.db-checkbox--medium .db-checkbox__label {
+  font-size: 13px;
+}
+
+.db-checkbox--large .db-checkbox__box {
+  width: 18px;
+  height: 18px;
+}
+
+.db-checkbox--large .db-checkbox__label {
+  font-size: 14px;
+}
+
+/* Checkmark and indeterminate icons */
+.db-checkbox__checkmark,
+.db-checkbox__indeterminate {
+  position: absolute;
+  color: #FFFFFF;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 150ms ease-in-out;
+}
+
+.db-checkbox__checkmark {
+  width: 10px;
+  height: 10px;
+}
+
+.db-checkbox__indeterminate {
+  width: 8px;
+  height: 2px;
+}
+
+/* States */
+.db-checkbox__wrapper:hover .db-checkbox__box {
+  border-color: #2272B4;
+}
+
+.db-checkbox__input:checked ~ .db-checkbox__box {
+  background-color: #2272B4;
+  border-color: #2272B4;
+}
+
+.db-checkbox__input:checked ~ .db-checkbox__box .db-checkbox__checkmark {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.db-checkbox__input:indeterminate ~ .db-checkbox__box {
+  background-color: #2272B4;
+  border-color: #2272B4;
+}
+
+.db-checkbox__input:indeterminate ~ .db-checkbox__box .db-checkbox__indeterminate {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.db-checkbox__input:focus-visible ~ .db-checkbox__box {
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2272B4;
+}
+
+/* Error state */
+.db-checkbox--error .db-checkbox__box {
+  border-color: #F53737;
+}
+
+.db-checkbox--error .db-checkbox__input:checked ~ .db-checkbox__box {
+  background-color: #F53737;
+  border-color: #F53737;
+}
+
+.db-checkbox--error .db-checkbox__input:focus-visible ~ .db-checkbox__box {
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #F53737;
+}
+
+/* Disabled state */
+.db-checkbox--disabled .db-checkbox__box {
+  background-color: #F6F7F9;
+  border-color: #DDE0E5;
+}
+
+.db-checkbox--disabled .db-checkbox__input:checked ~ .db-checkbox__box {
+  background-color: #9EA3AD;
+  border-color: #9EA3AD;
+}
+
+.db-checkbox--disabled .db-checkbox__label {
+  color: #9EA3AD;
+}
+
+/* Label */
+.db-checkbox__label {
+  color: #11171C;
+  line-height: 1.2;
+}
+
+/* Helper text */
+.db-checkbox__helper {
+  font-size: 12px;
+  color: #6B7280;
+  line-height: 1.2;
+  margin-left: 24px;
+}
+
+.db-checkbox--error .db-checkbox__helper {
+  color: #F53737;
+}
+
+.db-checkbox--disabled .db-checkbox__helper {
+  color: #9EA3AD;
+}

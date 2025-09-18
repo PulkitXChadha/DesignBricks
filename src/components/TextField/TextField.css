@@ -1,0 +1,145 @@
+.db-textfield {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.db-textfield--full-width {
+  width: 100%;
+}
+
+.db-textfield__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #11171C;
+  line-height: 1.2;
+}
+
+.db-textfield__required {
+  color: #F53737;
+}
+
+.db-textfield__wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #FFFFFF;
+  border: 1px solid #DDE0E5;
+  border-radius: 4px;
+  transition: all 150ms ease-in-out;
+  position: relative;
+}
+
+.db-textfield__wrapper:hover:not(.db-textfield__wrapper--disabled) {
+  border-color: #C4C8CF;
+}
+
+.db-textfield__wrapper--focused {
+  border-color: #2272B4;
+  box-shadow: 0 0 0 1px #2272B4;
+}
+
+.db-textfield__wrapper--error {
+  border-color: #F53737;
+}
+
+.db-textfield__wrapper--error.db-textfield__wrapper--focused {
+  box-shadow: 0 0 0 1px #F53737;
+}
+
+.db-textfield__wrapper--disabled {
+  background-color: #F6F7F9;
+  cursor: not-allowed;
+}
+
+.db-textfield__input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  color: #11171C;
+  width: 100%;
+}
+
+.db-textfield__input::placeholder {
+  color: #9EA3AD;
+}
+
+.db-textfield__input:disabled {
+  color: #6B7280;
+  cursor: not-allowed;
+}
+
+/* Sizes */
+.db-textfield--small .db-textfield__wrapper {
+  height: 24px;
+  padding: 0 8px;
+}
+
+.db-textfield--small .db-textfield__input {
+  font-size: 12px;
+}
+
+.db-textfield--medium .db-textfield__wrapper {
+  height: 28px;
+  padding: 0 12px;
+}
+
+.db-textfield--medium .db-textfield__input {
+  font-size: 13px;
+}
+
+.db-textfield--large .db-textfield__wrapper {
+  height: 32px;
+  padding: 0 12px;
+}
+
+.db-textfield--large .db-textfield__input {
+  font-size: 14px;
+}
+
+/* Icons */
+.db-textfield__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #6B7280;
+}
+
+.db-textfield__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.db-textfield__icon--before {
+  margin-right: 8px;
+  margin-left: -4px;
+}
+
+.db-textfield__icon--after {
+  margin-left: 8px;
+  margin-right: -4px;
+}
+
+/* Helper text */
+.db-textfield__helper {
+  font-size: 12px;
+  color: #6B7280;
+  line-height: 1.2;
+  margin-top: 2px;
+}
+
+.db-textfield__helper--error {
+  color: #F53737;
+}
+
+/* Disabled state */
+.db-textfield--disabled .db-textfield__label {
+  color: #9EA3AD;
+}
+
+.db-textfield--disabled .db-textfield__helper {
+  color: #9EA3AD;
+}

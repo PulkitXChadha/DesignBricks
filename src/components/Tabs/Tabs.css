@@ -1,0 +1,157 @@
+.db-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+}
+
+.db-tabs--full-width {
+  width: 100%;
+}
+
+.db-tabs--full-width .db-tabs__tab {
+  flex: 1;
+}
+
+/* Tab button */
+.db-tabs__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 400;
+  color: #6B7280;
+  transition: all 150ms ease-in-out;
+  white-space: nowrap;
+  position: relative;
+  outline: none;
+}
+
+/* Default variant */
+.db-tabs--default {
+  border-bottom: 1px solid #DDE0E5;
+}
+
+.db-tabs--default .db-tabs__tab {
+  padding-bottom: 2px;
+  margin-bottom: -1px;
+}
+
+.db-tabs--default .db-tabs__tab:hover:not(:disabled) {
+  color: #2272B4;
+}
+
+.db-tabs--default .db-tabs__tab--active {
+  color: #2272B4;
+  border-bottom: 2px solid #2272B4;
+}
+
+/* Pills variant */
+.db-tabs--pills .db-tabs__tab {
+  border-radius: 4px;
+}
+
+.db-tabs--pills .db-tabs__tab:hover:not(:disabled) {
+  background-color: #F6F7F9;
+  color: #11171C;
+}
+
+.db-tabs--pills .db-tabs__tab--active {
+  background-color: #2272B4;
+  color: #FFFFFF;
+}
+
+/* Underlined variant */
+.db-tabs--underlined .db-tabs__tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: transparent;
+  transition: background-color 150ms ease-in-out;
+}
+
+.db-tabs--underlined .db-tabs__tab:hover:not(:disabled) {
+  color: #2272B4;
+}
+
+.db-tabs--underlined .db-tabs__tab--active {
+  color: #2272B4;
+}
+
+.db-tabs--underlined .db-tabs__tab--active::after {
+  background-color: #2272B4;
+}
+
+/* Sizes */
+.db-tabs--small .db-tabs__tab {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.db-tabs--medium .db-tabs__tab {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.db-tabs--large .db-tabs__tab {
+  padding: 10px 20px;
+  font-size: 14px;
+}
+
+/* States */
+.db-tabs__tab:focus-visible {
+  box-shadow: 0 0 0 2px #2272B4;
+  border-radius: 2px;
+}
+
+.db-tabs__tab--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Icon */
+.db-tabs__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.db-tabs__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Badge */
+.db-tabs__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  background-color: #F6F7F9;
+  color: #6B7280;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.db-tabs--pills .db-tabs__tab--active .db-tabs__badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+}
+
+/* Tab Panel */
+.db-tab-panel {
+  padding: 16px 0;
+}

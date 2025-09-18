@@ -1,0 +1,191 @@
+.db-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.db-table-wrapper--sticky {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.db-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+}
+
+/* Header */
+.db-table__head {
+  background-color: #F6F7F9;
+}
+
+.db-table-wrapper--sticky .db-table__head {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.db-table__header {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #11171C;
+  border-bottom: 1px solid #DDE0E5;
+  white-space: nowrap;
+}
+
+.db-table--compact .db-table__header {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.db-table__header--sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.db-table__header--sortable:hover {
+  background-color: #EDEFF2;
+}
+
+.db-table__header--center {
+  text-align: center;
+}
+
+.db-table__header--right {
+  text-align: right;
+}
+
+.db-table__header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.db-table__sort-icon {
+  display: inline-flex;
+  align-items: center;
+  color: #6B7280;
+}
+
+/* Body */
+.db-table__body {
+  background-color: #FFFFFF;
+}
+
+.db-table__row {
+  border-bottom: 1px solid #F6F7F9;
+}
+
+.db-table__row:last-child {
+  border-bottom: none;
+}
+
+.db-table--striped .db-table__body .db-table__row:nth-child(even) {
+  background-color: #FAFBFC;
+}
+
+.db-table--hoverable .db-table__body .db-table__row:hover {
+  background-color: #F6F7F9;
+}
+
+.db-table__row--clickable {
+  cursor: pointer;
+}
+
+.db-table__cell {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #11171C;
+  line-height: 1.5;
+}
+
+.db-table--compact .db-table__cell {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.db-table__cell--center {
+  text-align: center;
+}
+
+.db-table__cell--right {
+  text-align: right;
+}
+
+/* Bordered variant */
+.db-table--bordered {
+  border: 1px solid #DDE0E5;
+}
+
+.db-table--bordered .db-table__header,
+.db-table--bordered .db-table__cell {
+  border-right: 1px solid #DDE0E5;
+}
+
+.db-table--bordered .db-table__header:last-child,
+.db-table--bordered .db-table__cell:last-child {
+  border-right: none;
+}
+
+.db-table--bordered .db-table__row {
+  border-bottom: 1px solid #DDE0E5;
+}
+
+/* Empty state */
+.db-table__cell--empty {
+  text-align: center;
+  padding: 32px 16px;
+  color: #6B7280;
+  font-size: 14px;
+}
+
+/* Loading state */
+.db-table__cell--loading {
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.db-table__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: #6B7280;
+  font-size: 13px;
+}
+
+.db-table__spinner {
+  width: 24px;
+  height: 24px;
+  animation: db-spin 1s linear infinite;
+}
+
+@keyframes db-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.db-table--loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .db-table__header,
+  .db-table__cell {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .db-table--compact .db-table__header,
+  .db-table--compact .db-table__cell {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+}

@@ -1,0 +1,217 @@
+/* Linear Progress */
+.db-progress--linear {
+  width: 100%;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.db-progress__track {
+  width: 100%;
+  background-color: #EDEFF2;
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.db-progress--small .db-progress__track {
+  height: 4px;
+}
+
+.db-progress--medium .db-progress__track {
+  height: 8px;
+}
+
+.db-progress--large .db-progress__track {
+  height: 12px;
+}
+
+.db-progress__fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 250ms ease-in-out;
+}
+
+/* Colors */
+.db-progress--primary .db-progress__fill {
+  background-color: #2272B4;
+}
+
+.db-progress--success .db-progress__fill {
+  background-color: #00AF4B;
+}
+
+.db-progress--warning .db-progress__fill {
+  background-color: #FFC300;
+}
+
+.db-progress--error .db-progress__fill {
+  background-color: #F53737;
+}
+
+/* Indeterminate animation */
+.db-progress--linear.db-progress--indeterminate .db-progress__fill {
+  width: 30%;
+  animation: db-progress-indeterminate 1.5s ease-in-out infinite;
+}
+
+@keyframes db-progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+/* Circular Progress */
+.db-progress--circular {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.db-progress--circular.db-progress--small {
+  width: 32px;
+  height: 32px;
+}
+
+.db-progress--circular.db-progress--medium {
+  width: 48px;
+  height: 48px;
+}
+
+.db-progress--circular.db-progress--large {
+  width: 64px;
+  height: 64px;
+}
+
+.db-progress__circle-bg {
+  fill: none;
+  stroke: #EDEFF2;
+}
+
+.db-progress__circle-fill {
+  fill: none;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 250ms ease-in-out;
+}
+
+.db-progress--primary .db-progress__circle-fill {
+  stroke: #2272B4;
+}
+
+.db-progress--success .db-progress__circle-fill {
+  stroke: #00AF4B;
+}
+
+.db-progress--warning .db-progress__circle-fill {
+  stroke: #FFC300;
+}
+
+.db-progress--error .db-progress__circle-fill {
+  stroke: #F53737;
+}
+
+/* Circular indeterminate */
+.db-progress--circular.db-progress--indeterminate svg {
+  animation: db-rotate 1.4s linear infinite;
+}
+
+.db-progress--circular.db-progress--indeterminate .db-progress__circle-fill {
+  stroke-dasharray: 80, 200;
+  stroke-dashoffset: 0;
+  animation: db-dash 1.4s ease-in-out infinite;
+}
+
+@keyframes db-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes db-dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124;
+  }
+}
+
+/* Label */
+.db-progress__label {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.db-progress--circular .db-progress__label {
+  position: absolute;
+  margin: 0;
+  font-size: 10px;
+}
+
+.db-progress--circular.db-progress--medium .db-progress__label {
+  font-size: 12px;
+}
+
+.db-progress--circular.db-progress--large .db-progress__label {
+  font-size: 14px;
+}
+
+/* Spinner */
+.db-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.db-spinner--small {
+  width: 16px;
+  height: 16px;
+}
+
+.db-spinner--medium {
+  width: 24px;
+  height: 24px;
+}
+
+.db-spinner--large {
+  width: 32px;
+  height: 32px;
+}
+
+.db-spinner__svg {
+  width: 100%;
+  height: 100%;
+  animation: db-rotate 1s linear infinite;
+}
+
+.db-spinner__circle {
+  stroke-linecap: round;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 15;
+}
+
+.db-spinner--primary .db-spinner__circle {
+  stroke: #2272B4;
+}
+
+.db-spinner--white .db-spinner__circle {
+  stroke: #FFFFFF;
+}
+
+.db-spinner--inherit .db-spinner__circle {
+  stroke: currentColor;
+}

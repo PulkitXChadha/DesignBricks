@@ -1,0 +1,23 @@
+/* Global styles for Storybook and components */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Import all component styles */
+@import '../components/Button/Button.css';
+@import '../components/Typography/Typography.css';
+@import '../components/TextField/TextField.css';
+@import '../components/Checkbox/Checkbox.css';
+@import '../components/SearchInput/SearchInput.css';
+@import '../components/Tabs/Tabs.css';
+@import '../components/Alert/Alert.css';
+@import '../components/Badge/Badge.css';
+@import '../components/Card/Card.css';

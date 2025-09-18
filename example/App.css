@@ -1,0 +1,97 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #F6F7F9;
+  color: #11171C;
+}
+
+.app {
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.container > h1 {
+  margin-bottom: 8px;
+}
+
+.container > p {
+  margin-bottom: 32px;
+}
+
+.container > .db-alert {
+  margin-bottom: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.button-examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.alert-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.db-card h3,
+.db-card h4,
+.db-card h5 {
+  margin-bottom: 12px;
+}
+
+.db-card .db-typography--body2 {
+  margin-bottom: 0;
+}
+
+/* Import component styles */
+@import '../src/components/Button/Button.css';
+@import '../src/components/Typography/Typography.css';
+@import '../src/components/TextField/TextField.css';
+@import '../src/components/Checkbox/Checkbox.css';
+@import '../src/components/Alert/Alert.css';
+@import '../src/components/Card/Card.css';

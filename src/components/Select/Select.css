@@ -1,0 +1,293 @@
+.db-select {
+  position: relative;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  display: inline-block;
+  min-width: 200px;
+}
+
+.db-select--full-width {
+  display: block;
+  width: 100%;
+}
+
+/* Label */
+.db-select__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1F2328;
+}
+
+.db-select__required {
+  color: #F53737;
+  margin-left: 2px;
+}
+
+/* Trigger */
+.db-select__trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid #C8CCD1;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  overflow: hidden;
+}
+
+/* Sizes */
+.db-select--small .db-select__trigger {
+  height: 32px;
+  padding: 0 32px 0 12px;
+  font-size: 13px;
+}
+
+.db-select--medium .db-select__trigger {
+  height: 40px;
+  padding: 0 36px 0 12px;
+  font-size: 14px;
+}
+
+.db-select--large .db-select__trigger {
+  height: 48px;
+  padding: 0 40px 0 16px;
+  font-size: 15px;
+}
+
+/* Variants */
+.db-select--outlined .db-select__trigger {
+  background: #FFFFFF;
+  border: 1px solid #C8CCD1;
+}
+
+.db-select--filled .db-select__trigger {
+  background: #F6F7F9;
+  border: 1px solid transparent;
+}
+
+/* States */
+.db-select__trigger:hover:not(.db-select--disabled .db-select__trigger) {
+  border-color: #2272B4;
+}
+
+.db-select__trigger:focus {
+  outline: none;
+  border-color: #2272B4;
+  box-shadow: 0 0 0 3px rgba(34, 114, 180, 0.1);
+}
+
+.db-select--open .db-select__trigger {
+  border-color: #2272B4;
+}
+
+.db-select--error .db-select__trigger {
+  border-color: #F53737;
+}
+
+.db-select--error .db-select__trigger:focus {
+  box-shadow: 0 0 0 3px rgba(245, 55, 55, 0.1);
+}
+
+.db-select--disabled .db-select__trigger {
+  background-color: #F6F7F9;
+  color: #9CA3AF;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Value and placeholder */
+.db-select__value {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #1F2328;
+}
+
+.db-select__placeholder {
+  color: #9CA3AF;
+}
+
+/* Search input */
+.db-select__search {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  color: #1F2328;
+  padding: 0;
+}
+
+/* Clear button */
+.db-select__clear {
+  position: absolute;
+  right: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6B7280;
+  transition: color 150ms ease;
+}
+
+.db-select__clear:hover {
+  color: #1F2328;
+}
+
+/* Arrow */
+.db-select__arrow {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  color: #6B7280;
+  transition: transform 150ms ease;
+}
+
+.db-select--open .db-select__arrow {
+  transform: rotate(180deg);
+}
+
+/* Dropdown */
+.db-select__dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border: 1px solid #DDE0E5;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  overflow-y: auto;
+  z-index: 1000;
+  animation: db-select-slide-down 150ms ease;
+}
+
+@keyframes db-select-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Empty state */
+.db-select__empty {
+  padding: 12px;
+  text-align: center;
+  color: #9CA3AF;
+  font-size: 13px;
+}
+
+/* Group label */
+.db-select__group-label {
+  padding: 8px 12px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Option */
+.db-select__option {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+  font-size: 14px;
+  color: #1F2328;
+}
+
+.db-select__option:hover:not(.db-select__option--disabled) {
+  background-color: #F6F7F9;
+}
+
+.db-select__option--focused {
+  background-color: #EDEFF2;
+}
+
+.db-select__option--selected {
+  background-color: #DEEAF3;
+  color: #2272B4;
+  font-weight: 500;
+}
+
+.db-select__option--selected:hover {
+  background-color: #CCDFF0;
+}
+
+.db-select__option--disabled {
+  color: #9CA3AF;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Checkbox for multiple select */
+.db-select__checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  border: 1px solid #C8CCD1;
+  border-radius: 3px;
+  flex-shrink: 0;
+  transition: all 150ms ease;
+}
+
+.db-select__option--selected .db-select__checkbox {
+  background-color: #2272B4;
+  border-color: #2272B4;
+  color: #FFFFFF;
+}
+
+.db-select__option-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Helper text */
+.db-select__helper-text {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #6B7280;
+}
+
+.db-select--error .db-select__helper-text {
+  color: #F53737;
+}
+
+/* Scrollbar styling */
+.db-select__dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.db-select__dropdown::-webkit-scrollbar-track {
+  background: #F6F7F9;
+  border-radius: 4px;
+}
+
+.db-select__dropdown::-webkit-scrollbar-thumb {
+  background: #C8CCD1;
+  border-radius: 4px;
+}
+
+.db-select__dropdown::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}

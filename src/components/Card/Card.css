@@ -1,0 +1,61 @@
+.db-card {
+  background-color: #FFFFFF;
+  border-radius: 4px;
+  position: relative;
+  transition: all 150ms ease-in-out;
+}
+
+/* Variants */
+.db-card--default {
+  border: 1px solid #DDE0E5;
+}
+
+.db-card--outlined {
+  border: 1px solid #C4C8CF;
+}
+
+.db-card--elevated {
+  border: 1px solid #DDE0E5;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Padding */
+.db-card--padding-none {
+  padding: 0;
+}
+
+.db-card--padding-small {
+  padding: 12px;
+}
+
+.db-card--padding-medium {
+  padding: 16px;
+}
+
+.db-card--padding-large {
+  padding: 24px;
+}
+
+/* Clickable state */
+.db-card--clickable {
+  cursor: pointer;
+}
+
+.db-card--clickable:hover {
+  border-color: #2272B4;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.db-card--clickable:active {
+  transform: translateY(1px);
+}
+
+/* Selected state */
+.db-card--selected {
+  border-color: #2272B4;
+  box-shadow: 0 0 0 1px #2272B4;
+}
+
+.db-card--selected.db-card--elevated {
+  box-shadow: 0 0 0 1px #2272B4, 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
