@@ -208,9 +208,8 @@ Contributions are welcome! Please read our contributing guidelines before submit
 
 ## 🔗 Links
 
-- [Design System Documentation](https://designbricks.databricks.com)
-- [Storybook](https://storybook.designbricks.databricks.com)
-- [GitHub Repository](https://github.com/databricks/designbricks)
+- [Storybook](https://pulkitxchadha.github.io/DesignBricks)
+- [GitHub Repository](https://github.com/PulkitXChadha/DesignBricks)
 
 ---
 
