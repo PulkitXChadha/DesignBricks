@@ -49,6 +49,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
         document.addEventListener('keydown', handleEscape);
         return () => document.removeEventListener('keydown', handleEscape);
       }
+      return undefined;
     }, [open, onClose, disableEscapeKey]);
 
     useEffect(() => {

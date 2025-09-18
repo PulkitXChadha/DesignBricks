@@ -56,7 +56,7 @@ const variantMapping: Record<TypographyVariant, keyof JSX.IntrinsicElements> = {
   code: 'code',
 };
 
-export const Typography = forwardRef<HTMLElement, TypographyProps>(
+export const Typography = forwardRef<any, TypographyProps>(
   (
     {
       variant = 'body1',
@@ -71,11 +71,11 @@ export const Typography = forwardRef<HTMLElement, TypographyProps>(
     },
     ref
   ) => {
-    const Component = as || variantMapping[variant];
+    const Component: any = as || variantMapping[variant];
 
     return (
       <Component
-        ref={ref as any}
+        ref={ref}
         className={clsx(
           'db-typography',
           `db-typography--${variant}`,
