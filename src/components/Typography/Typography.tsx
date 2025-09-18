@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, forwardRef } from 'react';
+import { HTMLAttributes, forwardRef } from 'react';
 import clsx from 'clsx';
 import './Typography.css';
 
@@ -96,3 +96,5 @@ export const Typography = forwardRef<HTMLElement, TypographyProps>(
 );
 
 Typography.displayName = 'Typography';
+
+export type { TypographyProps };

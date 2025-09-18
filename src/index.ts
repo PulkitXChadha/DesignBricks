@@ -1,6 +1,6 @@
 // Foundation
 export * from './components/Button';
-export * from './components/Typography';
+export { Typography, type TypographyProps } from './components/Typography';
 
 // Inputs
 export * from './components/TextField';

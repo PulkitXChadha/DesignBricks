@@ -2,7 +2,7 @@ import React, { InputHTMLAttributes, forwardRef } from 'react';
 import clsx from 'clsx';
 import './Checkbox.css';
 
-export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   /** Label for the checkbox */
   label?: string;
   /** Size of the checkbox */
