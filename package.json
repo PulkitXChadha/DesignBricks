@@ -47,9 +47,10 @@
     "dist",
     "README.md"
   ],
+  "homepage": "https://pulkitxchadha.github.io/DesignBricks/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/databricks/designbricks.git"
+    "url": "https://github.com/PulkitXChadha/DesignBricks.git"
   },
   "keywords": [
     "react",
