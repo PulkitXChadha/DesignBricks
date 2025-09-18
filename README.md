@@ -5,9 +5,7 @@ A comprehensive React component library implementing the Databricks design syste
 ## 📦 Installation
 
 ```bash
-npm install designbricks
-# or
-yarn add designbricks
+  npm install git+https://github.com/PulkitXChadha/DesignBricks.git
 ```
 
 ## 🚀 Quick Start
