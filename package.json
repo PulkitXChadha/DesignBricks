@@ -1,6 +1,6 @@
 {
   "name": "designbricks",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Databricks Design System React Components",
   "main": "dist/index.js",
   "module": "dist/index.js",
