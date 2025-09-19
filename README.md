@@ -200,7 +200,7 @@ All components are built with accessibility in mind:
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
+Contributions are welcome!
 
 ## 📄 License
 
