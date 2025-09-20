@@ -1,6 +1,10 @@
-# DesignBricks - Databricks Design System
+# DesignBricks - Databricks Extended Design System
 
-A comprehensive React component library implementing the Databricks design system.
+
+> **Note**: [@databricks/design-system](https://www.npmjs.com/package/@databricks/design-system) is the official Databricks Design System package.  
+DesignBricks is an extended, community-driven implementation offering additional features and components.
+
+A React component library implementing the Databricks design system.
 
 ## 📦 Installation
 

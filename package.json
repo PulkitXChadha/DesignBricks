@@ -64,7 +64,7 @@
   "homepage": "https://pulkitxchadha.github.io/DesignBricks/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PulkitXChadha/DesignBricks.git"
+    "url": "git+https://github.com/PulkitXChadha/DesignBricks.git"
   },
   "keywords": [
     "react",
