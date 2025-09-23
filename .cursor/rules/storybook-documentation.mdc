@@ -1,0 +1,76 @@
+---
+globs: *.stories.tsx
+description: Storybook documentation standards for component stories
+---
+
+# Storybook Documentation Standards
+
+## Story File Structure
+Each component requires a `.stories.tsx` file following this pattern:
+
+### 1. Story Configuration
+```typescript
+import type { Meta, StoryObj } from '@storybook/react';
+import { ComponentName } from './ComponentName';
+
+const meta: Meta<typeof ComponentName> = {
+  title: 'Category/ComponentName',
+  component: ComponentName,
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    // Define interactive controls
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+```
+
+### 2. Required Stories
+- **Default**: Basic component usage
+- **All Variants**: Show different variant options
+- **Interactive States**: Hover, focus, disabled states
+- **With Props**: Demonstrate key prop combinations
+
+### 3. Story Categories
+Map to the same categories as [src/index.ts](mdc:src/index.ts):
+- `Foundation/ComponentName`
+- `Inputs/ComponentName`  
+- `Navigation/ComponentName`
+- `Feedback/ComponentName`
+- `Data Display/ComponentName`
+- `Overlays/ComponentName`
+
+### 4. Documentation Best Practices
+- Use `tags: ['autodocs']` for automatic documentation generation
+- Provide meaningful story names that describe the use case
+- Include interactive controls via `argTypes` for key props
+- Show realistic content and use cases
+- Demonstrate accessibility features where applicable
+
+### 5. Story Examples
+```typescript
+export const Default: Story = {
+  args: {
+    children: 'Button text',
+  },
+};
+
+export const AllVariants: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '1rem' }}>
+      <ComponentName variant="primary">Primary</ComponentName>
+      <ComponentName variant="secondary">Secondary</ComponentName>
+    </div>
+  ),
+};
+```
+
+### 6. Accessibility Integration
+- Include `@storybook/addon-a11y` testing
+- Test with different content lengths
+- Verify keyboard navigation works
+- Test screen reader compatibility where relevant

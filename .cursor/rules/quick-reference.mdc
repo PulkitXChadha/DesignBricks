@@ -1,0 +1,72 @@
+---
+description: Quick reference guide for common development tasks
+---
+
+# Quick Reference Guide
+
+## Creating a New Component
+
+### 1. Create Component Directory
+```
+src/components/ComponentName/
+├── ComponentName.tsx      # Main component
+├── ComponentName.css      # Styles  
+├── ComponentName.stories.tsx # Storybook
+└── index.ts              # Exports
+```
+
+### 2. Component Template
+```typescript
+import React, { forwardRef, HTMLAttributes } from 'react';
+import clsx from 'clsx';
+import './ComponentName.css';
+
+export interface ComponentNameProps extends HTMLAttributes<HTMLDivElement> {
+  /** Component variant */
+  variant?: 'default' | 'primary';
+}
+
+export const ComponentName = forwardRef<HTMLDivElement, ComponentNameProps>(
+  ({ variant = 'default', className, children, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={clsx('db-component-name', `db-component-name--${variant}`, className)}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+
+ComponentName.displayName = 'ComponentName';
+```
+
+### 3. Update Exports
+- Add to component's `index.ts`:
+```typescript
+export { ComponentName } from './ComponentName';
+export type { ComponentNameProps } from './ComponentName';
+```
+
+- Add to main [src/index.ts](mdc:src/index.ts) in appropriate category:
+```typescript
+export * from './components/ComponentName';
+```
+
+## Key Files to Reference
+- **Project Structure**: [project-structure.mdc](mdc:.cursor/rules/project-structure.mdc)
+- **Component Patterns**: [component-development.mdc](mdc:.cursor/rules/component-development.mdc)
+- **CSS Guidelines**: [styling-guidelines.mdc](mdc:.cursor/rules/styling-guidelines.mdc)
+- **Design Tokens**: [design-tokens.mdc](mdc:.cursor/rules/design-tokens.mdc)
+- **Export Organization**: [export-organization.mdc](mdc:.cursor/rules/export-organization.mdc)
+- **Storybook**: [storybook-documentation.mdc](mdc:.cursor/rules/storybook-documentation.mdc)
+- **TypeScript**: [typescript-configuration.mdc](mdc:.cursor/rules/typescript-configuration.mdc)
+
+## Common Patterns
+- **CSS Classes**: `db-component-name`, `db-component-name__element`, `db-component-name--modifier`
+- **Props**: Extend HTML attributes, use JSDoc, provide defaults
+- **Exports**: Both component and types from each index.ts
+- **Tokens**: Import from [src/tokens](mdc:src/tokens/index.ts), use semantic names
+- **Stories**: Category-based organization, interactive controls

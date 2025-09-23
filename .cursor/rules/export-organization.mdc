@@ -1,0 +1,61 @@
+---
+globs: **/index.ts
+description: Export pattern and organization standards
+---
+
+# Export Organization Standards
+
+## Main Index Structure
+The [src/index.ts](mdc:src/index.ts) organizes exports by functional categories:
+
+### 1. Category Organization
+```typescript
+// Foundation
+export * from './components/Button';
+
+// Inputs  
+export * from './components/TextField';
+
+// Navigation
+export * from './components/Tabs';
+
+// Feedback
+export * from './components/Alert';
+
+// Data Display
+export * from './components/Card';
+
+// Overlays
+export * from './components/Modal';
+
+// Design Tokens
+export * from './tokens';
+```
+
+### 2. Component Index Pattern
+Each component's `index.ts` follows this exact pattern:
+```typescript
+export { ComponentName } from './ComponentName';
+export type { ComponentNameProps } from './ComponentName';
+```
+
+### 3. Export Rules
+- **Main index**: Use `export *` for component directories
+- **Component index**: Export both component and props type explicitly  
+- **Special cases**: Components with multiple exports use named exports (like Typography)
+- **Design tokens**: Export all token categories through main index
+
+### 4. Category Guidelines
+When adding new components, classify them appropriately:
+- **Foundation**: Core building blocks (Button, Typography)
+- **Inputs**: Form and input controls  
+- **Navigation**: Routing and navigation components
+- **Feedback**: Status and feedback indicators
+- **Data Display**: Tables, lists, cards for showing data
+- **Overlays**: Modals, tooltips, popovers
+
+### 5. Import Organization
+- Organize imports by external → internal → relative
+- Group related component exports together
+- Maintain alphabetical order within categories
+- Keep the main index as the single source of truth for public API

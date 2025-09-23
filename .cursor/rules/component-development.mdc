@@ -1,0 +1,67 @@
+---
+globs: *.tsx,*.ts
+---
+
+# Component Development Standards
+
+## Component Structure Requirements
+
+### 1. Component Interface Definition
+```typescript
+export interface ComponentNameProps extends HTMLElementAttributes<HTMLElementType> {
+  /** JSDoc comment for each prop */
+  propName?: PropType;
+}
+```
+
+### 2. Component Implementation
+- Use `forwardRef` for all components to support ref forwarding
+- Import React explicitly: `import React, { forwardRef } from 'react'`
+- Import and use `clsx` for conditional class names
+- Import component-specific CSS: `import './ComponentName.css'`
+
+### 3. Required Patterns
+```typescript
+export const ComponentName = forwardRef<HTMLElementType, ComponentNameProps>(
+  ({ 
+    // Destructure props with defaults
+    variant = 'default',
+    className,
+    children,
+    ...props 
+  }, ref) => {
+    return (
+      <element
+        ref={ref}
+        className={clsx(
+          'db-component-name',
+          `db-component-name--${variant}`,
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </element>
+    );
+  }
+);
+
+ComponentName.displayName = 'ComponentName';
+```
+
+### 4. Export Pattern
+Each component folder's `index.ts` must export both component and types:
+```typescript
+export { ComponentName } from './ComponentName';
+export type { ComponentNameProps } from './ComponentName';
+```
+
+### 5. Props Documentation
+- Use JSDoc comments for all props
+- Include prop descriptions, especially for variants and behavioral flags
+- Document default values in the interface when applicable
+
+### 6. Design System Integration
+- Use design tokens from [src/tokens](mdc:src/tokens/index.ts) 
+- Follow BEM naming with `db-` prefix for all CSS classes
+- Extend appropriate HTML element attributes for the base element type

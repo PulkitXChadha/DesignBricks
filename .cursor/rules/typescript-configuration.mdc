@@ -1,0 +1,63 @@
+---
+globs: *.ts,*.tsx
+description: TypeScript configuration and coding standards
+---
+
+# TypeScript Configuration & Standards
+
+## Project Configuration
+Based on [tsconfig.json](mdc:tsconfig.json) settings:
+
+### 1. Compiler Options
+- **Target**: ES2020 with ESNext modules
+- **JSX**: `react-jsx` (automatic React import)
+- **Strict Mode**: Enabled with `noImplicitReturns` and `noFallthroughCasesInSwitch`
+- **Declarations**: Generated for library distribution (`declaration: true`)
+
+### 2. File Organization
+- **Source**: All TypeScript files in `src/` directory
+- **Output**: Compiled to `dist/` with declaration maps
+- **Exclusions**: Stories and tests excluded from build
+
+### 3. Type Safety Requirements
+```typescript
+// Always define prop interfaces extending HTML attributes
+export interface ComponentProps extends HTMLAttributes<HTMLDivElement> {
+  /** Required JSDoc for all props */
+  variant?: 'default' | 'primary';
+}
+
+// Use generic constraints for flexibility
+export interface GenericProps<T = HTMLDivElement> extends HTMLAttributes<T> {
+  as?: keyof JSX.IntrinsicElements;
+}
+```
+
+### 4. Import Standards
+```typescript
+// External libraries first
+import React, { forwardRef } from 'react';
+import clsx from 'clsx';
+
+// Internal utilities and tokens  
+import { tokens } from '../tokens';
+
+// Relative imports last
+import './Component.css';
+```
+
+### 5. Type Exports
+- Export interfaces/types alongside components
+- Use `type` keyword for type-only exports: `export type { Props }`
+- Maintain backwards compatibility with type definitions
+
+### 6. React Patterns
+- Use `forwardRef` with proper typing: `forwardRef<HTMLElement, Props>`
+- Extend appropriate HTML element attributes
+- Set `displayName` for debugging: `Component.displayName = 'Component'`
+
+### 7. Library Standards
+- Enable `isolatedModules` for build tool compatibility
+- Use `resolveJsonModule` for importing JSON files
+- Maintain `skipLibCheck` for faster compilation
+- `esModuleInterop` enabled for CJS compatibility

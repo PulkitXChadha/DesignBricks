@@ -1,0 +1,32 @@
+---
+alwaysApply: true
+---
+
+# DesignBricks Project Structure Guide
+
+This is a React component library for the Databricks Design System. The project follows a strict organizational pattern:
+
+## Core Structure
+- **Main entry point**: [src/index.ts](mdc:src/index.ts) - Organizes exports by functional categories
+- **Components**: Each component lives in `src/components/ComponentName/` with exactly 4 files:
+  - `ComponentName.tsx` - Main component implementation
+  - `ComponentName.css` - Component styles  
+  - `ComponentName.stories.tsx` - Storybook documentation
+  - `index.ts` - Component exports
+- **Design Tokens**: [src/tokens/index.ts](mdc:src/tokens/index.ts) provides design system tokens
+- **Build Output**: TypeScript compiles to `dist/` directory
+
+## Component Categories (as organized in main index)
+- **Foundation**: Button, Typography
+- **Inputs**: TextField, Checkbox, SearchInput, Select  
+- **Navigation**: Tabs, Sidebar
+- **Feedback**: Alert, Badge, Progress
+- **Data Display**: Card, Table
+- **Overlays**: Modal
+
+## Key Files
+- [package.json](mdc:package.json) - Project configuration and dependencies
+- [tsconfig.json](mdc:tsconfig.json) - TypeScript compilation settings
+- Build scripts use `tsc` for compilation, `storybook` for documentation
+
+When creating new components, follow the established 4-file structure and update the main index.ts with appropriate categorization.

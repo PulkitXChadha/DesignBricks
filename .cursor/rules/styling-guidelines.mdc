@@ -1,0 +1,56 @@
+---
+globs: *.css
+---
+
+# CSS Styling Guidelines
+
+## BEM Methodology with Databricks Prefix
+
+### 1. Class Naming Convention
+- **Block**: `.db-component-name` (base component class)
+- **Element**: `.db-component-name__element` (child elements)
+- **Modifier**: `.db-component-name--modifier` (variant/state classes)
+
+### 2. Required Base Structure
+```css
+.db-component-name {
+  /* Base component styles */
+}
+
+.db-component-name__element {
+  /* Child element styles */
+}
+
+.db-component-name--variant {
+  /* Variant modifier styles */
+}
+
+.db-component-name--state {
+  /* State modifier styles (disabled, loading, etc.) */
+}
+```
+
+### 3. Design Token Usage
+Reference design tokens from [src/tokens](mdc:src/tokens/index.ts):
+- Use CSS custom properties for token values
+- Prefer token values over hardcoded values for:
+  - Colors (primary, secondary, text, background)
+  - Spacing (margins, padding)
+  - Typography (font-size, line-height, font-weight)
+  - Border radius, shadows, transitions
+
+### 4. Responsive Design
+- Use token-based breakpoints for media queries
+- Mobile-first approach when needed
+- Consider component scalability across viewport sizes
+
+### 5. Accessibility Considerations
+- Ensure adequate color contrast ratios
+- Support focus indicators
+- Consider reduced motion preferences
+- Use semantic color names, not visual descriptions
+
+### 6. Component State Styling
+- Support `:hover`, `:focus`, `:active` states
+- Handle `disabled` state appropriately
+- Consider loading/pending states where applicable

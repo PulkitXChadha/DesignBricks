@@ -1,0 +1,54 @@
+---
+globs: src/tokens/*
+description: Design token system usage and management
+---
+
+# Design Tokens System
+
+## Token Structure
+The design system is organized in [src/tokens/index.ts](mdc:src/tokens/index.ts) with category-specific files:
+- [colors.ts](mdc:src/tokens/colors.ts) - Color palette
+- [typography.ts](mdc:src/tokens/typography.ts) - Font scales and weights  
+- [spacing.ts](mdc:src/tokens/spacing.ts) - Spacing scale
+- [index.ts](mdc:src/tokens/index.ts) - Combined tokens export
+
+## Token Categories Available
+- **borderRadius**: none, sm, base, md, lg, xl, full
+- **boxShadow**: none, sm, base, md, lg, xl
+- **transition**: fast (150ms), base (250ms), slow (350ms)
+- **zIndex**: Layered from hide (-1) to tooltip (1700)
+- **breakpoints**: sm, md, lg, xl, 2xl
+
+## Usage Guidelines
+
+### 1. Import Tokens
+```typescript
+import { tokens } from '../tokens';
+// or specific category
+import { colors } from '../tokens/colors';
+```
+
+### 2. Token Consistency
+- Always use tokens instead of hardcoded values
+- Reference tokens for consistent spacing, colors, timing
+- Use semantic token names that describe purpose, not appearance
+
+### 3. Adding New Tokens
+- Add to appropriate category file (colors, spacing, typography)
+- Use `as const` for type safety
+- Update main tokens export if adding new categories
+- Ensure naming follows established patterns
+
+### 4. Token Types
+- All token objects use `as const` for literal type inference
+- Export both the token object and its TypeScript type
+- Maintain backwards compatibility when modifying existing tokens
+
+### 5. CSS Integration
+Convert tokens to CSS custom properties for use in stylesheets:
+```css
+:root {
+  --db-color-primary: /* token value */;
+  --db-spacing-md: /* token value */;
+}
+```
