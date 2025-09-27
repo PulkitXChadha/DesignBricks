@@ -10,6 +10,7 @@ export interface SidebarItem {
   children?: SidebarItem[];
   badge?: string | number;
   disabled?: boolean;
+  type?: 'item' | 'header';
 }
 
 export interface SidebarProps {
@@ -67,6 +68,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
     const isExpanded = expandedItems.has(item.id);
     const isActive = activeItem === item.id;
     const hasChildren = item.children && item.children.length > 0;
+
+    // Render section headers
+    if (item.type === 'header') {
+      if (collapsed) return null; // Hide headers when collapsed
+      return (
+        <div key={item.id} className="db-sidebar__section-header">
+          <span className="db-sidebar__section-title">{item.label}</span>
+        </div>
+      );
+    }
 
     return (
       <div key={item.id} className="db-sidebar__item-wrapper">
@@ -133,24 +144,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           onClick={() => onCollapsedChange?.(!collapsed)}
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            {collapsed ? (
-              <path
-                d="M10 4L14 8L10 12M2 8H14"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            ) : (
-              <path
-                d="M6 4L2 8L6 12M14 8H2"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            )}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
           </svg>
         </button>
       )}

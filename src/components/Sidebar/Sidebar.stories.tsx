@@ -94,6 +94,112 @@ const SettingsIcon = () => (
   </svg>
 );
 
+// Databricks specific icons
+const PlusIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19"/>
+    <line x1="5" y1="12" x2="19" y2="12"/>
+  </svg>
+);
+
+const FolderIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+  </svg>
+);
+
+const ClockIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <polyline points="12,6 12,12 16,14"/>
+  </svg>
+);
+
+const DatabaseIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <ellipse cx="12" cy="5" rx="9" ry="3"/>
+    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+  </svg>
+);
+
+const PipelinesIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="16 18 22 12 16 6"/>
+    <polyline points="8 6 2 12 8 18"/>
+  </svg>
+);
+
+const ServerIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="3" width="20" height="4" rx="1" ry="1"/>
+    <rect x="2" y="9" width="20" height="4" rx="1" ry="1"/>
+    <rect x="2" y="15" width="20" height="4" rx="1" ry="1"/>
+    <line x1="6" y1="5" x2="6" y2="5"/>
+    <line x1="6" y1="11" x2="6" y2="11"/>
+    <line x1="6" y1="17" x2="6" y2="17"/>
+  </svg>
+);
+
+const GlobeIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <line x1="2" y1="12" x2="22" y2="12"/>
+    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+  </svg>
+);
+
+const ShoppingIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="21" r="1"/>
+    <circle cx="20" cy="21" r="1"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+  </svg>
+);
+
+const FileIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14,2 14,8 20,8"/>
+  </svg>
+);
+
+const BarChartIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="12" y1="20" x2="12" y2="10"/>
+    <line x1="18" y1="20" x2="18" y2="4"/>
+    <line x1="6" y1="20" x2="6" y2="16"/>
+  </svg>
+);
+
+const BellIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+  </svg>
+);
+
+const PlayIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="5,3 19,12 5,21"/>
+  </svg>
+);
+
+const UserIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+    <circle cx="12" cy="7" r="4"/>
+  </svg>
+);
+
+const LayersIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12,2 2,7 12,12 22,7"/>
+    <polyline points="2,17 12,22 22,17"/>
+    <polyline points="2,12 12,17 22,12"/>
+  </svg>
+);
+
 const basicItems: SidebarItem[] = [
   {
     id: 'home',
@@ -382,6 +488,223 @@ export const DisabledItems: Story = {
           <h2>Sidebar with Disabled Items</h2>
           <p>Some items are disabled and cannot be selected.</p>
           <p>Selected item: {activeItem}</p>
+        </div>
+      </div>
+    );
+  },
+};
+
+export const DatabricksStyle: Story = {
+  render: () => {
+    const [activeItem, setActiveItem] = useState('workspace');
+    const [collapsed, setCollapsed] = useState(false);
+
+    const databricksItems: SidebarItem[] = [
+      {
+        id: 'new',
+        label: 'New',
+        icon: <PlusIcon />,
+      },
+      {
+        id: 'workspace',
+        label: 'Workspace',
+        icon: <FolderIcon />,
+      },
+      {
+        id: 'recents',
+        label: 'Recents',
+        icon: <ClockIcon />,
+      },
+      {
+        id: 'catalog',
+        label: 'Catalog',
+        icon: <DatabaseIcon />,
+      },
+      {
+        id: 'jobs-pipelines',
+        label: 'Jobs & Pipelines',
+        icon: <PipelinesIcon />,
+      },
+      {
+        id: 'compute',
+        label: 'Compute',
+        icon: <ServerIcon />,
+      },
+      {
+        id: 'discover',
+        label: 'Discover',
+        icon: <GlobeIcon />,
+      },
+      {
+        id: 'marketplace',
+        label: 'Marketplace',
+        icon: <ShoppingIcon />,
+      },
+      // SQL Section
+      {
+        id: 'sql-header',
+        label: 'SQL',
+        type: 'header',
+      },
+      {
+        id: 'sql-editor',
+        label: 'SQL Editor',
+        icon: <FileIcon />,
+      },
+      {
+        id: 'queries',
+        label: 'Queries',
+        icon: <FileIcon />,
+      },
+      {
+        id: 'dashboards',
+        label: 'Dashboards',
+        icon: <BarChartIcon />,
+      },
+      {
+        id: 'genie',
+        label: 'Genie',
+        icon: <PlayIcon />,
+      },
+      {
+        id: 'alerts',
+        label: 'Alerts',
+        icon: <BellIcon />,
+      },
+      {
+        id: 'query-history',
+        label: 'Query History',
+        icon: <ClockIcon />,
+      },
+      {
+        id: 'sql-warehouses',
+        label: 'SQL Warehouses',
+        icon: <ServerIcon />,
+      },
+      // Data Engineering Section
+      {
+        id: 'data-eng-header',
+        label: 'Data Engineering',
+        type: 'header',
+      },
+      {
+        id: 'job-runs',
+        label: 'Job Runs',
+        icon: <PipelinesIcon />,
+      },
+      {
+        id: 'data-ingestion',
+        label: 'Data Ingestion',
+        icon: <DatabaseIcon />,
+      },
+      // AI/ML Section
+      {
+        id: 'aiml-header',
+        label: 'AI/ML',
+        type: 'header',
+      },
+      {
+        id: 'playground',
+        label: 'Playground',
+        icon: <PlayIcon />,
+      },
+      {
+        id: 'agents',
+        label: 'Agents',
+        icon: <UserIcon />,
+        badge: 'Beta',
+      },
+      {
+        id: 'experiments',
+        label: 'Experiments',
+        icon: <LayersIcon />,
+      },
+      {
+        id: 'features',
+        label: 'Features',
+        icon: <LayersIcon />,
+      },
+      {
+        id: 'models',
+        label: 'Models',
+        icon: <ModelsIcon />,
+      },
+      {
+        id: 'serving',
+        label: 'Serving',
+        icon: <ServerIcon />,
+      },
+    ];
+
+    const header = (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{
+          width: '32px',
+          height: '32px',
+          borderRadius: '4px',
+          background: 'linear-gradient(135deg, #FF6B35, #FF8E3C)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          fontSize: '12px',
+          fontWeight: 'bold',
+        }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <div style={{ fontSize: '14px', fontWeight: '600' }}>databricks</div>
+        </div>
+      </div>
+    );
+
+    return (
+      <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f8fafc' }}>
+        <Sidebar
+          items={databricksItems}
+          activeItem={activeItem}
+          onItemClick={(item) => setActiveItem(item.id)}
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
+          collapsible
+          header={header}
+          variant="light"
+          width={280}
+        />
+        <div style={{ flex: 1, padding: '24px', backgroundColor: '#f8fafc' }}>
+          <div style={{ 
+            backgroundColor: 'white', 
+            borderRadius: '8px', 
+            padding: '24px',
+            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+          }}>
+            <h1 style={{ 
+              fontSize: '24px', 
+              fontWeight: '600', 
+              margin: '0 0 8px 0',
+              color: '#1f2937'
+            }}>
+              Databricks Workspace
+            </h1>
+            <p style={{ 
+              color: '#6b7280', 
+              margin: '0 0 24px 0'
+            }}>
+              A complete analytics platform for data teams
+            </p>
+            <div style={{
+              padding: '16px',
+              backgroundColor: '#f8fafc',
+              borderRadius: '6px',
+              border: '1px solid #e5e7eb'
+            }}>
+              <p style={{ margin: 0, fontSize: '14px', color: '#374151' }}>
+                <strong>Selected:</strong> {activeItem}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );
