@@ -1,3 +1,16 @@
+/* Import all component styles first */
+@import '../components/Button/Button.css';
+@import '../components/Typography/Typography.css';
+@import '../components/TextField/TextField.css';
+@import '../components/Checkbox/Checkbox.css';
+@import '../components/SearchInput/SearchInput.css';
+@import '../components/Tabs/Tabs.css';
+@import '../components/Alert/Alert.css';
+@import '../components/Badge/Badge.css';
+@import '../components/Card/Card.css';
+@import '../components/Flex/Flex.css';
+@import '../components/Grid/Grid.css';
+
 /* Global styles for Storybook and components */
 * {
   box-sizing: border-box;
@@ -10,14 +23,3 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-/* Import all component styles */
-@import '../components/Button/Button.css';
-@import '../components/Typography/Typography.css';
-@import '../components/TextField/TextField.css';
-@import '../components/Checkbox/Checkbox.css';
-@import '../components/SearchInput/SearchInput.css';
-@import '../components/Tabs/Tabs.css';
-@import '../components/Alert/Alert.css';
-@import '../components/Badge/Badge.css';
-@import '../components/Card/Card.css';
