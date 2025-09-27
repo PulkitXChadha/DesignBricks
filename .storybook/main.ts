@@ -15,6 +15,40 @@ const config: StorybookConfig = {
   docs: {
     autodocs: 'tag',
   },
+  async viteFinal(config) {
+    // Configure dependency optimization to handle problematic dependencies
+    config.optimizeDeps = {
+      ...config.optimizeDeps,
+      exclude: [
+        ...(config.optimizeDeps?.exclude || []),
+        '@storybook/blocks',
+        '@storybook/addon-docs',
+        'storybook',
+      ],
+      include: [
+        ...(config.optimizeDeps?.include || []),
+        'react',
+        'react-dom',
+      ],
+    };
+    
+    // Ensure proper handling of globals and build
+    config.define = {
+      ...config.define,
+      global: 'globalThis',
+    };
+    
+    // Configure build options to prevent external marking issues
+    config.build = {
+      ...config.build,
+      rollupOptions: {
+        ...config.build?.rollupOptions,
+        external: [],
+      },
+    };
+    
+    return config;
+  },
   // staticDirs: ['../public'], // Uncomment if you have static assets
 };
 

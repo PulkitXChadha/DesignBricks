@@ -1,6 +1,7 @@
 // Foundation
 export * from './components/Button';
 export { Typography, type TypographyProps } from './components/Typography';
+export { ColorPalette, type ColorPaletteProps } from './components/Colors';
 
 // Inputs
 export * from './components/TextField';
