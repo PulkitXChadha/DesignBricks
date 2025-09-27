@@ -12,6 +12,7 @@ export * from './components/Select';
 // Navigation
 export * from './components/Tabs';
 export * from './components/Sidebar';
+export * from './components/TopBar';
 
 // Feedback
 export * from './components/Alert';
