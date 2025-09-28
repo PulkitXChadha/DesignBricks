@@ -26,6 +26,7 @@ export * from './components/Progress';
 // Data Display
 export * from './components/Card';
 export * from './components/Table';
+export * from './components/LineChart';
 
 // Overlays
 export * from './components/Modal';

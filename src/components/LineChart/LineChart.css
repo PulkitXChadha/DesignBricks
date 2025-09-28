@@ -1,0 +1,469 @@
+.db-linechart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+}
+
+.db-linechart__svg {
+  display: block;
+  overflow: visible;
+}
+
+/* Empty state */
+.db-linechart--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border: 2px dashed #DDE0E5;
+  border-radius: 8px;
+  background-color: #F6F7F9;
+}
+
+.db-linechart__empty-state {
+  text-align: center;
+  color: #5F7281;
+}
+
+.db-linechart__empty-state p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* Chart title */
+.db-linechart__title {
+  font-size: 16px;
+  font-weight: 600;
+  fill: #1F272D;
+  dominant-baseline: middle;
+}
+
+/* Axes */
+.db-linechart__axis {
+  font-size: 12px;
+}
+
+.db-linechart__axis text {
+  fill: #5F7281;
+  font-family: inherit;
+}
+
+.db-linechart__axis path,
+.db-linechart__axis line {
+  stroke: #D1D9E1;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+/* Axis labels */
+.db-linechart__axis-label {
+  font-size: 13px;
+  font-weight: 500;
+  fill: #37444F;
+  dominant-baseline: middle;
+}
+
+/* Grid lines */
+.db-linechart__grid line {
+  stroke: #E8ECF0;
+  stroke-width: 1;
+  stroke-dasharray: 2,2;
+  shape-rendering: crispEdges;
+}
+
+.db-linechart__grid path {
+  stroke: none;
+}
+
+/* Line styles - Primary */
+.db-linechart__line--primary {
+  fill: none;
+  stroke: #2272B4;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.db-linechart__point--primary {
+  fill: #2272B4;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-linechart__point--primary:hover {
+  r: 6;
+  fill: #1A5A90;
+}
+
+/* Line styles - Secondary */
+.db-linechart__line--secondary {
+  fill: none;
+  stroke: #04867D;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.db-linechart__point--secondary {
+  fill: #04867D;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-linechart__point--secondary:hover {
+  r: 6;
+  fill: #037269;
+}
+
+/* Line styles - Success */
+.db-linechart__line--success {
+  fill: none;
+  stroke: #3BA65E;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.db-linechart__point--success {
+  fill: #3BA65E;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-linechart__point--success:hover {
+  r: 6;
+  fill: #277C43;
+}
+
+/* Line styles - Warning */
+.db-linechart__line--warning {
+  fill: none;
+  stroke: #DE7921;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.db-linechart__point--warning {
+  fill: #DE7921;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-linechart__point--warning:hover {
+  r: 6;
+  fill: #BE501E;
+}
+
+/* Line styles - Error */
+.db-linechart__line--error {
+  fill: none;
+  stroke: #E65B77;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.db-linechart__point--error {
+  fill: #E65B77;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-linechart__point--error:hover {
+  r: 6;
+  fill: #C82D4C;
+}
+
+/* Tooltip */
+.db-linechart__tooltip {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  background-color: #1F272D;
+  color: #FFFFFF;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: opacity 150ms ease-in-out, visibility 150ms ease-in-out;
+  min-width: 120px;
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.db-linechart__tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: max-content;
+}
+
+.db-linechart__tooltip-date {
+  font-size: 12px;
+  color: #C0CDD8;
+  font-weight: 400;
+}
+
+.db-linechart__tooltip-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.db-linechart__tooltip-change {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.db-linechart__tooltip-change--positive {
+  color: #3BA65E;
+}
+
+.db-linechart__tooltip-change--negative {
+  color: #E65B77;
+}
+
+/* Vertical line indicator */
+.db-linechart__vertical-line {
+  stroke: #8396A5;
+  stroke-width: 1;
+  stroke-dasharray: 4,4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+/* Hover circle */
+.db-linechart__hover-circle {
+  stroke: #FFFFFF;
+  stroke-width: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+.db-linechart__hover-circle--primary {
+  fill: #2272B4;
+}
+
+.db-linechart__hover-circle--secondary {
+  fill: #04867D;
+}
+
+.db-linechart__hover-circle--success {
+  fill: #3BA65E;
+}
+
+.db-linechart__hover-circle--warning {
+  fill: #DE7921;
+}
+
+.db-linechart__hover-circle--error {
+  fill: #E65B77;
+}
+
+/* Overlay for mouse events */
+.db-linechart__overlay {
+  cursor: crosshair;
+}
+
+/* Variants */
+.db-linechart--minimal .db-linechart__grid {
+  display: none;
+}
+
+.db-linechart--minimal .db-linechart__axis path,
+.db-linechart--minimal .db-linechart__axis line {
+  stroke: none;
+}
+
+.db-linechart--detailed .db-linechart__line--primary,
+.db-linechart--detailed .db-linechart__line--secondary,
+.db-linechart--detailed .db-linechart__line--success,
+.db-linechart--detailed .db-linechart__line--warning,
+.db-linechart--detailed .db-linechart__line--error {
+  stroke-width: 3;
+}
+
+.db-linechart--detailed .db-linechart__point--primary,
+.db-linechart--detailed .db-linechart__point--secondary,
+.db-linechart--detailed .db-linechart__point--success,
+.db-linechart--detailed .db-linechart__point--warning,
+.db-linechart--detailed .db-linechart__point--error {
+  r: 5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .db-linechart__title {
+    font-size: 14px;
+  }
+  
+  .db-linechart__axis {
+    font-size: 10px;
+  }
+  
+  .db-linechart__axis-label {
+    font-size: 11px;
+  }
+  
+  .db-linechart__tooltip {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+/* Focus and accessibility */
+.db-linechart__point:focus {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+}
+
+.db-linechart__svg:focus {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+}
+
+/* Animation for line drawing */
+@keyframes db-linechart-draw {
+  from {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+  }
+}
+
+.db-linechart--animated .db-linechart__line--primary,
+.db-linechart--animated .db-linechart__line--secondary,
+.db-linechart--animated .db-linechart__line--success,
+.db-linechart--animated .db-linechart__line--warning,
+.db-linechart--animated .db-linechart__line--error {
+  animation: db-linechart-draw 1.5s ease-in-out;
+}
+
+/* Chart Aggregates */
+.db-chart-aggregates {
+  display: flex;
+  gap: 24px;
+  padding: 16px 0;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.db-chart-aggregates--horizontal {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.db-chart-aggregates--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.db-chart-aggregates--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+}
+
+.db-chart-aggregates__metric {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.db-chart-aggregates__label {
+  color: #5F7281;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.db-chart-aggregates__value {
+  color: #1F272D;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.db-chart-aggregates__change {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.db-chart-aggregates__change--positive {
+  color: #3BA65E;
+  background-color: #F3FCF6;
+}
+
+.db-chart-aggregates__change--negative {
+  color: #E65B77;
+  background-color: #FFF5F7;
+}
+
+/* Metric color variants */
+.db-chart-aggregates__metric--primary .db-chart-aggregates__value {
+  color: #2272B4;
+}
+
+.db-chart-aggregates__metric--secondary .db-chart-aggregates__value {
+  color: #04867D;
+}
+
+.db-chart-aggregates__metric--success .db-chart-aggregates__value {
+  color: #3BA65E;
+}
+
+.db-chart-aggregates__metric--warning .db-chart-aggregates__value {
+  color: #DE7921;
+}
+
+.db-chart-aggregates__metric--error .db-chart-aggregates__value {
+  color: #E65B77;
+}
+
+.db-chart-aggregates__metric--neutral .db-chart-aggregates__value {
+  color: #5F7281;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .db-chart-aggregates--horizontal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .db-chart-aggregates__metric {
+    font-size: 12px;
+  }
+  
+  .db-chart-aggregates__change {
+    font-size: 11px;
+  }
+}
