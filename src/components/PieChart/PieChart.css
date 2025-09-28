@@ -1,0 +1,306 @@
+.db-piechart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+}
+
+.db-piechart__svg {
+  display: block;
+  overflow: visible;
+}
+
+/* Empty state */
+.db-piechart--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border: 2px dashed #DDE0E5;
+  border-radius: 8px;
+  background-color: #F6F7F9;
+}
+
+.db-piechart__empty-state {
+  text-align: center;
+  color: #5F7281;
+}
+
+.db-piechart__empty-state p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* Chart title */
+.db-piechart__title {
+  font-size: 16px;
+  font-weight: 600;
+  fill: #1F272D;
+  dominant-baseline: middle;
+}
+
+/* Slice styles */
+.db-piechart__path {
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-piechart__path:hover {
+  filter: brightness(1.1);
+  stroke-width: 3;
+}
+
+/* Labels */
+.db-piechart__label {
+  pointer-events: none;
+  user-select: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.db-piechart__category-label {
+  pointer-events: none;
+  user-select: none;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Tooltip */
+.db-piechart__tooltip {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  background-color: #1F272D;
+  color: #FFFFFF;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: opacity 150ms ease-in-out, visibility 150ms ease-in-out;
+  min-width: 120px;
+  max-width: 300px;
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.db-piechart__tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: max-content;
+}
+
+.db-piechart__tooltip-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.db-piechart__tooltip-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.db-piechart__tooltip-percentage {
+  font-size: 12px;
+  color: #C0CDD8;
+  font-weight: 400;
+}
+
+/* Legend */
+.db-piechart__legend {
+  font-size: 12px;
+}
+
+.db-piechart__legend-item {
+  cursor: pointer;
+  transition: opacity 150ms ease-in-out;
+}
+
+.db-piechart__legend-item:hover {
+  opacity: 0.8;
+}
+
+.db-piechart__legend-item rect {
+  rx: 2;
+  ry: 2;
+}
+
+.db-piechart__legend-item text {
+  dominant-baseline: middle;
+}
+
+/* Variants */
+.db-piechart--minimal .db-piechart__legend {
+  display: none;
+}
+
+.db-piechart--minimal .db-piechart__label {
+  display: none;
+}
+
+.db-piechart--detailed .db-piechart__path {
+  stroke-width: 3;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.db-piechart--detailed .db-piechart__label {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Donut chart specific styles */
+.db-piechart--donut .db-piechart__path {
+  stroke-width: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .db-piechart__title {
+    font-size: 14px;
+  }
+  
+  .db-piechart__label {
+    font-size: 10px;
+  }
+  
+  .db-piechart__category-label {
+    font-size: 9px;
+  }
+  
+  .db-piechart__tooltip {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+  
+  .db-piechart__legend {
+    font-size: 10px;
+  }
+}
+
+/* Focus and accessibility */
+.db-piechart__path:focus {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+  filter: brightness(1.1);
+}
+
+.db-piechart__svg:focus {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+}
+
+/* Animation for slice appearance */
+@keyframes db-piechart-slice-grow {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.db-piechart--animated .db-piechart__slice {
+  transform-origin: center;
+}
+
+/* Theme Support */
+.db-piechart[data-theme="dark"] {
+  --chart-bg: #1F272D;
+  --chart-text: #FFFFFF;
+  --chart-border: #445461;
+}
+
+.db-piechart[data-theme="dark"] .db-piechart__path {
+  stroke: #1F272D;
+}
+
+.db-piechart[data-theme="dark"] .db-piechart__label {
+  fill: #FFFFFF;
+}
+
+.db-piechart[data-theme="dark"] .db-piechart__category-label {
+  fill: #C0CDD8;
+}
+
+.db-piechart[data-theme="light"] {
+  --chart-bg: #FFFFFF;
+  --chart-text: #1F272D;
+  --chart-border: #E8ECF0;
+}
+
+.db-piechart[data-theme="light"] .db-piechart__path {
+  stroke: #FFFFFF;
+}
+
+/* Accessibility */
+.db-piechart[tabindex] {
+  outline: none;
+}
+
+.db-piechart:focus-visible {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Keyboard Navigation */
+.db-piechart__path[tabindex] {
+  outline: none;
+}
+
+.db-piechart__path:focus {
+  filter: brightness(1.1) drop-shadow(0 0 4px rgba(34, 114, 180, 0.4));
+}
+
+/* Performance Optimizations */
+.db-piechart--optimized {
+  will-change: transform;
+  contain: layout style paint;
+}
+
+.db-piechart--optimized .db-piechart__path {
+  will-change: d;
+}
+
+/* Color accessibility improvements */
+.db-piechart__path[aria-selected="true"] {
+  stroke: #2272B4;
+  stroke-width: 4;
+  filter: brightness(1.2);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .db-piechart__path {
+    stroke: #000000;
+    stroke-width: 2;
+  }
+  
+  .db-piechart__label {
+    font-weight: 700;
+    text-shadow: 1px 1px 0 #FFFFFF;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .db-piechart__path {
+    transition: none;
+  }
+  
+  .db-piechart--animated .db-piechart__slice {
+    animation: none;
+  }
+}

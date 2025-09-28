@@ -34,6 +34,10 @@ export * from './components/Card';
 export * from './components/Table';
 export * from './components/LineChart';
 export * from './components/MultiLineChart';
+export * from './components/AreaChart';
+export * from './components/BarChart';
+export * from './components/ScatterChart';
+export * from './components/PieChart';
 export * from './components/List';
 
 // Overlays

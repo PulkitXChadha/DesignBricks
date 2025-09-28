@@ -1,0 +1,484 @@
+.db-areachart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+}
+
+.db-areachart__svg {
+  display: block;
+  overflow: visible;
+}
+
+/* Empty state */
+.db-areachart--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border: 2px dashed #DDE0E5;
+  border-radius: 8px;
+  background-color: #F6F7F9;
+}
+
+.db-areachart__empty-state {
+  text-align: center;
+  color: #5F7281;
+}
+
+.db-areachart__empty-state p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* Chart title */
+.db-areachart__title {
+  font-size: 16px;
+  font-weight: 600;
+  fill: #1F272D;
+  dominant-baseline: middle;
+}
+
+/* Axes */
+.db-areachart__axis {
+  font-size: 12px;
+}
+
+.db-areachart__axis text {
+  fill: #5F7281;
+  font-family: inherit;
+}
+
+.db-areachart__axis path,
+.db-areachart__axis line {
+  stroke: #D1D9E1;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+/* Axis labels */
+.db-areachart__axis-label {
+  font-size: 13px;
+  font-weight: 500;
+  fill: #37444F;
+  dominant-baseline: middle;
+}
+
+/* Grid lines */
+.db-areachart__grid line {
+  stroke: #E8ECF0;
+  stroke-width: 1;
+  stroke-dasharray: 2,2;
+  shape-rendering: crispEdges;
+}
+
+.db-areachart__grid path {
+  stroke: none;
+}
+
+/* Area styles - Primary */
+.db-areachart__area--primary {
+  fill: #2272B4;
+  fill-opacity: 0.3;
+}
+
+.db-areachart__stroke--primary {
+  fill: none;
+  stroke: #2272B4;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.db-areachart__point--primary {
+  fill: #2272B4;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-areachart__point--primary:hover {
+  r: 6;
+  fill: #1A5A90;
+}
+
+/* Area styles - Secondary */
+.db-areachart__area--secondary {
+  fill: #04867D;
+  fill-opacity: 0.3;
+}
+
+.db-areachart__stroke--secondary {
+  fill: none;
+  stroke: #04867D;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.db-areachart__point--secondary {
+  fill: #04867D;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-areachart__point--secondary:hover {
+  r: 6;
+  fill: #037269;
+}
+
+/* Area styles - Success */
+.db-areachart__area--success {
+  fill: #3BA65E;
+  fill-opacity: 0.3;
+}
+
+.db-areachart__stroke--success {
+  fill: none;
+  stroke: #3BA65E;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.db-areachart__point--success {
+  fill: #3BA65E;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-areachart__point--success:hover {
+  r: 6;
+  fill: #277C43;
+}
+
+/* Area styles - Warning */
+.db-areachart__area--warning {
+  fill: #DE7921;
+  fill-opacity: 0.3;
+}
+
+.db-areachart__stroke--warning {
+  fill: none;
+  stroke: #DE7921;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.db-areachart__point--warning {
+  fill: #DE7921;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-areachart__point--warning:hover {
+  r: 6;
+  fill: #BE501E;
+}
+
+/* Area styles - Error */
+.db-areachart__area--error {
+  fill: #E65B77;
+  fill-opacity: 0.3;
+}
+
+.db-areachart__stroke--error {
+  fill: none;
+  stroke: #E65B77;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.db-areachart__point--error {
+  fill: #E65B77;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-areachart__point--error:hover {
+  r: 6;
+  fill: #C82D4C;
+}
+
+/* Tooltip */
+.db-areachart__tooltip {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  background-color: #1F272D;
+  color: #FFFFFF;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: opacity 150ms ease-in-out, visibility 150ms ease-in-out;
+  min-width: 120px;
+  max-width: 300px;
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Arrow pointing down when tooltip is above data point */
+.db-areachart__tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #1F272D;
+  z-index: 1001;
+}
+
+/* Hide arrow when tooltip is positioned below */
+.db-areachart__tooltip.tooltip-below::after {
+  display: none;
+}
+
+.db-areachart__tooltip.tooltip-below::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #1F272D;
+  z-index: 1001;
+}
+
+.db-areachart__tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: max-content;
+}
+
+.db-areachart__tooltip-date {
+  font-size: 12px;
+  color: #C0CDD8;
+  font-weight: 400;
+}
+
+.db-areachart__tooltip-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.db-areachart__tooltip-change {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.db-areachart__tooltip-change--positive {
+  color: #3BA65E;
+}
+
+.db-areachart__tooltip-change--negative {
+  color: #E65B77;
+}
+
+/* Vertical line indicator */
+.db-areachart__vertical-line {
+  stroke: #8396A5;
+  stroke-width: 1;
+  stroke-dasharray: 4,4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+/* Hover circle */
+.db-areachart__hover-circle {
+  stroke: #FFFFFF;
+  stroke-width: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+.db-areachart__hover-circle--primary {
+  fill: #2272B4;
+}
+
+.db-areachart__hover-circle--secondary {
+  fill: #04867D;
+}
+
+.db-areachart__hover-circle--success {
+  fill: #3BA65E;
+}
+
+.db-areachart__hover-circle--warning {
+  fill: #DE7921;
+}
+
+.db-areachart__hover-circle--error {
+  fill: #E65B77;
+}
+
+/* Overlay for mouse events */
+.db-areachart__overlay {
+  cursor: crosshair;
+}
+
+/* Variants */
+.db-areachart--minimal .db-areachart__grid {
+  display: none;
+}
+
+.db-areachart--minimal .db-areachart__axis path,
+.db-areachart--minimal .db-areachart__axis line {
+  stroke: none;
+}
+
+.db-areachart--detailed .db-areachart__stroke--primary,
+.db-areachart--detailed .db-areachart__stroke--secondary,
+.db-areachart--detailed .db-areachart__stroke--success,
+.db-areachart--detailed .db-areachart__stroke--warning,
+.db-areachart--detailed .db-areachart__stroke--error {
+  stroke-width: 3;
+}
+
+.db-areachart--detailed .db-areachart__point--primary,
+.db-areachart--detailed .db-areachart__point--secondary,
+.db-areachart--detailed .db-areachart__point--success,
+.db-areachart--detailed .db-areachart__point--warning,
+.db-areachart--detailed .db-areachart__point--error {
+  r: 5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .db-areachart__title {
+    font-size: 14px;
+  }
+  
+  .db-areachart__axis {
+    font-size: 10px;
+  }
+  
+  .db-areachart__axis-label {
+    font-size: 11px;
+  }
+  
+  .db-areachart__tooltip {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+/* Focus and accessibility */
+.db-areachart__point:focus {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+}
+
+.db-areachart__svg:focus {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+}
+
+/* Animation for area drawing */
+@keyframes db-areachart-draw {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  to {
+    opacity: var(--chart-area-opacity, 0.3);
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+}
+
+.db-areachart--animated .db-areachart__area--primary,
+.db-areachart--animated .db-areachart__area--secondary,
+.db-areachart--animated .db-areachart__area--success,
+.db-areachart--animated .db-areachart__area--warning,
+.db-areachart--animated .db-areachart__area--error {
+  animation: db-areachart-draw 1.2s ease-in-out;
+}
+
+/* Theme Support */
+.db-areachart[data-theme="dark"] {
+  --chart-bg: #1F272D;
+  --chart-text: #FFFFFF;
+  --chart-border: #445461;
+  --chart-grid: #37444F;
+}
+
+.db-areachart[data-theme="light"] {
+  --chart-bg: #FFFFFF;
+  --chart-text: #1F272D;
+  --chart-border: #E8ECF0;
+  --chart-grid: #F6F7F9;
+}
+
+/* Accessibility */
+.db-areachart[tabindex] {
+  outline: none;
+}
+
+.db-areachart:focus-visible {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Keyboard Navigation */
+.db-areachart__point[tabindex] {
+  outline: none;
+}
+
+.db-areachart__point:focus {
+  stroke-width: 3;
+  stroke: #2272B4;
+  filter: drop-shadow(0 0 4px rgba(34, 114, 180, 0.4));
+}
+
+/* Performance Optimizations */
+.db-areachart--optimized {
+  will-change: transform;
+  contain: layout style paint;
+}
+
+.db-areachart--optimized .db-areachart__area {
+  will-change: d;
+}
+
+.db-areachart--optimized .db-areachart__stroke {
+  will-change: d;
+}
+
+.db-areachart--optimized .db-areachart__point {
+  will-change: cx, cy;
+}
