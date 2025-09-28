@@ -25,7 +25,7 @@ export const colors = {
   /** Neutral grays from DuBois design system */
   neutral: {
     0: '#FFFFFF',   // white
-    50: '#F6F7F9',  // grey050
+    50: '#FAFAFA',  // Updated to match Databricks light background
     100: '#E8ECF0', // grey100
     200: '#D1D9E1', // grey200
     300: '#C0CDD8', // grey300
@@ -34,8 +34,8 @@ export const colors = {
     500: '#5F7281', // grey500
     600: '#445461', // grey600
     650: '#37444F', // grey650
-    700: '#1F272D', // grey700
-    800: '#11171C', // grey800
+    700: '#20272E', // Updated to match Databricks dark text color
+    800: '#11171C', // grey800 - matches Databricks exactly
   },
   /** Success colors based on DuBois green scale */
   success: {

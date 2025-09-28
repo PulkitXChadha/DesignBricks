@@ -34,3 +34,6 @@ export * from './components/Modal';
 
 // Design Tokens
 export * from './tokens';
+
+// Theme Utilities
+export * from './lib/theme';
