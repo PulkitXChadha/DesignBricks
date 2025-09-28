@@ -499,27 +499,28 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
               .style('opacity', 1)
               .html(tooltipContent);
 
-            // Position tooltip using simplified container-relative positioning
+            // Position tooltip using improved container-relative positioning
             if (tooltipRef.current && svgRef.current) {
               const tooltipNode = tooltipRef.current;
               const svgNode = svgRef.current;
-              
-              // Show tooltip immediately to get dimensions
-              tooltipNode.style.visibility = 'visible';
-              tooltipNode.style.opacity = '1';
-              tooltipNode.style.position = 'absolute';
               
               // Clear any existing positioning
               if (tooltipTimer) window.cancelAnimationFrame(tooltipTimer);
               
               tooltipTimer = window.requestAnimationFrame(() => {
-                // Get tooltip dimensions
-                const tooltipRect = tooltipNode.getBoundingClientRect();
-                const tooltipWidth = tooltipRect.width;
-                const tooltipHeight = tooltipRect.height;
+                // First, position tooltip off-screen to get accurate dimensions
+                tooltipNode.style.position = 'absolute';
+                tooltipNode.style.visibility = 'hidden';
+                tooltipNode.style.opacity = '0';
+                tooltipNode.style.left = '0px';
+                tooltipNode.style.top = '0px';
                 
-                // Convert SVG coordinates to absolute positioning within the chart container
-                // Add margins to convert from inner chart coordinates to SVG coordinates
+                // Force a layout to get accurate dimensions
+                const tooltipWidth = tooltipNode.offsetWidth;
+                const tooltipHeight = tooltipNode.offsetHeight;
+                
+                // Convert chart coordinates to container coordinates
+                // pointX and pointY are relative to the inner chart area
                 const svgX = pointX + defaultMargin.left;
                 const svgY = pointY + defaultMargin.top;
                 
@@ -528,7 +529,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
                 let top = svgY - tooltipHeight - 12; // 12px gap above point
                 let isTooltipBelow = false;
                 
-                // Chart container bounds (SVG dimensions)
+                // Chart container bounds
                 const padding = 10;
                 
                 // Keep horizontal bounds within chart
@@ -553,9 +554,11 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
                 // Add/remove CSS classes for arrow direction
                 tooltipNode.classList.toggle('tooltip-below', isTooltipBelow);
                 
-                // Set final position
+                // Set final position and make visible
                 tooltipNode.style.left = `${left}px`;
                 tooltipNode.style.top = `${top}px`;
+                tooltipNode.style.visibility = 'visible';
+                tooltipNode.style.opacity = '1';
               });
             }
           })
