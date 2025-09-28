@@ -190,7 +190,7 @@
 
 /* Tooltip */
 .db-linechart__tooltip {
-  position: fixed;
+  position: absolute;
   top: -9999px;
   left: -9999px;
   background-color: #1F272D;
@@ -204,11 +204,50 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   transition: opacity 150ms ease-in-out, visibility 150ms ease-in-out;
   min-width: 120px;
+  max-width: 300px;
   opacity: 0;
   visibility: hidden;
   white-space: nowrap;
   will-change: transform, opacity;
   transform: translateZ(0); /* Force hardware acceleration */
+  /* Add arrow indicator pointing to data point */
+  /* Positioning optimizations */
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Add a subtle arrow pointing down when tooltip is above data point */
+.db-linechart__tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #1F272D;
+  z-index: 1001;
+}
+
+/* Hide arrow when tooltip might be positioned below (handled by JavaScript) */
+.db-linechart__tooltip.tooltip-below::after {
+  display: none;
+}
+
+.db-linechart__tooltip.tooltip-below::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #1F272D;
+  z-index: 1001;
 }
 
 .db-linechart__tooltip-content {
@@ -362,6 +401,256 @@
 .db-linechart--animated .db-linechart__line--warning,
 .db-linechart--animated .db-linechart__line--error {
   animation: db-linechart-draw 1.5s ease-in-out;
+}
+
+/* Compound Components Styles */
+
+/* Container */
+.db-linechart__container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.db-linechart__container--card {
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #E8ECF0;
+  background-color: #FFFFFF;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.db-linechart__container--minimal {
+  gap: 8px;
+  padding: 0;
+}
+
+/* Header */
+.db-linechart__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.db-linechart__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F272D;
+  line-height: 1.4;
+}
+
+.db-linechart__subtitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #5F7281;
+  line-height: 1.5;
+}
+
+/* Legend */
+.db-linechart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.db-linechart__legend--top {
+  order: -1;
+  margin-bottom: 16px;
+}
+
+.db-linechart__legend--bottom {
+  margin-top: 16px;
+}
+
+.db-linechart__legend--left {
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 16px;
+}
+
+.db-linechart__legend--right {
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 16px;
+}
+
+.db-linechart__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #37444F;
+}
+
+.db-linechart__legend-symbol {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.db-linechart__legend-symbol--line {
+  height: 2px;
+  border-radius: 1px;
+}
+
+.db-linechart__legend-symbol--circle {
+  border-radius: 50%;
+}
+
+.db-linechart__legend-symbol--square {
+  border-radius: 2px;
+}
+
+.db-linechart__legend-label {
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* Content */
+.db-linechart__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Axis Container */
+.db-linechart__axis-container {
+  position: relative;
+}
+
+.db-linechart__axis-container--x {
+  width: 100%;
+  height: auto;
+}
+
+.db-linechart__axis-container--y {
+  height: 100%;
+  width: auto;
+}
+
+/* Grid Compound */
+.db-linechart__grid-compound {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.db-linechart__grid-compound--horizontal .db-linechart__grid line {
+  stroke-dasharray: var(--grid-stroke-dasharray, 2,2);
+  opacity: var(--grid-opacity, 0.3);
+}
+
+.db-linechart__grid-compound--vertical .db-linechart__grid line {
+  stroke-dasharray: var(--grid-stroke-dasharray, 2,2);
+  opacity: var(--grid-opacity, 0.3);
+}
+
+/* Tooltip Compound */
+.db-linechart__tooltip-compound {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.db-linechart__tooltip-compound--compact {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.db-linechart__tooltip-compound--detailed {
+  padding: 16px 20px;
+  font-size: 14px;
+  min-width: 200px;
+}
+
+/* Theme Support */
+.db-linechart[data-theme="dark"] {
+  --chart-bg: #1F272D;
+  --chart-text: #FFFFFF;
+  --chart-border: #445461;
+  --chart-grid: #37444F;
+}
+
+.db-linechart[data-theme="light"] {
+  --chart-bg: #FFFFFF;
+  --chart-text: #1F272D;
+  --chart-border: #E8ECF0;
+  --chart-grid: #F6F7F9;
+}
+
+/* Accessibility */
+.db-linechart[tabindex] {
+  outline: none;
+}
+
+.db-linechart:focus-visible {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Keyboard Navigation */
+.db-linechart__point[tabindex] {
+  outline: none;
+}
+
+.db-linechart__point:focus {
+  stroke-width: 3;
+  stroke: #2272B4;
+  filter: drop-shadow(0 0 4px rgba(34, 114, 180, 0.4));
+}
+
+/* Performance Optimizations */
+.db-linechart--optimized {
+  will-change: transform;
+  contain: layout style paint;
+}
+
+.db-linechart--optimized .db-linechart__line {
+  will-change: d;
+}
+
+.db-linechart--optimized .db-linechart__point {
+  will-change: cx, cy;
+}
+
+/* Responsive Styles */
+@media (max-width: 640px) {
+  .db-linechart__container--card {
+    padding: 16px;
+  }
+  
+  .db-linechart__legend {
+    gap: 12px;
+  }
+  
+  .db-linechart__legend--left,
+  .db-linechart__legend--right {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 0;
+    margin-top: 16px;
+  }
+  
+  .db-linechart__title {
+    font-size: 16px;
+  }
+  
+  .db-linechart__subtitle {
+    font-size: 13px;
+  }
 }
 
 /* Chart Aggregates */

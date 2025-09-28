@@ -1,17 +1,29 @@
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LineChart } from './LineChart';
 import { ChartAggregates } from './ChartAggregates';
+import {
+  LineChartContainer,
+  LineChartHeader,
+  LineChartLegend,
+  LineChartContent
+} from './LineChartCompound';
 
 /**
- * LineChart Storybook Stories
+ * Modern LineChart Component Stories
  * 
- * Stories are organized as follows:
- * - Basic Examples: Default, InteractiveTooltips
- * - Styling: AllColors, AllVariants, CurveTypes
- * - Feature Demonstrations: TooltipComparison, PerformanceDashboard
- * - Data Types: NumericData, CategoricalData
- * - Advanced: FinancialDashboard, CustomFormatting
- * - Edge Cases: EmptyState, MinimalChart, LargeChart
+ * All stories demonstrate the modern configuration API using:
+ * - Configuration objects (xAxis, yAxis, grid, theme, animation)
+ * - Variant-based styling (default, minimal, detailed)
+ * - Enhanced accessibility and performance features
+ * - Compound component patterns for complex layouts
+ * 
+ * Stories organized by:
+ * - Core Examples: Default, InteractiveTooltips
+ * - Styling Variants: AllColors, AllVariants, CurveTypes  
+ * - Modern Features: ModernCompoundComponents, TooltipPositioningTest
+ * - Advanced Usage: FinancialDashboard, ThemeVariations
+ * - Scale Testing: LargeChart, EnhancedAccessibility
  */
 
 const meta: Meta<typeof LineChart> = {
@@ -22,19 +34,35 @@ const meta: Meta<typeof LineChart> = {
     docs: {
       description: {
         component: `
-A powerful and flexible line chart component built with D3.js integration for the Databricks Design System. 
+A modern, powerful line chart component built with D3.js for the Databricks Design System.
 
-## Features
-- **Interactive Tooltips**: Rich tooltips with vertical line indicators and percentage change calculations
-- **Multiple Data Types**: Support for time series, numeric, and categorical data
-- **Customizable Styling**: Multiple color schemes, variants, and curve types
-- **Responsive Design**: Adapts to different screen sizes and viewport constraints
-- **Accessibility**: Full keyboard and screen reader support
-- **Performance Optimized**: Efficient rendering with hardware acceleration
-- **Aggregates Support**: Built-in statistics display with the ChartAggregates component
+## Modern Architecture
+- **Configuration Objects**: Use \`xAxis\`, \`yAxis\`, \`grid\`, \`theme\`, and \`animation\` objects for granular control
+- **Variant System**: Choose from \`default\`, \`minimal\`, or \`detailed\` variants with automatic styling
+- **Compound Components**: Compose complex layouts with \`LineChartContainer\`, \`LineChartHeader\`, etc.
 
-## Use Cases
-Perfect for financial dashboards, analytics displays, performance monitoring, and any data visualization requiring trend analysis.
+## Key Features
+- **Interactive Tooltips**: Rich tooltips with precise positioning and percentage change calculations
+- **Performance Optimized**: Hardware acceleration, \`requestAnimationFrame\` positioning, and optimized rendering
+- **Accessibility First**: Full keyboard navigation, ARIA support, and screen reader compatibility
+- **Theme System**: Built-in light/dark mode support with custom CSS variable theming
+- **Responsive**: Intelligent viewport boundary handling and responsive design patterns
+
+## Modern Usage
+\`\`\`tsx
+<LineChart
+  data={data}
+  variant="detailed"
+  xAxis={{ label: "Time", variant: "minimal", tickCount: 6 }}
+  yAxis={{ label: "Value", tickFormatter: (val) => \`$\${val}K\` }}
+  theme={{ colorScheme: "auto" }}
+  animation={{ enabled: true, duration: 300 }}
+  keyboard={true}
+  optimized={true}
+/>
+\`\`\`
+
+Perfect for modern dashboards requiring advanced data visualization with excellent UX.
         `,
       },
     },
@@ -145,17 +173,31 @@ export const Default: Story = {
     width: 700,
     height: 400,
     title: 'Monthly Revenue Trend',
-    xAxisLabel: 'Month',
-    yAxisLabel: 'Revenue ($K)',
-    showTooltip: true,
-    showPercentageChange: true,
     color: 'primary',
     curve: 'smooth',
+    showTooltip: true,
+    showPercentageChange: true,
+    xAxis: {
+      label: 'Month',
+      variant: 'default',
+    },
+    yAxis: {
+      label: 'Revenue ($K)',
+      variant: 'default',
+    },
+    grid: {
+      show: true,
+      strokeDasharray: '2,2',
+      opacity: 0.3,
+    },
+    theme: {
+      colorScheme: 'auto',
+    },
   },
   parameters: {
     docs: {
       description: {
-        story: 'The default LineChart with interactive tooltips enabled. Hover over data points to see detailed information with percentage change calculations.',
+        story: 'Modern LineChart with configuration objects. Uses xAxis and yAxis objects for enhanced control over chart appearance and behavior.',
       },
     },
   },
@@ -177,18 +219,24 @@ export const InteractiveTooltips: Story = {
     width: 700,
     height: 350,
     title: 'Sales Performance (Hover for Details)',
-    xAxisLabel: 'Month',
-    yAxisLabel: 'Sales ($)',
-    showTooltip: true,
-    showPercentageChange: true,
     color: 'primary',
     curve: 'smooth',
-    formatY: (value: number) => `$${(value / 1000).toFixed(1)}K`,
+    showTooltip: true,
+    showPercentageChange: true,
+    xAxis: {
+      label: 'Month',
+      variant: 'default',
+    },
+    yAxis: {
+      label: 'Sales ($)',
+      variant: 'default',
+      tickFormatter: (value: number) => `$${(value / 1000).toFixed(1)}K`,
+    },
   },
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates interactive tooltips with vertical line indicators and percentage change calculations. Hover over any data point to see the enhanced tooltip with formatted values.',
+        story: 'Demonstrates interactive tooltips with modern axis configuration. Shows how to use tickFormatter in the yAxis configuration for custom value formatting.',
       },
     },
   },
@@ -204,6 +252,7 @@ export const AllColors: Story = {
         color="primary"
         title="Primary (Default)"
         showTooltip={true}
+        variant="default"
       />
       <LineChart
         data={generateTimeSeriesData(8)}
@@ -212,6 +261,7 @@ export const AllColors: Story = {
         color="secondary"
         title="Secondary (Teal)"
         showTooltip={true}
+        variant="default"
       />
       <LineChart
         data={generateTimeSeriesData(8)}
@@ -220,6 +270,7 @@ export const AllColors: Story = {
         color="success"
         title="Success (Green)"
         showTooltip={true}
+        variant="default"
       />
       <LineChart
         data={generateTimeSeriesData(8)}
@@ -228,6 +279,7 @@ export const AllColors: Story = {
         color="warning"
         title="Warning (Orange)"
         showTooltip={true}
+        variant="default"
       />
       <LineChart
         data={generateTimeSeriesData(8)}
@@ -236,13 +288,14 @@ export const AllColors: Story = {
         color="error"
         title="Error (Red)"
         showTooltip={true}
+        variant="default"
       />
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Shows all available color schemes from the Databricks Design System. Each chart supports interactive tooltips.',
+        story: 'Shows all available color schemes from the Databricks Design System. Each chart uses the modern variant-based configuration system.',
       },
     },
   },
@@ -251,39 +304,60 @@ export const AllColors: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-      <LineChart
-        data={generateTimeSeriesData(8)}
-        width={500}
-        height={200}
-        variant="default"
-        title="Default Variant"
-        showTooltip={true}
-        color="primary"
-      />
-      <LineChart
-        data={generateTimeSeriesData(8)}
-        width={500}
-        height={200}
-        variant="minimal"
-        title="Minimal Variant (No Grid)"
-        showTooltip={true}
-        color="primary"
-      />
-      <LineChart
-        data={generateTimeSeriesData(8)}
-        width={500}
-        height={200}
-        variant="detailed"
-        title="Detailed Variant (Enhanced)"
-        showTooltip={true}
-        color="primary"
-      />
+      <div>
+        <h3>Default Variant</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          Standard configuration with balanced grid and styling
+        </p>
+        <LineChart
+          data={generateTimeSeriesData(8)}
+          width={500}
+          height={200}
+          variant="default"
+          title="Default Configuration"
+          showTooltip={true}
+          color="primary"
+        />
+      </div>
+      
+      <div>
+        <h3>Minimal Variant</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          Clean design with no grid, minimal axes for focus on data
+        </p>
+        <LineChart
+          data={generateTimeSeriesData(8)}
+          width={500}
+          height={200}
+          variant="minimal"
+          title="Minimal Configuration"
+          showTooltip={true}
+          color="secondary"
+        />
+      </div>
+      
+      <div>
+        <h3>Detailed Variant</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          Enhanced styling with thicker lines, larger points, and fine grid
+        </p>
+        <LineChart
+          data={generateTimeSeriesData(8)}
+          width={500}
+          height={200}
+          variant="detailed"
+          title="Detailed Configuration"
+          showTooltip={true}
+          color="success"
+          animation={{ enabled: true, duration: 300 }}
+        />
+      </div>
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates different chart variants: Default (standard grid and styling), Minimal (clean, no grid), and Detailed (enhanced line thickness and point sizes).',
+        story: 'Demonstrates the three chart variants with modern configuration. Each variant automatically configures grid, axes, animations, and styling for different use cases.',
       },
     },
   },
@@ -298,10 +372,10 @@ export const CurveTypes: Story = {
         height={200}
         curve="linear"
         title="Linear Curve (Straight Lines)"
-        xAxisLabel="X Value"
-        yAxisLabel="Y Value"
         showTooltip={true}
         color="primary"
+        xAxis={{ label: "X Value" }}
+        yAxis={{ label: "Y Value" }}
       />
       <LineChart
         data={generateNumericData(8)}
@@ -309,10 +383,10 @@ export const CurveTypes: Story = {
         height={200}
         curve="smooth"
         title="Smooth Curve (Cardinal Spline)"
-        xAxisLabel="X Value"
-        yAxisLabel="Y Value"
         showTooltip={true}
         color="secondary"
+        xAxis={{ label: "X Value" }}
+        yAxis={{ label: "Y Value" }}
       />
       <LineChart
         data={generateNumericData(8)}
@@ -320,17 +394,17 @@ export const CurveTypes: Story = {
         height={200}
         curve="step"
         title="Step Curve (Step-After)"
-        xAxisLabel="X Value"
-        yAxisLabel="Y Value"
         showTooltip={true}
         color="success"
+        xAxis={{ label: "X Value" }}
+        yAxis={{ label: "Y Value" }}
       />
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates different curve interpolation methods: Linear (straight lines between points), Smooth (curved cardinal spline), and Step (step-after pattern).',
+        story: 'Demonstrates different curve interpolation methods using modern axis configuration objects.',
       },
     },
   },
@@ -493,14 +567,140 @@ export const SmallChart: Story = {
 
 export const LargeChart: Story = {
   args: {
-    data: generateTimeSeriesData(20),
-    width: 1000,
+    color: "primary",
+    data: [
+      {
+        label: 'Point 1',
+        x: new Date('2024-01-01T00:00:00.000Z'),
+        y: 55.82
+      },
+      {
+        label: 'Point 2',
+        x: new Date('2024-01-31T00:00:00.000Z'),
+        y: 60.97
+      },
+      {
+        label: 'Point 3',
+        x: new Date('2024-03-01T00:00:00.000Z'),
+        y: 75.63
+      },
+      {
+        label: 'Point 4',
+        x: new Date('2024-03-31T00:00:00.000Z'),
+        y: 73.03
+      },
+      {
+        label: 'Point 5',
+        x: new Date('2024-04-30T00:00:00.000Z'),
+        y: 72.3
+      },
+      {
+        label: 'Point 6',
+        x: new Date('2024-05-30T00:00:00.000Z'),
+        y: 69.97
+      },
+      {
+        label: 'Point 7',
+        x: new Date('2024-06-29T00:00:00.000Z'),
+        y: 58.09
+      },
+      {
+        label: 'Point 8',
+        x: new Date('2024-07-29T00:00:00.000Z'),
+        y: 44.73
+      },
+      {
+        label: 'Point 9',
+        x: new Date('2024-08-28T00:00:00.000Z'),
+        y: 36.13
+      },
+      {
+        label: 'Point 10',
+        x: new Date('2024-09-27T00:00:00.000Z'),
+        y: 30.88
+      },
+      {
+        label: 'Point 11',
+        x: new Date('2024-10-27T00:00:00.000Z'),
+        y: 34.89
+      },
+      {
+        label: 'Point 12',
+        x: new Date('2024-11-26T00:00:00.000Z'),
+        y: 43.98
+      },
+      {
+        label: 'Point 13',
+        x: new Date('2024-12-26T00:00:00.000Z'),
+        y: 51.04
+      },
+      {
+        label: 'Point 14',
+        x: new Date('2025-01-25T00:00:00.000Z'),
+        y: 56.25
+      },
+      {
+        label: 'Point 15',
+        x: new Date('2025-02-24T00:00:00.000Z'),
+        y: 68.63
+      },
+      {
+        label: 'Point 16',
+        x: new Date('2025-03-26T00:00:00.000Z'),
+        y: 76.12
+      },
+      {
+        label: 'Point 17',
+        x: new Date('2025-04-25T00:00:00.000Z'),
+        y: 74.68
+      },
+      {
+        label: 'Point 18',
+        x: new Date('2025-05-25T00:00:00.000Z'),
+        y: 70.2
+      },
+      {
+        label: 'Point 19',
+        x: new Date('2025-06-24T00:00:00.000Z'),
+        y: 62.32
+      },
+      {
+        label: 'Point 20',
+        x: new Date('2025-07-24T00:00:00.000Z'),
+        y: 57.72
+      }
+    ],
     height: 600,
-    color: 'primary',
-    title: 'Comprehensive Data View',
-    xAxisLabel: 'Time Series',
-    yAxisLabel: 'Value Metrics',
-    variant: 'detailed',
+    title: "Comprehensive Data View",
+    variant: "detailed",
+    width: 1000,
+    xAxis: {
+      label: "Time Series",
+      variant: "detailed",
+      tickCount: 8,
+    },
+    yAxis: {
+      label: "Value Metrics", 
+      variant: "detailed",
+      tickCount: 8,
+    },
+    showTooltip: true,
+    showPercentageChange: true,
+    curve: 'smooth',
+    showPoints: true,
+    optimized: true,
+    animation: {
+      enabled: true,
+      duration: 300,
+      easing: 'ease-out'
+    }
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large chart demonstrating modern configuration with detailed variant. Shows enhanced styling, optimized performance, and precise tooltip positioning with the new axis configuration objects.',
+      },
+    },
   },
 };
 
@@ -706,5 +906,319 @@ export const AggregatesVariants: Story = {
         </div>
       </div>
     );
+  },
+};
+
+export const CompoundComponentsTest: Story = {
+  render: () => {
+    const testData = generateTimeSeriesData(6);
+    
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <h3>Simple Compound Layout Test</h3>
+        
+        {/* Test standalone compound components */}
+        <LineChartContainer variant="card">
+          <LineChartHeader 
+            title="Test Chart" 
+            subtitle="Testing compound components without context issues"
+          />
+          
+          <div style={{ padding: '16px' }}>
+            <LineChart
+              data={testData}
+              width={500}
+              height={200}
+              color="primary"
+              showTooltip={true}
+            />
+          </div>
+          
+          <LineChartLegend
+            items={[{ label: 'Test Data', color: '#2272B4', symbol: 'line' }]}
+            position="bottom"
+          />
+        </LineChartContainer>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Simple test to verify compound components work without context errors. This validates that compound components can be used as layout containers around LineChart.',
+      },
+    },
+  },
+};
+
+// Modern shadcn/ui inspired compound component examples
+export const ModernCompoundComponents: Story = {
+  render: () => {
+    const performanceData = generateTimeSeriesData(12);
+    
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        {/* Card variant with compound components */}
+        <LineChartContainer variant="card">
+          <LineChartHeader 
+            title="Performance Analytics" 
+            subtitle="System performance over the last 12 months"
+          />
+          
+          <ChartAggregates 
+            data={performanceData}
+            metrics={[
+              { label: 'Peak', value: '94.2%', color: 'success' },
+              { label: 'Average', value: '87.5%', color: 'primary' },
+              { label: 'Minimum', value: '76.8%', color: 'warning' },
+            ]}
+            layout="horizontal"
+          />
+          
+          <LineChart
+            data={performanceData}
+            width={600}
+            height={300}
+            color="primary"
+            showTooltip={true}
+            showPercentageChange={true}
+            curve="smooth"
+            xAxis={{ label: 'Month', variant: 'minimal' }}
+            yAxis={{ label: 'Performance Score (%)', tickCount: 5 }}
+            grid={{ strokeDasharray: '1,3', opacity: 0.2 }}
+          />
+          
+          <LineChartLegend
+            items={[
+              { label: 'Performance Score', color: '#2272B4', symbol: 'line' }
+            ]}
+            position="bottom"
+          />
+        </LineChartContainer>
+
+        {/* Minimal variant */}
+        <LineChartContainer variant="minimal">
+          <LineChartHeader title="Revenue Trend (Minimal)" />
+          <LineChart
+            data={performanceData.slice(0, 8)}
+            width={500}
+            height={200}
+            variant="minimal"
+            color="success"
+            showTooltip={true}
+            grid={{ show: false }}
+            xAxis={{ show: false }}
+            yAxis={{ show: false }}
+          />
+        </LineChartContainer>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Modern compound component examples inspired by shadcn/ui patterns. Shows how to compose complex chart layouts using LineChartContainer, LineChartHeader, and other compound components. Note: LineChart provides its own context, so compound components work as layout containers.',
+      },
+    },
+  },
+};
+
+export const EnhancedAccessibility: Story = {
+  args: {
+    data: generateTimeSeriesData(8),
+    width: 600,
+    height: 300,
+    color: 'primary',
+    title: 'Accessible Line Chart',
+    showTooltip: true,
+    keyboard: true,
+    ariaLabel: 'Monthly sales data chart showing an upward trend over 8 months',
+    xAxis: { 
+      label: 'Month',
+      tickFormatter: (d: any) => new Date(d).toLocaleDateString('en-US', { month: 'short' })
+    },
+    yAxis: { 
+      label: 'Sales ($)',
+      tickFormatter: (d: number) => `$${d.toFixed(0)}K`
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Enhanced accessibility features including keyboard navigation (use Tab to navigate data points), ARIA labels, and screen reader support. Try using Tab key to navigate through the data points.',
+      },
+    },
+  },
+};
+
+export const ModernConfiguration: Story = {
+  args: {
+    data: generateTimeSeriesData(10),
+    width: 700,
+    height: 350,
+    color: 'primary',
+    showTooltip: true,
+    showPercentageChange: true,
+    optimized: true,
+    hoverDebounce: 50,
+    xAxis: {
+      label: 'Time Period',
+      variant: 'detailed',
+      tickCount: 6,
+    },
+    yAxis: {
+      label: 'Value Metric',
+      variant: 'detailed',
+      tickCount: 8,
+    },
+    grid: {
+      show: true,
+      strokeDasharray: '2,4',
+      opacity: 0.15,
+    },
+    theme: {
+      colorScheme: 'auto',
+      cssVars: {
+        '--chart-line-width': '3px',
+        '--chart-point-size': '6px',
+      },
+    },
+    animation: {
+      enabled: true,
+      duration: 300,
+      easing: 'ease-out',
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Modern configuration API using the new enhanced props. Shows fine-grained control over axes, grid, theming, and animations using the new configuration objects instead of flat props.',
+      },
+    },
+  },
+};
+
+export const TooltipPositioningTest: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+      <div>
+        <h3>Fixed Tooltip Positioning</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          This test demonstrates the corrected tooltip positioning. The tooltip should appear directly above (or below if constrained by viewport) the hovered data point with proper alignment.
+        </p>
+        <LineChart
+          color="primary"
+          data={[
+            { x: new Date('2024-01-01'), y: 45 },
+            { x: new Date('2024-02-01'), y: 52 },
+            { x: new Date('2024-03-01'), y: 48 },
+            { x: new Date('2024-04-01'), y: 61 },
+            { x: new Date('2024-05-01'), y: 55 },
+            { x: new Date('2024-06-01'), y: 67 },
+            { x: new Date('2024-07-01'), y: 59 },
+            { x: new Date('2024-08-01'), y: 73 },
+            { x: new Date('2024-09-01'), y: 69 },
+            { x: new Date('2024-10-01'), y: 77 },
+          ]}
+          width={800}
+          height={400}
+          title="Tooltip Positioning Test Chart"
+          xAxisLabel="Date"
+          yAxisLabel="Value"
+          showTooltip={true}
+          showPercentageChange={true}
+          curve="smooth"
+          variant="detailed"
+        />
+      </div>
+      
+      <div>
+        <h3>Edge Case: Chart at Viewport Edge</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          Test tooltip behavior when chart is positioned near viewport edges.
+        </p>
+        <LineChart
+          data={generateTimeSeriesData(8)}
+          width={600}
+          height={300}
+          color="secondary"
+          showTooltip={true}
+          title="Edge Case Tooltip Test"
+          curve="smooth"
+        />
+      </div>
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Dedicated test for tooltip positioning accuracy. This story verifies that tooltips appear correctly aligned with data points, addressing the misalignment issue reported. The tooltips should appear directly above the hovered point with proper viewport boundary handling.',
+      },
+    },
+  },
+};
+
+export const ThemeVariations: Story = {
+  render: () => {
+    const sampleData = generateTimeSeriesData(6);
+    
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <div>
+          <h3>Light Theme</h3>
+          <LineChart
+            data={sampleData}
+            width={500}
+            height={200}
+            color="primary"
+            theme={{ colorScheme: 'light' }}
+            showTooltip={true}
+          />
+        </div>
+        
+        <div style={{ backgroundColor: '#1F272D', padding: '24px', borderRadius: '8px' }}>
+          <h3 style={{ color: '#FFFFFF', marginTop: 0 }}>Dark Theme</h3>
+          <LineChart
+            data={sampleData}
+            width={500}
+            height={200}
+            color="secondary"
+            theme={{ 
+              colorScheme: 'dark',
+              cssVars: {
+                '--chart-bg': '#1F272D',
+                '--chart-text': '#FFFFFF'
+              }
+            }}
+            showTooltip={true}
+          />
+        </div>
+        
+        <div>
+          <h3>Custom Theme</h3>
+          <LineChart
+            data={sampleData}
+            width={500}
+            height={200}
+            color="success"
+            theme={{
+              cssVars: {
+                '--chart-bg': '#f0f9ff',
+                '--chart-border': '#e0f2fe',
+              }
+            }}
+            themeClass="custom-chart-theme"
+            showTooltip={true}
+          />
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Theme system demonstrations including light/dark mode support and custom CSS variable theming.',
+      },
+    },
   },
 };

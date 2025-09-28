@@ -1,7 +1,28 @@
-import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo } from 'react';
+import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext } from 'react';
 import clsx from 'clsx';
 import * as d3 from 'd3';
 import './LineChart.css';
+
+// Chart Context for compound components
+interface LineChartContextValue {
+  data: LineChartDataPoint[];
+  width: number;
+  height: number;
+  color: LineChartProps['color'];
+  xScale?: any;
+  yScale?: any;
+  svgRef?: React.RefObject<SVGSVGElement>;
+}
+
+export const LineChartContext = createContext<LineChartContextValue | null>(null);
+
+export const useLineChart = () => {
+  const context = useContext(LineChartContext);
+  if (!context) {
+    throw new Error('useLineChart must be used within a LineChart component');
+  }
+  return context;
+};
 
 export interface LineChartDataPoint {
   /** X-axis value (can be date, number, or string) */
@@ -10,6 +31,58 @@ export interface LineChartDataPoint {
   y: number;
   /** Optional label for the data point */
   label?: string;
+  /** Optional metadata for the data point */
+  metadata?: Record<string, any>;
+}
+
+// Enhanced configuration interfaces inspired by shadcn/ui patterns
+export interface LineChartAxis {
+  /** Show axis */
+  show?: boolean;
+  /** Axis position */
+  position?: 'top' | 'bottom' | 'left' | 'right';
+  /** Axis label */
+  label?: string;
+  /** Tick count */
+  tickCount?: number;
+  /** Custom tick formatter */
+  tickFormatter?: (value: any) => string;
+  /** Axis style variant */
+  variant?: 'default' | 'minimal' | 'detailed';
+}
+
+export interface LineChartGrid {
+  /** Show grid */
+  show?: boolean;
+  /** Grid line style */
+  strokeDasharray?: string;
+  /** Grid opacity */
+  opacity?: number;
+}
+
+export interface LineChartTheme {
+  /** Primary color scheme */
+  colorScheme?: 'light' | 'dark' | 'auto';
+  /** Custom CSS variables */
+  cssVars?: Record<string, string>;
+}
+
+export interface LineChartAnimation {
+  /** Enable animations */
+  enabled?: boolean;
+  /** Animation duration in ms */
+  duration?: number;
+  /** Animation easing */
+  easing?: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out';
+}
+
+export interface LineChartResponsive {
+  /** Responsive breakpoints */
+  breakpoints?: {
+    sm?: Partial<LineChartProps>;
+    md?: Partial<LineChartProps>;
+    lg?: Partial<LineChartProps>;
+  };
 }
 
 export interface LineChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'data'> {
@@ -23,37 +96,45 @@ export interface LineChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'da
   variant?: 'default' | 'minimal' | 'detailed';
   /** Color scheme */
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
-  /** Show grid lines */
-  showGrid?: boolean;
-  /** Show data points */
-  showPoints?: boolean;
-  /** Show tooltip on hover */
-  showTooltip?: boolean;
-  /** X-axis label */
-  xAxisLabel?: string;
-  /** Y-axis label */
-  yAxisLabel?: string;
   /** Chart title */
   title?: string;
   /** Curve type */
   curve?: 'linear' | 'smooth' | 'step';
-  /** Margin configuration */
-  margin?: {
-    top?: number;
-    right?: number;
-    bottom?: number;
-    left?: number;
-  };
-  /** Format function for X-axis values */
-  formatX?: (value: any) => string;
-  /** Format function for Y-axis values */
-  formatY?: (value: number) => string;
+  
+  /** X-axis configuration */
+  xAxis?: LineChartAxis;
+  /** Y-axis configuration */
+  yAxis?: LineChartAxis;
+  /** Grid configuration */
+  grid?: LineChartGrid;
+  /** Theme configuration */
+  theme?: LineChartTheme;
+  /** Animation configuration */
+  animation?: LineChartAnimation;
+  /** Responsive configuration */
+  responsive?: LineChartResponsive;
+  
+  /** Show data points on the line */
+  showPoints?: boolean;
+  /** Show interactive tooltip on hover */
+  showTooltip?: boolean;
   /** Format function for tooltip values */
-  formatTooltip?: (dataPoint: LineChartDataPoint) => string;
-  /** Show percentage change in tooltip (requires previous value) */
+  formatTooltip?: (dataPoint: LineChartDataPoint, index?: number) => string;
+  /** Show percentage change in tooltip */
   showPercentageChange?: boolean;
   /** Function to calculate percentage change */
   calculatePercentageChange?: (current: LineChartDataPoint, previous: LineChartDataPoint) => number;
+  
+  /** Enable keyboard navigation */
+  keyboard?: boolean;
+  /** ARIA label for accessibility */
+  ariaLabel?: string;
+  /** Custom CSS class for theming */
+  themeClass?: string;
+  /** Enable performance optimizations */
+  optimized?: boolean;
+  /** Debounce hover events (ms) */
+  hoverDebounce?: number;
 }
 
 export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
@@ -64,19 +145,24 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       height = 400,
       variant = 'default',
       color = 'primary',
-      showGrid = true,
-      showPoints = true,
-      showTooltip = true,
-      xAxisLabel,
-      yAxisLabel,
       title,
       curve = 'smooth',
-      margin = {},
-      formatX,
-      formatY,
+      xAxis,
+      yAxis,
+      grid,
+      theme,
+      animation,
+      responsive,
+      showPoints = true,
+      showTooltip = true,
       formatTooltip,
       showPercentageChange = false,
       calculatePercentageChange,
+      keyboard = false,
+      ariaLabel,
+      themeClass,
+      optimized = false,
+      hoverDebounce = 0,
       className,
       ...props
     },
@@ -85,12 +171,51 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
     const svgRef = useRef<SVGSVGElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
 
+    // Modern configuration with sensible defaults
+    const mergedXAxis: LineChartAxis = {
+      show: true,
+      position: 'bottom',
+      variant: variant === 'minimal' ? 'minimal' : 'default',
+      tickCount: variant === 'detailed' ? 8 : 6,
+      ...xAxis,
+    };
+
+    const mergedYAxis: LineChartAxis = {
+      show: true,
+      position: 'left',
+      variant: variant === 'minimal' ? 'minimal' : 'default',
+      tickCount: variant === 'detailed' ? 8 : 6,
+      ...yAxis,
+    };
+
+    const mergedGrid: LineChartGrid = {
+      show: variant !== 'minimal',
+      strokeDasharray: variant === 'detailed' ? '1,3' : '2,2',
+      opacity: variant === 'detailed' ? 0.2 : 0.3,
+      ...grid,
+    };
+
+    const mergedTheme: LineChartTheme = {
+      colorScheme: 'auto',
+      cssVars: {
+        '--chart-line-width': variant === 'detailed' ? '3px' : '2px',
+        '--chart-point-size': variant === 'detailed' ? '6px' : '4px',
+      },
+      ...theme,
+    };
+
+    const mergedAnimation: LineChartAnimation = {
+      enabled: variant === 'detailed',
+      duration: variant === 'detailed' ? 300 : 150,
+      easing: 'ease-out',
+      ...animation,
+    };
+
     const defaultMargin = {
       top: title ? 40 : 20,
       right: 20,
-      bottom: xAxisLabel ? 60 : 40,
-      left: yAxisLabel ? 80 : 60,
-      ...margin,
+      bottom: mergedXAxis.label ? 60 : 40,
+      left: mergedYAxis.label ? 80 : 60,
     };
 
     const innerWidth = width - defaultMargin.left - defaultMargin.right;
@@ -143,7 +268,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
 
     // Default formatters
     const defaultFormatX = useMemo(() => {
-      if (formatX) return formatX;
+      if (mergedXAxis.tickFormatter) return mergedXAxis.tickFormatter;
       const firstX = data[0]?.x;
       if (firstX instanceof Date) {
         const timeFormatter = d3.timeFormat('%b %d');
@@ -164,9 +289,9 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
         };
       }
       return (value: any) => String(value);
-    }, [data, formatX]);
+    }, [data, mergedXAxis.tickFormatter]);
 
-    const defaultFormatY = formatY || d3.format('.2f');
+    const defaultFormatY = mergedYAxis.tickFormatter || d3.format('.2f');
 
     const defaultFormatTooltip = formatTooltip || ((dataPoint: LineChartDataPoint, index?: number) => {
       const xFormatted = defaultFormatX(dataPoint.x);
@@ -212,7 +337,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
         .attr('transform', `translate(${defaultMargin.left},${defaultMargin.top})`);
 
       // Grid lines
-      if (showGrid) {
+      if (mergedGrid.show) {
         // X-axis grid
         g.append('g')
           .attr('class', 'db-linechart__grid db-linechart__grid--x')
@@ -220,7 +345,10 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
           .call(d3.axisBottom(xScale)
             .tickSize(-innerHeight)
             .tickFormat(() => '')
-          );
+          )
+          .selectAll('line')
+          .style('stroke-dasharray', mergedGrid.strokeDasharray || '2,2')
+          .style('opacity', mergedGrid.opacity || 0.3);
 
         // Y-axis grid
         g.append('g')
@@ -228,19 +356,44 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
           .call(d3.axisLeft(yScale)
             .tickSize(-innerWidth)
             .tickFormat(() => '')
-          );
+          )
+          .selectAll('line')
+          .style('stroke-dasharray', mergedGrid.strokeDasharray || '2,2')
+          .style('opacity', mergedGrid.opacity || 0.3);
       }
 
       // X-axis
-      g.append('g')
-        .attr('class', 'db-linechart__axis db-linechart__axis--x')
-        .attr('transform', `translate(0,${innerHeight})`)
-        .call(d3.axisBottom(xScale).tickFormat((d, i) => defaultFormatX(d)));
+      if (mergedXAxis.show) {
+        const xAxisGroup = g.append('g')
+          .attr('class', `db-linechart__axis db-linechart__axis--x db-linechart__axis--${mergedXAxis.variant}`)
+          .attr('transform', `translate(0,${innerHeight})`);
+
+        const xAxisCall = d3.axisBottom(xScale);
+        if (mergedXAxis.tickCount) xAxisCall.ticks(mergedXAxis.tickCount);
+        if (mergedXAxis.tickFormatter) {
+          xAxisCall.tickFormat((d, i) => mergedXAxis.tickFormatter!(d));
+        } else {
+          xAxisCall.tickFormat((d, i) => defaultFormatX(d));
+        }
+        
+        xAxisGroup.call(xAxisCall);
+      }
 
       // Y-axis
-      g.append('g')
-        .attr('class', 'db-linechart__axis db-linechart__axis--y')
-        .call(d3.axisLeft(yScale).tickFormat((d, i) => defaultFormatY(d as number)));
+      if (mergedYAxis.show) {
+        const yAxisGroup = g.append('g')
+          .attr('class', `db-linechart__axis db-linechart__axis--y db-linechart__axis--${mergedYAxis.variant}`);
+
+        const yAxisCall = d3.axisLeft(yScale);
+        if (mergedYAxis.tickCount) yAxisCall.ticks(mergedYAxis.tickCount);
+        if (mergedYAxis.tickFormatter) {
+          yAxisCall.tickFormat((d, i) => mergedYAxis.tickFormatter!(d as number));
+        } else {
+          yAxisCall.tickFormat((d, i) => defaultFormatY(d as number));
+        }
+        
+        yAxisGroup.call(yAxisCall);
+      }
 
       // Line path
       g.append('path')
@@ -250,14 +403,36 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
 
       // Data points
       if (showPoints) {
-        g.selectAll('.db-linechart__point')
+        const points = g.selectAll('.db-linechart__point')
           .data(data)
           .enter()
           .append('circle')
           .attr('class', `db-linechart__point db-linechart__point--${color}`)
           .attr('cx', d => xScale(d.x) || 0)
           .attr('cy', d => yScale(d.y) || 0)
-          .attr('r', 4);
+          .attr('r', variant === 'detailed' ? 5 : 4);
+
+        // Add keyboard navigation attributes conditionally
+        if (keyboard) {
+          points
+            .attr('tabindex', 0)
+            .attr('role', 'button')
+            .attr('aria-label', (d, i) => `Data point ${i + 1}: ${defaultFormatX(d.x)}, ${defaultFormatY(d.y)}`)
+            .on('focus', function(event: any, d: any) {
+              const index = data.indexOf(d);
+              if (showTooltip && tooltipRef.current) {
+                // Show tooltip on keyboard focus
+                const tooltipContent = defaultFormatTooltip(d, index);
+                const tooltip = d3.select(tooltipRef.current);
+                tooltip.style('opacity', 1).html(tooltipContent);
+              }
+            })
+            .on('blur', function() {
+              if (tooltipRef.current) {
+                d3.select(tooltipRef.current).style('opacity', 0);
+              }
+            });
+        }
       }
 
       // Tooltip functionality
@@ -324,46 +499,59 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
               .style('opacity', 1)
               .html(tooltipContent);
 
-            // Position tooltip using direct mouse coordinates
-            if (tooltipRef.current) {
+            // Position tooltip using simplified container-relative positioning
+            if (tooltipRef.current && svgRef.current) {
               const tooltipNode = tooltipRef.current;
+              const svgNode = svgRef.current;
               
               // Show tooltip immediately to get dimensions
               tooltipNode.style.visibility = 'visible';
               tooltipNode.style.opacity = '1';
-              tooltipNode.style.position = 'fixed';
+              tooltipNode.style.position = 'absolute';
               
               // Clear any existing positioning
               if (tooltipTimer) window.cancelAnimationFrame(tooltipTimer);
               
               tooltipTimer = window.requestAnimationFrame(() => {
-                // Get mouse position in viewport coordinates
-                const mouseClientX = event.clientX;
-                const mouseClientY = event.clientY;
-                
                 // Get tooltip dimensions
                 const tooltipRect = tooltipNode.getBoundingClientRect();
                 const tooltipWidth = tooltipRect.width;
                 const tooltipHeight = tooltipRect.height;
                 
-                // Position tooltip above mouse cursor, centered
-                let left = mouseClientX - (tooltipWidth / 2);
-                let top = mouseClientY - tooltipHeight - 10;
+                // Convert SVG coordinates to absolute positioning within the chart container
+                // Add margins to convert from inner chart coordinates to SVG coordinates
+                const svgX = pointX + defaultMargin.left;
+                const svgY = pointY + defaultMargin.top;
                 
-                // Viewport bounds
+                // Position tooltip above the data point, centered horizontally
+                let left = svgX - (tooltipWidth / 2);
+                let top = svgY - tooltipHeight - 12; // 12px gap above point
+                let isTooltipBelow = false;
+                
+                // Chart container bounds (SVG dimensions)
                 const padding = 10;
                 
-                // Keep horizontal bounds
+                // Keep horizontal bounds within chart
                 if (left < padding) {
                   left = padding;
-                } else if (left + tooltipWidth > window.innerWidth - padding) {
-                  left = window.innerWidth - tooltipWidth - padding;
+                } else if (left + tooltipWidth > width - padding) {
+                  left = width - tooltipWidth - padding;
                 }
                 
-                // Keep vertical bounds
+                // Keep vertical bounds within chart
                 if (top < padding) {
-                  top = mouseClientY + 10; // Show below mouse
+                  // If tooltip would go above chart, position below the point
+                  top = svgY + 12;
+                  isTooltipBelow = true;
                 }
+                
+                // Ensure tooltip doesn't go below chart
+                if (top + tooltipHeight > height - padding) {
+                  top = height - tooltipHeight - padding;
+                }
+                
+                // Add/remove CSS classes for arrow direction
+                tooltipNode.classList.toggle('tooltip-below', isTooltipBelow);
                 
                 // Set final position
                 tooltipNode.style.left = `${left}px`;
@@ -389,22 +577,22 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       }
 
       // Axis labels
-      if (xAxisLabel) {
+      if (mergedXAxis.label) {
         g.append('text')
           .attr('class', 'db-linechart__axis-label db-linechart__axis-label--x')
           .attr('transform', `translate(${innerWidth / 2}, ${innerHeight + defaultMargin.bottom - 10})`)
           .style('text-anchor', 'middle')
-          .text(xAxisLabel);
+          .text(mergedXAxis.label);
       }
 
-      if (yAxisLabel) {
+      if (mergedYAxis.label) {
         g.append('text')
           .attr('class', 'db-linechart__axis-label db-linechart__axis-label--y')
           .attr('transform', 'rotate(-90)')
           .attr('y', 0 - defaultMargin.left + 20)
           .attr('x', 0 - (innerHeight / 2))
           .style('text-anchor', 'middle')
-          .text(yAxisLabel);
+          .text(mergedYAxis.label);
       }
 
       // Title
@@ -417,8 +605,8 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
           .text(title);
       }
 
-    }, [data, width, height, xScale, yScale, lineGenerator, showGrid, showPoints, showTooltip, 
-        color, xAxisLabel, yAxisLabel, title, defaultMargin, innerWidth, innerHeight, 
+    }, [data, width, height, xScale, yScale, lineGenerator, mergedGrid.show, showPoints, showTooltip, 
+        color, mergedXAxis.label, mergedYAxis.label, title, defaultMargin, innerWidth, innerHeight, 
         defaultFormatX, defaultFormatY, defaultFormatTooltip, showPercentageChange, calculatePercentageChange]);
 
     if (!data.length) {
@@ -439,30 +627,60 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       );
     }
 
+    // Context value for compound components
+    const contextValue: LineChartContextValue = {
+      data,
+      width,
+      height,
+      color,
+      xScale,
+      yScale,
+      svgRef,
+    };
+
     return (
-      <div
-        ref={ref}
-        className={clsx(
-          'db-linechart',
-          `db-linechart--${variant}`,
-          `db-linechart--${color}`,
-          className
-        )}
-        {...props}
-      >
-        <svg
-          ref={svgRef}
-          className="db-linechart__svg"
-          width={width}
-          height={height}
-        />
-        {showTooltip && (
-          <div
-            ref={tooltipRef}
-            className="db-linechart__tooltip"
+      <LineChartContext.Provider value={contextValue}>
+        <div
+          ref={ref}
+          className={clsx(
+            'db-linechart',
+            `db-linechart--${variant}`,
+            `db-linechart--${color}`,
+            {
+              'db-linechart--optimized': optimized,
+              'db-linechart--keyboard': keyboard,
+            },
+            themeClass,
+            className
+          )}
+          data-theme={mergedTheme.colorScheme !== 'auto' ? mergedTheme.colorScheme : undefined}
+          style={{
+            ...mergedTheme.cssVars,
+            ...(props.style || {}),
+          } as React.CSSProperties}
+          role="img"
+          aria-label={ariaLabel || `Line chart with ${data.length} data points`}
+          tabIndex={keyboard ? 0 : undefined}
+          {...props}
+        >
+          <svg
+            ref={svgRef}
+            className="db-linechart__svg"
+            width={width}
+            height={height}
+            role="presentation"
+            aria-hidden={keyboard}
           />
-        )}
-      </div>
+          {showTooltip && (
+            <div
+              ref={tooltipRef}
+              className="db-linechart__tooltip"
+              role="tooltip"
+              aria-live="polite"
+            />
+          )}
+        </div>
+      </LineChartContext.Provider>
     );
   }
 );
