@@ -1,0 +1,345 @@
+.db-command-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  z-index: 1100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 80px 20px 20px;
+  animation: commandOverlayIn 0.15s ease-out;
+}
+
+.db-command {
+  width: 100%;
+  max-width: 600px;
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: commandIn 0.15s ease-out;
+}
+
+.db-command__header {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.db-command__search {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  gap: 12px;
+}
+
+.db-command__search-icon {
+  color: var(--color-text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.db-command__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  line-height: 24px;
+}
+
+.db-command__input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.db-command__shortcut {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+}
+
+.db-command__content {
+  max-height: 400px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.db-command__content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.db-command__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.db-command__content::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 3px;
+}
+
+.db-command__list {
+  padding: 8px 0;
+}
+
+.db-command__group {
+  margin-bottom: 8px;
+}
+
+.db-command__group:last-child {
+  margin-bottom: 0;
+}
+
+.db-command__group-title {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-tertiary);
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.db-command__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  user-select: none;
+}
+
+.db-command__item:hover,
+.db-command__item--selected {
+  background-color: var(--color-background-secondary);
+}
+
+.db-command__item--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.db-command__item--disabled:hover {
+  background-color: transparent;
+}
+
+.db-command__item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.db-command__item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.db-command__item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 20px;
+}
+
+.db-command__item-description {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 16px;
+  margin-top: 2px;
+}
+
+.db-command__item-shortcut {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.db-command__footer {
+  border-top: 1px solid var(--color-border);
+  padding: 8px 16px;
+  background: var(--color-background-secondary);
+}
+
+.db-command__footer-hint {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.db-command__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 16px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.db-command__spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-border-subtle);
+  border-top: 2px solid var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.db-command__empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* Keyboard key styling */
+kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-text-secondary);
+  background: var(--color-background-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Animations */
+@keyframes commandOverlayIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+}
+
+@keyframes commandIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dark mode support */
+.dark .db-command {
+  background: var(--color-background-primary);
+  border-color: var(--color-border);
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.4);
+}
+
+.dark .db-command-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .db-command {
+    border-width: 2px;
+  }
+  
+  .db-command__item--selected {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+  
+  kbd {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .db-command-overlay,
+  .db-command,
+  .db-command__item {
+    animation: none;
+  }
+  
+  .db-command__spinner {
+    animation: none;
+    border-top-color: transparent;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .db-command-overlay {
+    padding: 20px;
+    align-items: flex-start;
+  }
+  
+  .db-command {
+    max-width: 100%;
+  }
+  
+  .db-command__content {
+    max-height: 50vh;
+  }
+  
+  .db-command__search {
+    padding: 12px;
+  }
+  
+  .db-command__input {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .db-command__item {
+    padding: 16px;
+  }
+  
+  .db-command__footer {
+    display: none; /* Hide hints on mobile */
+  }
+}
+
+/* Focus management */
+.db-command:focus-within .db-command__item--selected {
+  background-color: var(--color-primary-bg);
+}
+
+/* Ensure proper stacking */
+.db-command-overlay {
+  isolation: isolate;
+}
+
