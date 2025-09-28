@@ -1,0 +1,490 @@
+.db-multilinechart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+}
+
+.db-multilinechart__svg {
+  display: block;
+  overflow: visible;
+}
+
+/* Empty state */
+.db-multilinechart--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border: 2px dashed #DDE0E5;
+  border-radius: 8px;
+  background-color: #F6F7F9;
+}
+
+.db-multilinechart__empty-state {
+  text-align: center;
+  color: #5F7281;
+}
+
+.db-multilinechart__empty-state p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+/* Chart title */
+.db-multilinechart__title {
+  font-size: 16px;
+  font-weight: 600;
+  fill: #1F272D;
+  dominant-baseline: middle;
+}
+
+/* Axes */
+.db-multilinechart__axis {
+  font-size: 12px;
+}
+
+.db-multilinechart__axis text {
+  fill: #5F7281;
+  font-family: inherit;
+}
+
+.db-multilinechart__axis path,
+.db-multilinechart__axis line {
+  stroke: #D1D9E1;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+/* Axis labels */
+.db-multilinechart__axis-label {
+  font-size: 13px;
+  font-weight: 500;
+  fill: #37444F;
+  dominant-baseline: middle;
+}
+
+/* Grid lines */
+.db-multilinechart__grid line {
+  stroke: #E8ECF0;
+  stroke-width: 1;
+  stroke-dasharray: 2,2;
+  shape-rendering: crispEdges;
+}
+
+.db-multilinechart__grid path {
+  stroke: none;
+}
+
+/* Line styles - Base */
+.db-multilinechart__line {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Data points - Base */
+.db-multilinechart__point {
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.db-multilinechart__point:hover {
+  r: 6;
+  filter: brightness(0.9);
+}
+
+/* Legend */
+.db-multilinechart__legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.db-multilinechart__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #37444F;
+}
+
+.db-multilinechart__legend-item line {
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.db-multilinechart__legend-item text {
+  font-size: 12px;
+  fill: #37444F;
+}
+
+/* Tooltip */
+.db-multilinechart__tooltip {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  background-color: #1F272D;
+  color: #FFFFFF;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transition: opacity 150ms ease-in-out, visibility 150ms ease-in-out;
+  min-width: 120px;
+  max-width: 350px;
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Arrow for tooltip */
+.db-multilinechart__tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #1F272D;
+  z-index: 1001;
+}
+
+.db-multilinechart__tooltip.tooltip-below::after {
+  display: none;
+}
+
+.db-multilinechart__tooltip.tooltip-below::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #1F272D;
+  z-index: 1001;
+}
+
+/* Multi-series tooltip content */
+.db-multilinechart__tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: max-content;
+}
+
+.db-multilinechart__tooltip-date {
+  font-size: 12px;
+  color: #C0CDD8;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #445461;
+  padding-bottom: 4px;
+}
+
+.db-multilinechart__tooltip-series {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.db-multilinechart__tooltip-series-indicator {
+  width: 12px;
+  height: 2px;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+.db-multilinechart__tooltip-series-name {
+  color: #C0CDD8;
+  font-weight: 400;
+  min-width: 60px;
+}
+
+.db-multilinechart__tooltip-series-value {
+  color: #FFFFFF;
+  font-weight: 600;
+  text-align: right;
+  flex-grow: 1;
+}
+
+/* Vertical line indicator */
+.db-multilinechart__vertical-line {
+  stroke: #8396A5;
+  stroke-width: 1;
+  stroke-dasharray: 4,4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+/* Hover circles */
+.db-multilinechart__hover-circle {
+  stroke: #FFFFFF;
+  stroke-width: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+/* Overlay for mouse events */
+.db-multilinechart__overlay {
+  cursor: crosshair;
+}
+
+/* Variants */
+.db-multilinechart--minimal .db-multilinechart__grid {
+  display: none;
+}
+
+.db-multilinechart--minimal .db-multilinechart__axis path,
+.db-multilinechart--minimal .db-multilinechart__axis line {
+  stroke: none;
+}
+
+.db-multilinechart--detailed .db-multilinechart__line {
+  stroke-width: 3;
+}
+
+.db-multilinechart--detailed .db-multilinechart__point {
+  r: 5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .db-multilinechart__title {
+    font-size: 14px;
+  }
+  
+  .db-multilinechart__axis {
+    font-size: 10px;
+  }
+  
+  .db-multilinechart__axis-label {
+    font-size: 11px;
+  }
+  
+  .db-multilinechart__tooltip {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+  
+  .db-multilinechart__legend {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .db-multilinechart__legend-item {
+    font-size: 11px;
+  }
+}
+
+/* Focus and accessibility */
+.db-multilinechart__point:focus {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+}
+
+.db-multilinechart__svg:focus {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+}
+
+/* Animation for line drawing */
+@keyframes db-multilinechart-draw {
+  from {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+  }
+}
+
+.db-multilinechart--animated .db-multilinechart__line {
+  animation: db-multilinechart-draw 1.5s ease-in-out;
+}
+
+/* Default color series styles for common colors */
+.db-multilinechart__line--series-0 { stroke: #2272B4; }
+.db-multilinechart__line--series-1 { stroke: #04867D; }
+.db-multilinechart__line--series-2 { stroke: #3BA65E; }
+.db-multilinechart__line--series-3 { stroke: #DE7921; }
+.db-multilinechart__line--series-4 { stroke: #E65B77; }
+.db-multilinechart__line--series-5 { stroke: #1890FF; }
+.db-multilinechart__line--series-6 { stroke: #8396A5; }
+.db-multilinechart__line--series-7 { stroke: #722ED1; }
+.db-multilinechart__line--series-8 { stroke: #FA8C16; }
+.db-multilinechart__line--series-9 { stroke: #13C2C2; }
+
+.db-multilinechart__point--series-0 { fill: #2272B4; }
+.db-multilinechart__point--series-1 { fill: #04867D; }
+.db-multilinechart__point--series-2 { fill: #3BA65E; }
+.db-multilinechart__point--series-3 { fill: #DE7921; }
+.db-multilinechart__point--series-4 { fill: #E65B77; }
+.db-multilinechart__point--series-5 { fill: #1890FF; }
+.db-multilinechart__point--series-6 { fill: #8396A5; }
+.db-multilinechart__point--series-7 { fill: #722ED1; }
+.db-multilinechart__point--series-8 { fill: #FA8C16; }
+.db-multilinechart__point--series-9 { fill: #13C2C2; }
+
+.db-multilinechart__hover-circle--series-0 { fill: #2272B4; }
+.db-multilinechart__hover-circle--series-1 { fill: #04867D; }
+.db-multilinechart__hover-circle--series-2 { fill: #3BA65E; }
+.db-multilinechart__hover-circle--series-3 { fill: #DE7921; }
+.db-multilinechart__hover-circle--series-4 { fill: #E65B77; }
+.db-multilinechart__hover-circle--series-5 { fill: #1890FF; }
+.db-multilinechart__hover-circle--series-6 { fill: #8396A5; }
+.db-multilinechart__hover-circle--series-7 { fill: #722ED1; }
+.db-multilinechart__hover-circle--series-8 { fill: #FA8C16; }
+.db-multilinechart__hover-circle--series-9 { fill: #13C2C2; }
+
+/* Theme Support */
+.db-multilinechart[data-theme="dark"] {
+  --chart-bg: #1F272D;
+  --chart-text: #FFFFFF;
+  --chart-border: #445461;
+  --chart-grid: #37444F;
+}
+
+.db-multilinechart[data-theme="light"] {
+  --chart-bg: #FFFFFF;
+  --chart-text: #1F272D;
+  --chart-border: #E8ECF0;
+  --chart-grid: #F6F7F9;
+}
+
+/* Accessibility */
+.db-multilinechart[tabindex] {
+  outline: none;
+}
+
+.db-multilinechart:focus-visible {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Keyboard Navigation */
+.db-multilinechart__point[tabindex] {
+  outline: none;
+}
+
+.db-multilinechart__point:focus {
+  stroke-width: 3;
+  stroke: #2272B4;
+  filter: drop-shadow(0 0 4px rgba(34, 114, 180, 0.4));
+}
+
+/* Performance Optimizations */
+.db-multilinechart--optimized {
+  will-change: transform;
+  contain: layout style paint;
+}
+
+.db-multilinechart--optimized .db-multilinechart__line {
+  will-change: d;
+}
+
+.db-multilinechart--optimized .db-multilinechart__point {
+  will-change: cx, cy;
+}
+
+/* Legend positioning variants */
+.db-multilinechart__legend--top {
+  order: -1;
+  margin-bottom: 16px;
+  margin-top: 0;
+}
+
+.db-multilinechart__legend--bottom {
+  margin-top: 16px;
+}
+
+.db-multilinechart__legend--left {
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 16px;
+  margin-top: 0;
+}
+
+.db-multilinechart__legend--right {
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 16px;
+  margin-top: 0;
+}
+
+/* Series interaction states */
+.db-multilinechart__legend-item {
+  cursor: pointer;
+  transition: opacity 150ms ease-in-out;
+}
+
+.db-multilinechart__legend-item:hover {
+  opacity: 0.8;
+}
+
+.db-multilinechart__legend-item--disabled {
+  opacity: 0.4;
+}
+
+.db-multilinechart__legend-item--disabled .db-multilinechart__legend-item line {
+  stroke-dasharray: 4,4;
+}
+
+/* Responsive legend adjustments */
+@media (max-width: 640px) {
+  .db-multilinechart__legend--left,
+  .db-multilinechart__legend--right {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 16px 0 0 0;
+  }
+}
+
+/* Enhanced tooltip for multiple series */
+.db-multilinechart__tooltip-content {
+  max-width: none;
+  white-space: nowrap;
+}
+
+.db-multilinechart__tooltip-series {
+  min-width: 140px;
+  justify-content: space-between;
+}
+
+/* Dashed line support for series differentiation */
+.db-multilinechart__line--dashed {
+  stroke-dasharray: 5,5;
+}
+
+.db-multilinechart__line--dotted {
+  stroke-dasharray: 2,2;
+}
+
+.db-multilinechart__line--dash-dot {
+  stroke-dasharray: 5,2,2,2;
+}
