@@ -1,0 +1,138 @@
+---
+globs: *.tsx,*.css
+description: Comprehensive accessibility guidelines for components
+---
+
+# Accessibility Guidelines
+
+## WCAG 2.1 Compliance Standards
+All components must meet WCAG 2.1 Level AA standards.
+
+### 1. Semantic HTML Requirements
+```typescript
+// Use semantic HTML elements
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ children, disabled, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        disabled={disabled}
+        aria-disabled={disabled}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  }
+);
+```
+
+### 2. ARIA Patterns
+```typescript
+// Standard ARIA patterns for common components
+export interface AccessibleProps {
+  /** ARIA label for screen readers */
+  'aria-label'?: string;
+  /** ID of element that describes this component */
+  'aria-describedby'?: string;
+  /** Indicates if element is expanded (for collapsible content) */
+  'aria-expanded'?: boolean;
+  /** Indicates current state for multi-step processes */
+  'aria-current'?: boolean | 'page' | 'step' | 'location' | 'date' | 'time';
+}
+```
+
+### 3. Keyboard Navigation
+- **Tab Order**: Logical tab sequence with `tabIndex` management
+- **Focus Management**: Visible focus indicators, focus trapping in modals
+- **Keyboard Shortcuts**: Standard patterns (Escape to close, Enter to activate)
+
+```css
+/* Focus indicators */
+.db-component:focus-visible {
+  outline: 2px solid var(--db-color-focus);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .db-component {
+    border: 1px solid;
+  }
+}
+```
+
+### 4. Color and Contrast
+- **Contrast Ratios**: Minimum 4.5:1 for normal text, 3:1 for large text
+- **Color Independence**: Never rely solely on color to convey information
+- **Color Blind Support**: Test with color blindness simulators
+
+### 5. Motion and Animation
+```css
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .db-component {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+### 6. Form Controls
+```typescript
+// Accessible form patterns
+export interface FormControlProps {
+  /** Unique identifier */
+  id: string;
+  /** Associated label text */
+  label: string;
+  /** Error message for validation */
+  error?: string;
+  /** Help text */
+  description?: string;
+  /** Required field indicator */
+  required?: boolean;
+}
+
+// Implementation pattern
+<>
+  <label htmlFor={id}>{label} {required && <span aria-label="required">*</span>}</label>
+  <input
+    id={id}
+    aria-describedby={description ? `${id}-description` : undefined}
+    aria-invalid={!!error}
+    required={required}
+  />
+  {description && <div id={`${id}-description`}>{description}</div>}
+  {error && <div role="alert" id={`${id}-error`}>{error}</div>}
+</>
+```
+
+### 7. Screen Reader Support
+- **Live Regions**: Use `aria-live` for dynamic content updates
+- **Hidden Content**: Use `aria-hidden` for decorative elements
+- **Descriptive Text**: Provide context for complex interactions
+
+### 8. Testing Requirements
+- **Automated**: ESLint plugin for accessibility, axe-core testing
+- **Manual**: Screen reader testing (NVDA, JAWS, VoiceOver)
+- **Keyboard Only**: Test all functionality with keyboard only
+- **High Contrast**: Test in high contrast mode
+
+### 9. Documentation Standards
+```typescript
+// Document accessibility features in JSDoc
+/**
+ * Button component with full accessibility support
+ * @example
+ * // Screen reader accessible button
+ * <Button aria-label="Close dialog">×</Button>
+ */
+```
+
+### 10. Common Patterns
+- **Skip Links**: For navigation bypass
+- **Error Handling**: Clear, actionable error messages
+- **Loading States**: Accessible loading indicators
+- **Data Tables**: Proper table headers and captions
