@@ -14,7 +14,7 @@ interface User {
 }
 
 const meta = {
-  title: 'Components/Table',
+  title: 'Data Display/Table',
   component: Table,
   parameters: {
     docs: {

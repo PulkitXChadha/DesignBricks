@@ -3,7 +3,7 @@ import { TextField } from './TextField';
 import React from 'react';
 
 const meta = {
-  title: 'Components/TextField',
+  title: 'Inputs/TextField',
   component: TextField,
   parameters: {
     docs: {

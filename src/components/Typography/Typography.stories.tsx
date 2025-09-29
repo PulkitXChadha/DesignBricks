@@ -3,7 +3,7 @@ import { Typography } from './Typography';
 import React from 'react';
 
 const meta = {
-  title: 'Components/Typography',
+  title: 'Foundation/Typography',
   component: Typography,
   parameters: {
     docs: {

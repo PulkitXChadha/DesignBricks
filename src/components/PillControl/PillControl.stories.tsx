@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { PillControl } from './PillControl';
 
 const meta: Meta<typeof PillControl> = {
-  title: 'Components/PillControl',
+  title: 'Inputs/PillControl',
   component: PillControl,
   parameters: {
     layout: 'centered',

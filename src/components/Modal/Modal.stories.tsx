@@ -5,7 +5,7 @@ import { TextField } from '../TextField/TextField';
 import React, { useState } from 'react';
 
 const meta = {
-  title: 'Components/Modal',
+  title: 'Overlays/Modal',
   component: Modal,
   parameters: {
     docs: {

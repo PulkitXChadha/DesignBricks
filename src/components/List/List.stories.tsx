@@ -4,7 +4,7 @@ import { List } from './List';
 import { ListItem } from './ListItem';
 
 const meta: Meta<typeof List> = {
-  title: 'Components/List',
+  title: 'Data Display/List',
   component: List,
   parameters: {
     layout: 'centered',

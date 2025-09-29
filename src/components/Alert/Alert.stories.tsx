@@ -3,7 +3,7 @@ import { Alert } from './Alert';
 import React from 'react';
 
 const meta = {
-  title: 'Components/Alert',
+  title: 'Feedback/Alert',
   component: Alert,
   parameters: {
     docs: {

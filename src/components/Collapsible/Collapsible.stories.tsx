@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Collapsible } from './Collapsible';
 
 const meta: Meta<typeof Collapsible> = {
-  title: 'Components/Collapsible',
+  title: 'Navigation/Collapsible',
   component: Collapsible,
   parameters: {
     layout: 'centered',

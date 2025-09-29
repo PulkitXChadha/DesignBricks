@@ -5,7 +5,7 @@ import { Button } from '../Button/Button';
 import React from 'react';
 
 const meta = {
-  title: 'Components/Card',
+  title: 'Data Display/Card',
   component: Card,
   parameters: {
     docs: {

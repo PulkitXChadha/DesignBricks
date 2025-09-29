@@ -3,7 +3,7 @@ import { Sidebar, SidebarItem } from './Sidebar';
 import React, { useState } from 'react';
 
 const meta = {
-  title: 'Components/Sidebar',
+  title: 'Navigation/Sidebar',
   component: Sidebar,
   parameters: {
     layout: 'fullscreen',

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { UserAvatar } from './UserAvatar';
 
 const meta: Meta<typeof UserAvatar> = {
-  title: 'Components/UserAvatar',
+  title: 'Foundation/UserAvatar',
   component: UserAvatar,
   parameters: {
     layout: 'centered',

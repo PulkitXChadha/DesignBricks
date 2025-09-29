@@ -107,131 +107,159 @@ export const Default: Story = {
   }
 };
 
-export const ColorVariants: Story = {
-  args: {
-    data: sampleData,
-    width: 500,
-    height: 300,
-    title: 'Color Variants'
-  },
+export const AllColors: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <AreaChart
+        data={sampleData}
+        width={500}
+        height={180}
+        color="primary"
+        title="Primary Color"
+        variant="default"
+      />
+      <AreaChart
+        data={sampleData}
+        width={500}
+        height={180}
+        color="secondary"
+        title="Secondary Color"
+        variant="default"
+      />
+      <AreaChart
+        data={sampleData}
+        width={500}
+        height={180}
+        color="success"
+        title="Success Color"
+        variant="default"
+      />
+      <AreaChart
+        data={sampleData}
+        width={500}
+        height={180}
+        color="warning"
+        title="Warning Color"
+        variant="default"
+      />
+      <AreaChart
+        data={sampleData}
+        width={500}
+        height={180}
+        color="error"
+        title="Error Color"
+        variant="default"
+      />
+    </div>
+  ),
   parameters: {
     docs: {
       description: {
-        story: 'Different color schemes available for the area chart.'
+        story: 'All available color schemes from the Databricks Design System for area charts.'
       }
     }
   }
 };
 
-export const Primary: Story = {
-  args: {
-    ...ColorVariants.args,
-    color: 'primary',
-    title: 'Primary Color'
-  }
-};
-
-export const Secondary: Story = {
-  args: {
-    ...ColorVariants.args,
-    color: 'secondary',
-    title: 'Secondary Color'
-  }
-};
-
-export const Success: Story = {
-  args: {
-    ...ColorVariants.args,
-    color: 'success',
-    title: 'Success Color'
-  }
-};
-
-export const Warning: Story = {
-  args: {
-    ...ColorVariants.args,
-    color: 'warning',
-    title: 'Warning Color'
-  }
-};
-
-export const Error: Story = {
-  args: {
-    ...ColorVariants.args,
-    color: 'error',
-    title: 'Error Color'
-  }
-};
-
-export const Variants: Story = {
-  args: {
-    data: sampleData,
-    width: 600,
-    height: 400,
-    title: 'Chart Variants'
-  },
+export const AllVariants: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div>
+        <h3>Default Variant</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          Standard configuration with balanced grid and styling
+        </p>
+        <AreaChart
+          data={sampleData}
+          width={500}
+          height={200}
+          variant="default"
+          title="Default Configuration"
+          color="primary"
+        />
+      </div>
+      
+      <div>
+        <h3>Minimal Variant</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          Clean design with no grid, minimal axes for focus on data
+        </p>
+        <AreaChart
+          data={sampleData}
+          width={500}
+          height={200}
+          variant="minimal"
+          title="Minimal Configuration"
+          color="secondary"
+        />
+      </div>
+      
+      <div>
+        <h3>Detailed Variant</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          Enhanced styling with fine grid and detailed axes
+        </p>
+        <AreaChart
+          data={sampleData}
+          width={500}
+          height={200}
+          variant="detailed"
+          title="Detailed Configuration"
+          color="success"
+        />
+      </div>
+    </div>
+  ),
   parameters: {
     docs: {
       description: {
-        story: 'Different visual variants: default shows grids and full styling, minimal removes grids and simplifies axes, detailed adds more visual elements.'
+        story: 'Demonstrates the three chart variants. Each variant automatically configures grid, axes, and styling for different use cases.'
       }
     }
   }
 };
 
-export const Minimal: Story = {
-  args: {
-    ...Variants.args,
-    variant: 'minimal',
-    title: 'Minimal Variant'
-  }
-};
-
-export const Detailed: Story = {
-  args: {
-    ...Variants.args,
-    variant: 'detailed',
-    title: 'Detailed Variant'
-  }
-};
-
-export const CurveTypes: Story = {
-  args: {
-    data: numericData,
-    width: 500,
-    height: 300,
-    title: 'Curve Interpolation'
-  },
+export const AllCurveTypes: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <AreaChart
+        data={numericData}
+        width={500}
+        height={200}
+        curve="linear"
+        title="Linear Curve (Straight Lines)"
+        color="primary"
+        xAxis={{ label: "X Value" }}
+        yAxis={{ label: "Y Value" }}
+      />
+      <AreaChart
+        data={numericData}
+        width={500}
+        height={200}
+        curve="smooth"
+        title="Smooth Curve (Cardinal Spline)"
+        color="secondary"
+        xAxis={{ label: "X Value" }}
+        yAxis={{ label: "Y Value" }}
+      />
+      <AreaChart
+        data={numericData}
+        width={500}
+        height={200}
+        curve="step"
+        title="Step Curve (Step-After)"
+        color="success"
+        xAxis={{ label: "X Value" }}
+        yAxis={{ label: "Y Value" }}
+      />
+    </div>
+  ),
   parameters: {
     docs: {
       description: {
         story: 'Different curve interpolation methods: linear creates straight lines, smooth creates curved lines, step creates step-like progression.'
       }
     }
-  }
-};
-
-export const Linear: Story = {
-  args: {
-    ...CurveTypes.args,
-    curve: 'linear',
-    title: 'Linear Curve'
-  }
-};
-
-export const Smooth: Story = {
-  args: {
-    ...CurveTypes.args,
-    curve: 'smooth',
-    title: 'Smooth Curve'
-  }
-};
-
-export const Step: Story = {
-  args: {
-    ...CurveTypes.args,
-    curve: 'step',
-    title: 'Step Curve'
   }
 };
 
@@ -262,38 +290,56 @@ export const CustomStyling: Story = {
   }
 };
 
-export const WithoutStroke: Story = {
-  args: {
-    data: numericData,
-    width: 500,
-    height: 300,
-    color: 'success',
-    fillOpacity: 0.5,
-    showStroke: false,
-    title: 'Area Without Stroke Line'
-  },
+export const StylingOptions: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div>
+        <h3>With Stroke and Data Points</h3>
+        <AreaChart
+          data={numericData}
+          width={500}
+          height={180}
+          color="primary"
+          showStroke={true}
+          showPoints={true}
+          fillOpacity={0.6}
+          title="Full Styling"
+        />
+      </div>
+      
+      <div>
+        <h3>Area Only (No Stroke)</h3>
+        <AreaChart
+          data={numericData}
+          width={500}
+          height={180}
+          color="secondary"
+          showStroke={false}
+          showPoints={false}
+          fillOpacity={0.5}
+          title="Area Without Stroke Line"
+        />
+      </div>
+      
+      <div>
+        <h3>Low Opacity with Stroke</h3>
+        <AreaChart
+          data={numericData}
+          width={500}
+          height={180}
+          color="warning"
+          showStroke={true}
+          showPoints={false}
+          fillOpacity={0.1}
+          title="Subtle Fill with Emphasis on Line"
+        />
+      </div>
+    </div>
+  ),
   parameters: {
     docs: {
       description: {
-        story: 'Area chart with only the filled area visible, no stroke line on top.'
-      }
-    }
-  }
-};
-
-export const WithDataPoints: Story = {
-  args: {
-    data: numericData,
-    width: 500,
-    height: 300,
-    color: 'warning',
-    showPoints: true,
-    title: 'Area Chart with Data Points'
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Area chart displaying individual data points on the curve.'
+        story: 'Various styling options including stroke visibility, data points, and fill opacity combinations.'
       }
     }
   }
@@ -317,44 +363,6 @@ export const NumericData: Story = {
     docs: {
       description: {
         story: 'Area chart with numeric values on the X-axis instead of dates.'
-      }
-    }
-  }
-};
-
-export const LowOpacity: Story = {
-  args: {
-    data: sampleData,
-    width: 600,
-    height: 400,
-    color: 'primary',
-    fillOpacity: 0.1,
-    showStroke: true,
-    title: 'Low Fill Opacity'
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Area chart with very low fill opacity, emphasizing the stroke line.'
-      }
-    }
-  }
-};
-
-export const HighOpacity: Story = {
-  args: {
-    data: sampleData,
-    width: 600,
-    height: 400,
-    color: 'error',
-    fillOpacity: 0.8,
-    showStroke: false,
-    title: 'High Fill Opacity'
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Area chart with high fill opacity for a solid appearance.'
       }
     }
   }
@@ -401,3 +409,4 @@ export const InteractiveFeatures: Story = {
     }
   }
 };
+
