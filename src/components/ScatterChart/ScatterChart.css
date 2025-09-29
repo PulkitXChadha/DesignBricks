@@ -1,9 +1,51 @@
+/* ===== CSS Custom Properties for Theming ===== */
+:root {
+  --chart-background: hsl(0 0% 100%);
+  --chart-foreground: hsl(222 47% 11%);
+  --chart-muted: hsl(210 40% 95%);
+  --chart-muted-foreground: hsl(215 13% 65%);
+  --chart-border: hsl(214 32% 91%);
+  --chart-input: hsl(214 32% 91%);
+  --chart-grid: hsl(220 13% 91%);
+  --chart-tooltip-bg: hsl(224 71% 4%);
+  --chart-tooltip-fg: hsl(213 31% 91%);
+  --chart-primary: hsl(221 83% 53%);
+  --chart-primary-hover: hsl(221 83% 45%);
+  --chart-secondary: hsl(187 85% 26%);
+  --chart-secondary-hover: hsl(187 85% 18%);
+  --chart-success: hsl(142 76% 36%);
+  --chart-success-hover: hsl(142 76% 28%);
+  --chart-warning: hsl(32 95% 44%);
+  --chart-warning-hover: hsl(32 95% 36%);
+  --chart-error: hsl(346 87% 43%);
+  --chart-error-hover: hsl(346 87% 35%);
+  --chart-radius: 6px;
+  --chart-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --chart-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --chart-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --chart-background: hsl(224 71% 4%);
+  --chart-foreground: hsl(213 31% 91%);
+  --chart-muted: hsl(223 47% 11%);
+  --chart-muted-foreground: hsl(215 13% 65%);
+  --chart-border: hsl(216 34% 17%);
+  --chart-input: hsl(216 34% 17%);
+  --chart-grid: hsl(215 27% 32%);
+  --chart-tooltip-bg: hsl(224 71% 4%);
+  --chart-tooltip-fg: hsl(213 31% 91%);
+}
+
 .db-scatterchart {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   position: relative;
+  background-color: var(--chart-background);
+  color: var(--chart-foreground);
+  border-radius: var(--chart-radius);
 }
 
 .db-scatterchart__svg {
@@ -17,61 +59,72 @@
   align-items: center;
   justify-content: center;
   min-height: 200px;
-  border: 2px dashed #DDE0E5;
-  border-radius: 8px;
-  background-color: #F6F7F9;
+  border: 2px dashed var(--chart-border);
+  border-radius: var(--chart-radius);
+  background-color: var(--chart-muted);
+  transition: var(--chart-transition);
+}
+
+.db-scatterchart--empty:hover {
+  border-color: var(--chart-primary);
+  background-color: hsl(var(--chart-primary) / 0.02);
 }
 
 .db-scatterchart__empty-state {
   text-align: center;
-  color: #5F7281;
+  color: var(--chart-muted-foreground);
 }
 
 .db-scatterchart__empty-state p {
   margin: 0;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 /* Chart title */
 .db-scatterchart__title {
   font-size: 16px;
   font-weight: 600;
-  fill: #1F272D;
+  fill: var(--chart-foreground);
   dominant-baseline: middle;
 }
 
 /* Axes */
 .db-scatterchart__axis {
   font-size: 12px;
+  transition: var(--chart-transition);
 }
 
 .db-scatterchart__axis text {
-  fill: #5F7281;
+  fill: var(--chart-muted-foreground);
   font-family: inherit;
+  font-weight: 500;
 }
 
 .db-scatterchart__axis path,
 .db-scatterchart__axis line {
-  stroke: #D1D9E1;
+  stroke: var(--chart-border);
   stroke-width: 1;
   shape-rendering: crispEdges;
+  transition: var(--chart-transition);
 }
 
 /* Axis labels */
 .db-scatterchart__axis-label {
   font-size: 13px;
-  font-weight: 500;
-  fill: #37444F;
+  font-weight: 600;
+  fill: var(--chart-foreground);
   dominant-baseline: middle;
 }
 
 /* Grid lines */
 .db-scatterchart__grid line {
-  stroke: #E8ECF0;
+  stroke: var(--chart-grid);
   stroke-width: 1;
   stroke-dasharray: 2,2;
   shape-rendering: crispEdges;
+  transition: var(--chart-transition);
 }
 
 .db-scatterchart__grid path {
@@ -80,62 +133,114 @@
 
 /* Point styles - Primary */
 .db-scatterchart__point--primary {
-  fill: #2272B4;
+  fill: var(--chart-primary);
+  stroke: var(--chart-background);
+  stroke-width: 1.5;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-scatterchart__point--primary:hover {
-  fill: #1A5A90;
+  fill: var(--chart-primary-hover);
+  stroke-width: 2;
+  filter: drop-shadow(var(--chart-shadow-md));
+  transform: scale(1.15);
 }
 
 /* Point styles - Secondary */
 .db-scatterchart__point--secondary {
-  fill: #04867D;
+  fill: var(--chart-secondary);
+  stroke: var(--chart-background);
+  stroke-width: 1.5;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-scatterchart__point--secondary:hover {
-  fill: #037269;
+  fill: var(--chart-secondary-hover);
+  stroke-width: 2;
+  filter: drop-shadow(var(--chart-shadow-md));
+  transform: scale(1.15);
 }
 
 /* Point styles - Success */
 .db-scatterchart__point--success {
-  fill: #3BA65E;
+  fill: var(--chart-success);
+  stroke: var(--chart-background);
+  stroke-width: 1.5;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-scatterchart__point--success:hover {
-  fill: #277C43;
+  fill: var(--chart-success-hover);
+  stroke-width: 2;
+  filter: drop-shadow(var(--chart-shadow-md));
+  transform: scale(1.15);
 }
 
 /* Point styles - Warning */
 .db-scatterchart__point--warning {
-  fill: #DE7921;
+  fill: var(--chart-warning);
+  stroke: var(--chart-background);
+  stroke-width: 1.5;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-scatterchart__point--warning:hover {
-  fill: #BE501E;
+  fill: var(--chart-warning-hover);
+  stroke-width: 2;
+  filter: drop-shadow(var(--chart-shadow-md));
+  transform: scale(1.15);
 }
 
 /* Point styles - Error */
 .db-scatterchart__point--error {
-  fill: #E65B77;
+  fill: var(--chart-error);
+  stroke: var(--chart-background);
+  stroke-width: 1.5;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-scatterchart__point--error:hover {
-  fill: #C82D4C;
+  fill: var(--chart-error-hover);
+  stroke-width: 2;
+  filter: drop-shadow(var(--chart-shadow-md));
+  transform: scale(1.15);
 }
 
 /* Trend line */
 .db-scatterchart__trend-line {
+  fill: none;
+  stroke: var(--chart-muted-foreground);
+  stroke-width: 2;
+  stroke-dasharray: 5,5;
+  opacity: 0.7;
+  transition: var(--chart-transition);
   pointer-events: none;
+}
+
+.db-scatterchart--trend .db-scatterchart__trend-line {
+  opacity: 1;
+  stroke-dasharray: 4,4;
+}
+
+/* Bubble chart variants */
+.db-scatterchart--bubbles .db-scatterchart__point {
+  stroke-width: 2;
+  opacity: 0.8;
+}
+
+.db-scatterchart--bubbles .db-scatterchart__point:hover {
+  opacity: 1;
+  stroke-width: 2.5;
 }
 
 /* Tooltip */
@@ -143,96 +248,76 @@
   position: absolute;
   top: -9999px;
   left: -9999px;
-  background-color: #1F272D;
-  color: #FFFFFF;
+  background-color: var(--chart-tooltip-bg);
+  color: var(--chart-tooltip-fg);
   padding: 12px 16px;
-  border-radius: 8px;
+  border-radius: var(--chart-radius);
   font-size: 13px;
   font-weight: 500;
   pointer-events: none;
   z-index: 1000;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  transition: opacity 150ms ease-in-out, visibility 150ms ease-in-out;
-  min-width: 120px;
+  box-shadow: var(--chart-shadow-md);
+  border: 1px solid var(--chart-border);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 140px;
   max-width: 300px;
   opacity: 0;
   visibility: hidden;
   white-space: nowrap;
   will-change: transform, opacity;
-  transform: translateZ(0);
+  transform: translateZ(0); /* Force hardware acceleration */
+  /* Positioning optimizations */
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
-}
-
-/* Arrow pointing down when tooltip is above data point */
-.db-scatterchart__tooltip::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid #1F272D;
-  z-index: 1001;
-}
-
-/* Hide arrow when tooltip is positioned below */
-.db-scatterchart__tooltip.tooltip-below::after {
-  display: none;
-}
-
-.db-scatterchart__tooltip.tooltip-below::before {
-  content: '';
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-bottom: 6px solid #1F272D;
-  z-index: 1001;
 }
 
 .db-scatterchart__tooltip-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   min-width: max-content;
 }
 
 .db-scatterchart__tooltip-label {
   font-size: 14px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: var(--chart-tooltip-fg);
 }
 
 .db-scatterchart__tooltip-category {
   font-size: 12px;
-  color: #C0CDD8;
+  color: var(--chart-muted-foreground);
   font-weight: 400;
+  opacity: 0.8;
+  padding: 2px 6px;
+  background-color: hsl(var(--chart-muted) / 0.3);
+  border-radius: calc(var(--chart-radius) - 2px);
+  display: inline-block;
+  margin-bottom: 2px;
 }
 
 .db-scatterchart__tooltip-coordinates {
   display: flex;
   gap: 12px;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .db-scatterchart__tooltip-x,
 .db-scatterchart__tooltip-y {
-  color: #C0CDD8;
-  font-weight: 400;
+  font-weight: 500;
+  color: var(--chart-tooltip-fg);
 }
 
 .db-scatterchart__tooltip-size {
   font-size: 12px;
-  color: #C0CDD8;
+  color: var(--chart-muted-foreground);
   font-weight: 400;
+  opacity: 0.9;
+  padding: 2px 6px;
+  background-color: hsl(var(--chart-primary) / 0.1);
+  border-radius: calc(var(--chart-radius) - 2px);
+  display: inline-block;
+  margin-top: 2px;
 }
 
 /* Variants */
@@ -245,28 +330,17 @@
   stroke: none;
 }
 
-.db-scatterchart--detailed .db-scatterchart__point--primary,
-.db-scatterchart--detailed .db-scatterchart__point--secondary,
-.db-scatterchart--detailed .db-scatterchart__point--success,
-.db-scatterchart--detailed .db-scatterchart__point--warning,
-.db-scatterchart--detailed .db-scatterchart__point--error {
-  stroke: rgba(255, 255, 255, 0.3);
-  stroke-width: 1;
+.db-scatterchart--minimal .db-scatterchart__point {
+  stroke-width: 0;
 }
 
-/* Bubble chart specific styles */
-.db-scatterchart--bubbles .db-scatterchart__point--primary,
-.db-scatterchart--bubbles .db-scatterchart__point--secondary,
-.db-scatterchart--bubbles .db-scatterchart__point--success,
-.db-scatterchart--bubbles .db-scatterchart__point--warning,
-.db-scatterchart--bubbles .db-scatterchart__point--error {
-  fill-opacity: 0.7;
-  stroke: rgba(255, 255, 255, 0.8);
-  stroke-width: 1;
+.db-scatterchart--detailed .db-scatterchart__point {
+  stroke-width: 2;
+  filter: drop-shadow(var(--chart-shadow-md));
 }
 
-/* Trend line variant */
-.db-scatterchart--trend .db-scatterchart__trend-line {
+.db-scatterchart--detailed .db-scatterchart__trend-line {
+  stroke-width: 3;
   opacity: 0.8;
 }
 
@@ -289,26 +363,29 @@
     padding: 8px 12px;
   }
   
-  .db-scatterchart__point--primary,
-  .db-scatterchart__point--secondary,
-  .db-scatterchart__point--success,
-  .db-scatterchart__point--warning,
-  .db-scatterchart__point--error {
-    r: 3;
+  .db-scatterchart__point {
+    r: 3 !important; /* Smaller points on mobile */
   }
 }
 
 /* Focus and accessibility */
 .db-scatterchart__point:focus {
-  outline: 2px solid #2272B4;
+  outline: 2px solid var(--chart-primary);
   outline-offset: 2px;
-  stroke: #2272B4;
-  stroke-width: 2;
+  stroke: var(--chart-primary);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 4px hsl(var(--chart-primary) / 0.4));
 }
 
 .db-scatterchart__svg:focus {
-  outline: 2px solid #2272B4;
+  outline: 2px solid var(--chart-primary);
   outline-offset: 2px;
+}
+
+.db-scatterchart:focus-visible {
+  outline: 2px solid var(--chart-primary);
+  outline-offset: 2px;
+  border-radius: var(--chart-radius);
 }
 
 /* Animation for point appearance */
@@ -318,33 +395,41 @@
     transform: scale(0);
   }
   to {
-    opacity: var(--chart-point-opacity, 0.7);
+    opacity: var(--point-opacity, 1);
     transform: scale(1);
   }
 }
 
-.db-scatterchart--animated .db-scatterchart__point--primary,
-.db-scatterchart--animated .db-scatterchart__point--secondary,
-.db-scatterchart--animated .db-scatterchart__point--success,
-.db-scatterchart--animated .db-scatterchart__point--warning,
-.db-scatterchart--animated .db-scatterchart__point--error {
-  animation: db-scatterchart-point-appear 0.4s ease-out;
-  transform-origin: center;
+.db-scatterchart--animated .db-scatterchart__point {
+  animation: db-scatterchart-point-appear 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
 }
 
-/* Theme Support */
-.db-scatterchart[data-theme="dark"] {
-  --chart-bg: #1F272D;
-  --chart-text: #FFFFFF;
-  --chart-border: #445461;
-  --chart-grid: #37444F;
+.db-scatterchart--animated .db-scatterchart__point:nth-child(n) {
+  animation-delay: calc(var(--point-index, 0) * 0.05s);
 }
 
-.db-scatterchart[data-theme="light"] {
-  --chart-bg: #FFFFFF;
-  --chart-text: #1F272D;
-  --chart-border: #E8ECF0;
-  --chart-grid: #F6F7F9;
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .db-scatterchart__point {
+    stroke-width: 3;
+    stroke: var(--chart-foreground);
+  }
+  
+  .db-scatterchart__trend-line {
+    stroke: var(--chart-foreground);
+    stroke-width: 3;
+    opacity: 1;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .db-scatterchart * {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+  }
 }
 
 /* Accessibility */
@@ -352,19 +437,9 @@
   outline: none;
 }
 
-.db-scatterchart:focus-visible {
-  outline: 2px solid #2272B4;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
 /* Keyboard Navigation */
 .db-scatterchart__point[tabindex] {
   outline: none;
-}
-
-.db-scatterchart__point:focus {
-  filter: drop-shadow(0 0 4px rgba(34, 114, 180, 0.4));
 }
 
 /* Performance Optimizations */
@@ -377,22 +452,51 @@
   will-change: cx, cy, r;
 }
 
-/* Multi-category color support */
-.db-scatterchart__point--category-0 { fill: #2272B4; }
-.db-scatterchart__point--category-1 { fill: #04867D; }
-.db-scatterchart__point--category-2 { fill: #3BA65E; }
-.db-scatterchart__point--category-3 { fill: #DE7921; }
-.db-scatterchart__point--category-4 { fill: #E65B77; }
-.db-scatterchart__point--category-5 { fill: #8A63BF; }
-.db-scatterchart__point--category-6 { fill: #B45091; }
-.db-scatterchart__point--category-7 { fill: #137DAE; }
+.db-scatterchart--optimized .db-scatterchart__trend-line {
+  will-change: d;
+}
 
-/* Hover states for all categories */
-.db-scatterchart__point--category-0:hover { fill: #1A5A90; }
-.db-scatterchart__point--category-1:hover { fill: #037269; }
-.db-scatterchart__point--category-2:hover { fill: #277C43; }
-.db-scatterchart__point--category-3:hover { fill: #BE501E; }
-.db-scatterchart__point--category-4:hover { fill: #C82D4C; }
-.db-scatterchart__point--category-5:hover { fill: #7653A2; }
-.db-scatterchart__point--category-6:hover { fill: #974378; }
-.db-scatterchart__point--category-7:hover { fill: #106A93; }
+/* Category-based styling for grouped scatter plots */
+.db-scatterchart__point[data-category="category-1"] {
+  fill: var(--chart-primary);
+}
+
+.db-scatterchart__point[data-category="category-2"] {
+  fill: var(--chart-secondary);
+}
+
+.db-scatterchart__point[data-category="category-3"] {
+  fill: var(--chart-success);
+}
+
+.db-scatterchart__point[data-category="category-4"] {
+  fill: var(--chart-warning);
+}
+
+.db-scatterchart__point[data-category="category-5"] {
+  fill: var(--chart-error);
+}
+
+/* Interactive selection states */
+.db-scatterchart__point[data-selected="true"] {
+  stroke: var(--chart-primary);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px hsl(var(--chart-primary) / 0.5));
+  transform: scale(1.2);
+}
+
+/* Container query support */
+@container (max-width: 400px) {
+  .db-scatterchart__axis {
+    font-size: 9px;
+  }
+  
+  .db-scatterchart__point {
+    r: 2.5 !important;
+  }
+  
+  .db-scatterchart__tooltip {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+}

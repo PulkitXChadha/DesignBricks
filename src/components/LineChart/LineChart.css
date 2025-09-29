@@ -1,9 +1,51 @@
+/* ===== CSS Custom Properties for Theming ===== */
+:root {
+  --chart-background: hsl(0 0% 100%);
+  --chart-foreground: hsl(222 47% 11%);
+  --chart-muted: hsl(210 40% 95%);
+  --chart-muted-foreground: hsl(215 13% 65%);
+  --chart-border: hsl(214 32% 91%);
+  --chart-input: hsl(214 32% 91%);
+  --chart-grid: hsl(220 13% 91%);
+  --chart-tooltip-bg: hsl(224 71% 4%);
+  --chart-tooltip-fg: hsl(213 31% 91%);
+  --chart-primary: hsl(221 83% 53%);
+  --chart-primary-hover: hsl(221 83% 45%);
+  --chart-secondary: hsl(187 85% 26%);
+  --chart-secondary-hover: hsl(187 85% 18%);
+  --chart-success: hsl(142 76% 36%);
+  --chart-success-hover: hsl(142 76% 28%);
+  --chart-warning: hsl(32 95% 44%);
+  --chart-warning-hover: hsl(32 95% 36%);
+  --chart-error: hsl(346 87% 43%);
+  --chart-error-hover: hsl(346 87% 35%);
+  --chart-radius: 6px;
+  --chart-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --chart-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --chart-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --chart-background: hsl(224 71% 4%);
+  --chart-foreground: hsl(213 31% 91%);
+  --chart-muted: hsl(223 47% 11%);
+  --chart-muted-foreground: hsl(215 13% 65%);
+  --chart-border: hsl(216 34% 17%);
+  --chart-input: hsl(216 34% 17%);
+  --chart-grid: hsl(215 27% 32%);
+  --chart-tooltip-bg: hsl(224 71% 4%);
+  --chart-tooltip-fg: hsl(213 31% 91%);
+}
+
 .db-linechart {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   position: relative;
+  background-color: var(--chart-background);
+  color: var(--chart-foreground);
+  border-radius: var(--chart-radius);
 }
 
 .db-linechart__svg {
@@ -17,61 +59,72 @@
   align-items: center;
   justify-content: center;
   min-height: 200px;
-  border: 2px dashed #DDE0E5;
-  border-radius: 8px;
-  background-color: #F6F7F9;
+  border: 2px dashed var(--chart-border);
+  border-radius: var(--chart-radius);
+  background-color: var(--chart-muted);
+  transition: var(--chart-transition);
+}
+
+.db-linechart--empty:hover {
+  border-color: var(--chart-primary);
+  background-color: hsl(var(--chart-primary) / 0.02);
 }
 
 .db-linechart__empty-state {
   text-align: center;
-  color: #5F7281;
+  color: var(--chart-muted-foreground);
 }
 
 .db-linechart__empty-state p {
   margin: 0;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 /* Chart title */
 .db-linechart__title {
   font-size: 16px;
   font-weight: 600;
-  fill: #1F272D;
+  fill: var(--chart-foreground);
   dominant-baseline: middle;
 }
 
 /* Axes */
 .db-linechart__axis {
   font-size: 12px;
+  transition: var(--chart-transition);
 }
 
 .db-linechart__axis text {
-  fill: #5F7281;
+  fill: var(--chart-muted-foreground);
   font-family: inherit;
+  font-weight: 500;
 }
 
 .db-linechart__axis path,
 .db-linechart__axis line {
-  stroke: #D1D9E1;
+  stroke: var(--chart-border);
   stroke-width: 1;
   shape-rendering: crispEdges;
+  transition: var(--chart-transition);
 }
 
 /* Axis labels */
 .db-linechart__axis-label {
   font-size: 13px;
-  font-weight: 500;
-  fill: #37444F;
+  font-weight: 600;
+  fill: var(--chart-foreground);
   dominant-baseline: middle;
 }
 
 /* Grid lines */
 .db-linechart__grid line {
-  stroke: #E8ECF0;
+  stroke: var(--chart-grid);
   stroke-width: 1;
   stroke-dasharray: 2,2;
   shape-rendering: crispEdges;
+  transition: var(--chart-transition);
 }
 
 .db-linechart__grid path {
@@ -81,111 +134,126 @@
 /* Line styles - Primary */
 .db-linechart__line--primary {
   fill: none;
-  stroke: #2272B4;
+  stroke: var(--chart-primary);
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: var(--chart-transition);
 }
 
 .db-linechart__point--primary {
-  fill: #2272B4;
-  stroke: #FFFFFF;
+  fill: var(--chart-primary);
+  stroke: var(--chart-background);
   stroke-width: 2;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-linechart__point--primary:hover {
-  r: 6;
-  fill: #1A5A90;
+  fill: var(--chart-primary-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
 }
 
 /* Line styles - Secondary */
 .db-linechart__line--secondary {
   fill: none;
-  stroke: #04867D;
+  stroke: var(--chart-secondary);
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: var(--chart-transition);
 }
 
 .db-linechart__point--secondary {
-  fill: #04867D;
-  stroke: #FFFFFF;
+  fill: var(--chart-secondary);
+  stroke: var(--chart-background);
   stroke-width: 2;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-linechart__point--secondary:hover {
-  r: 6;
-  fill: #037269;
+  fill: var(--chart-secondary-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
 }
 
 /* Line styles - Success */
 .db-linechart__line--success {
   fill: none;
-  stroke: #3BA65E;
+  stroke: var(--chart-success);
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: var(--chart-transition);
 }
 
 .db-linechart__point--success {
-  fill: #3BA65E;
-  stroke: #FFFFFF;
+  fill: var(--chart-success);
+  stroke: var(--chart-background);
   stroke-width: 2;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-linechart__point--success:hover {
-  r: 6;
-  fill: #277C43;
+  fill: var(--chart-success-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
 }
 
 /* Line styles - Warning */
 .db-linechart__line--warning {
   fill: none;
-  stroke: #DE7921;
+  stroke: var(--chart-warning);
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: var(--chart-transition);
 }
 
 .db-linechart__point--warning {
-  fill: #DE7921;
-  stroke: #FFFFFF;
+  fill: var(--chart-warning);
+  stroke: var(--chart-background);
   stroke-width: 2;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-linechart__point--warning:hover {
-  r: 6;
-  fill: #BE501E;
+  fill: var(--chart-warning-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
 }
 
 /* Line styles - Error */
 .db-linechart__line--error {
   fill: none;
-  stroke: #E65B77;
+  stroke: var(--chart-error);
   stroke-width: 2.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+  transition: var(--chart-transition);
 }
 
 .db-linechart__point--error {
-  fill: #E65B77;
-  stroke: #FFFFFF;
+  fill: var(--chart-error);
+  stroke: var(--chart-background);
   stroke-width: 2;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-linechart__point--error:hover {
-  r: 6;
-  fill: #C82D4C;
+  fill: var(--chart-error-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
 }
 
 /* Tooltip */
@@ -193,16 +261,17 @@
   position: absolute;
   top: -9999px;
   left: -9999px;
-  background-color: #1F272D;
-  color: #FFFFFF;
+  background-color: var(--chart-tooltip-bg);
+  color: var(--chart-tooltip-fg);
   padding: 12px 16px;
-  border-radius: 8px;
+  border-radius: var(--chart-radius);
   font-size: 13px;
   font-weight: 500;
   pointer-events: none;
   z-index: 1000;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  transition: opacity 150ms ease-in-out, visibility 150ms ease-in-out;
+  box-shadow: var(--chart-shadow-md);
+  border: 1px solid var(--chart-border);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   min-width: 120px;
   max-width: 300px;
   opacity: 0;
@@ -210,7 +279,6 @@
   white-space: nowrap;
   will-change: transform, opacity;
   transform: translateZ(0); /* Force hardware acceleration */
-  /* Add arrow indicator pointing to data point */
   /* Positioning optimizations */
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
@@ -227,7 +295,7 @@
   height: 0;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-top: 6px solid #1F272D;
+  border-top: 6px solid var(--chart-tooltip-bg);
   z-index: 1001;
 }
 
@@ -246,79 +314,88 @@
   height: 0;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-bottom: 6px solid #1F272D;
+  border-bottom: 6px solid var(--chart-tooltip-bg);
   z-index: 1001;
 }
 
 .db-linechart__tooltip-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   min-width: max-content;
 }
 
 .db-linechart__tooltip-date {
   font-size: 12px;
-  color: #C0CDD8;
+  color: var(--chart-muted-foreground);
   font-weight: 400;
+  opacity: 0.8;
 }
 
 .db-linechart__tooltip-value {
   font-size: 16px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: var(--chart-tooltip-fg);
 }
 
 .db-linechart__tooltip-change {
   font-size: 12px;
   font-weight: 500;
+  padding: 2px 6px;
+  border-radius: calc(var(--chart-radius) - 2px);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .db-linechart__tooltip-change--positive {
-  color: #3BA65E;
+  color: var(--chart-success);
+  background-color: hsl(var(--chart-success) / 0.1);
 }
 
 .db-linechart__tooltip-change--negative {
-  color: #E65B77;
+  color: var(--chart-error);
+  background-color: hsl(var(--chart-error) / 0.1);
 }
 
 /* Vertical line indicator */
 .db-linechart__vertical-line {
-  stroke: #8396A5;
+  stroke: var(--chart-muted-foreground);
   stroke-width: 1;
   stroke-dasharray: 4,4;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 150ms ease-in-out;
+  transition: var(--chart-transition);
 }
 
 /* Hover circle */
 .db-linechart__hover-circle {
-  stroke: #FFFFFF;
+  stroke: var(--chart-background);
   stroke-width: 3;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 150ms ease-in-out;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
 }
 
 .db-linechart__hover-circle--primary {
-  fill: #2272B4;
+  fill: var(--chart-primary);
 }
 
 .db-linechart__hover-circle--secondary {
-  fill: #04867D;
+  fill: var(--chart-secondary);
 }
 
 .db-linechart__hover-circle--success {
-  fill: #3BA65E;
+  fill: var(--chart-success);
 }
 
 .db-linechart__hover-circle--warning {
-  fill: #DE7921;
+  fill: var(--chart-warning);
 }
 
 .db-linechart__hover-circle--error {
-  fill: #E65B77;
+  fill: var(--chart-error);
 }
 
 /* Overlay for mouse events */
@@ -374,13 +451,22 @@
 
 /* Focus and accessibility */
 .db-linechart__point:focus {
-  outline: 2px solid #2272B4;
+  outline: 2px solid var(--chart-primary);
   outline-offset: 2px;
+  stroke-width: 3;
+  stroke: var(--chart-primary);
+  filter: drop-shadow(0 0 4px hsl(var(--chart-primary) / 0.4));
 }
 
 .db-linechart__svg:focus {
-  outline: 2px solid #2272B4;
+  outline: 2px solid var(--chart-primary);
   outline-offset: 2px;
+}
+
+.db-linechart:focus-visible {
+  outline: 2px solid var(--chart-primary);
+  outline-offset: 2px;
+  border-radius: var(--chart-radius);
 }
 
 /* Animation for line drawing */
@@ -575,19 +661,32 @@
   min-width: 200px;
 }
 
-/* Theme Support */
-.db-linechart[data-theme="dark"] {
-  --chart-bg: #1F272D;
-  --chart-text: #FFFFFF;
-  --chart-border: #445461;
-  --chart-grid: #37444F;
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .db-linechart__line--primary,
+  .db-linechart__line--secondary,
+  .db-linechart__line--success,
+  .db-linechart__line--warning,
+  .db-linechart__line--error {
+    stroke-width: 3;
+  }
+  
+  .db-linechart__point--primary,
+  .db-linechart__point--secondary,
+  .db-linechart__point--success,
+  .db-linechart__point--warning,
+  .db-linechart__point--error {
+    stroke-width: 3;
+  }
 }
 
-.db-linechart[data-theme="light"] {
-  --chart-bg: #FFFFFF;
-  --chart-text: #1F272D;
-  --chart-border: #E8ECF0;
-  --chart-grid: #F6F7F9;
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .db-linechart * {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+  }
 }
 
 /* Accessibility */
@@ -595,21 +694,9 @@
   outline: none;
 }
 
-.db-linechart:focus-visible {
-  outline: 2px solid #2272B4;
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
 /* Keyboard Navigation */
 .db-linechart__point[tabindex] {
   outline: none;
-}
-
-.db-linechart__point:focus {
-  stroke-width: 3;
-  stroke: #2272B4;
-  filter: drop-shadow(0 0 4px rgba(34, 114, 180, 0.4));
 }
 
 /* Performance Optimizations */
