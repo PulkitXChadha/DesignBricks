@@ -1,7 +1,14 @@
-import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext } from 'react';
+import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext, useState } from 'react';
 import clsx from 'clsx';
 import * as d3 from 'd3';
 import './MultiLineChart.css';
+import { 
+  TooltipConfig, 
+  ChartTooltip, 
+  DefaultTooltipContent, 
+  CustomTooltipProps,
+  TooltipPosition 
+} from '../shared/ChartTooltip';
 
 // Chart Context for compound components
 interface MultiLineChartContextValue {
@@ -132,9 +139,11 @@ export interface MultiLineChartProps extends Omit<HTMLAttributes<HTMLDivElement>
   
   /** Show data points on the lines */
   showPoints?: boolean;
-  /** Show interactive tooltip on hover */
+  /** Enhanced tooltip configuration */
+  tooltip?: TooltipConfig<Array<{ series: MultiLineChartSeries; dataPoint: MultiLineChartDataPoint; index: number }>>;
+  /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
-  /** Format function for tooltip values */
+  /** @deprecated Use tooltip.content instead */
   formatTooltip?: (dataPoints: Array<{ series: MultiLineChartSeries; dataPoint: MultiLineChartDataPoint; index: number }>) => string;
   /** Show percentage change in tooltip */
   showPercentageChange?: boolean;
@@ -191,6 +200,7 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
       animation,
       legend,
       showPoints = true,
+      tooltip,
       showTooltip = true,
       formatTooltip,
       showPercentageChange = false,
@@ -206,6 +216,13 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
   ) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    
+    // Tooltip state for new system
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition>({ x: 0, y: 0 });
+    const [tooltipData, setTooltipData] = useState<{
+      dataPoints: Array<{ series: MultiLineChartSeries; dataPoint: MultiLineChartDataPoint; index: number }>;
+    } | null>(null);
 
     // Filter visible series
     const visibleSeries = useMemo(() => 
@@ -257,6 +274,20 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
       position: 'bottom',
       orientation: 'horizontal',
       ...legend,
+    };
+
+    // Merge tooltip configuration with backward compatibility
+    const mergedTooltip: TooltipConfig<Array<{ series: MultiLineChartSeries; dataPoint: MultiLineChartDataPoint; index: number }>> = {
+      enabled: tooltip?.enabled !== undefined ? tooltip.enabled : showTooltip,
+      component: tooltip?.component,
+      content: tooltip?.content || formatTooltip,
+      style: tooltip?.style,
+      placement: tooltip?.placement || { placement: 'auto', offset: { x: 0, y: -10 } },
+      className: tooltip?.className,
+      animationDuration: tooltip?.animationDuration || 200,
+      showDelay: tooltip?.showDelay || 0,
+      hideDelay: tooltip?.hideDelay || 0,
+      ...tooltip,
     };
 
     const defaultMargin = {
@@ -480,27 +511,30 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
               .attr('aria-label', (d, i) => `${series.name} data point ${i + 1}: ${defaultFormatX(d.x)}, ${defaultFormatY(d.y)}`)
               .on('focus', function(event: any, d: any) {
                 const index = series.data.indexOf(d);
-                if (showTooltip && tooltipRef.current) {
-                  // Show tooltip on keyboard focus
+                if (mergedTooltip.enabled) {
+                  // For keyboard focus, show tooltip at the data point position
+                  const pointX = xScale!(d.x) || 0;
+                  const pointY = yScale!(d.y) || 0;
                   const dataPoints = [{ series, dataPoint: d, index }];
-                  const tooltipContent = defaultFormatTooltip(dataPoints);
-                  const tooltip = d3.select(tooltipRef.current);
-                  tooltip.style('opacity', 1).html(tooltipContent);
+                  setTooltipPosition({ x: pointX + defaultMargin.left, y: pointY + defaultMargin.top });
+                  setTooltipData({ dataPoints });
+                  setTooltipVisible(true);
                 }
               })
               .on('blur', function() {
-                if (tooltipRef.current) {
-                  d3.select(tooltipRef.current).style('opacity', 0);
+                if (mergedTooltip.enabled) {
+                  setTooltipVisible(false);
+                  setTooltipData(null);
                 }
               });
           }
         }
       });
 
-      // Tooltip functionality
-      if (showTooltip && tooltipRef.current) {
-        const tooltip = d3.select(tooltipRef.current);
+      // Enhanced tooltip functionality
+      if (mergedTooltip.enabled) {
         let tooltipTimer: number | null = null;
+        let hideTimer: number | null = null;
         
         // Vertical line indicator
         const verticalLine = g.append('line')
@@ -564,7 +598,7 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
               );
               const pointX = xScale(overallClosest.dataPoint.x) || 0;
 
-              // Show vertical line
+              // Show visual indicators
               verticalLine
                 .style('opacity', 1)
                 .attr('x1', pointX)
@@ -579,76 +613,55 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
                   .attr('cy', pointY);
               });
 
-              // Show tooltip with all series data
-              const tooltipContent = defaultFormatTooltip(closestPointsData);
-              tooltip
-                .style('opacity', 1)
-                .html(tooltipContent);
+              // Clear hide timer
+              if (hideTimer) {
+                clearTimeout(hideTimer);
+                hideTimer = null;
+              }
 
-              // Position tooltip
-              if (tooltipRef.current && svgRef.current) {
-                const tooltipNode = tooltipRef.current;
-                
-                if (tooltipTimer) window.cancelAnimationFrame(tooltipTimer);
-                
-                tooltipTimer = window.requestAnimationFrame(() => {
-                  tooltipNode.style.position = 'absolute';
-                  tooltipNode.style.visibility = 'hidden';
-                  tooltipNode.style.opacity = '0';
-                  tooltipNode.style.left = '0px';
-                  tooltipNode.style.top = '0px';
-                  
-                  const tooltipWidth = tooltipNode.offsetWidth;
-                  const tooltipHeight = tooltipNode.offsetHeight;
-                  
-                  const svgX = pointX + defaultMargin.left;
-                  const svgY = (yScale(overallClosest.dataPoint.y) || 0) + defaultMargin.top;
-                  
-                  let left = svgX - (tooltipWidth / 2);
-                  let top = svgY - tooltipHeight - 12;
-                  let isTooltipBelow = false;
-                  
-                  const padding = 10;
-                  
-                  if (left < padding) {
-                    left = padding;
-                  } else if (left + tooltipWidth > width - padding) {
-                    left = width - tooltipWidth - padding;
-                  }
-                  
-                  if (top < padding) {
-                    top = svgY + 12;
-                    isTooltipBelow = true;
-                  }
-                  
-                  if (top + tooltipHeight > height - padding) {
-                    top = height - tooltipHeight - padding;
-                  }
-                  
-                  tooltipNode.classList.toggle('tooltip-below', isTooltipBelow);
-                  
-                  tooltipNode.style.left = `${left}px`;
-                  tooltipNode.style.top = `${top}px`;
-                  tooltipNode.style.visibility = 'visible';
-                  tooltipNode.style.opacity = '1';
-                });
+              // Apply show delay
+              if (mergedTooltip.showDelay && mergedTooltip.showDelay > 0) {
+                if (tooltipTimer) clearTimeout(tooltipTimer);
+                tooltipTimer = window.setTimeout(() => {
+                  showTooltipForData(closestPointsData, pointX + defaultMargin.left, (yScale(overallClosest.dataPoint.y) || 0) + defaultMargin.top);
+                }, mergedTooltip.showDelay);
+              } else {
+                showTooltipForData(closestPointsData, pointX + defaultMargin.left, (yScale(overallClosest.dataPoint.y) || 0) + defaultMargin.top);
               }
             }
           })
           .on('mouseout', () => {
+            // Clear show timer
             if (tooltipTimer) {
-              window.cancelAnimationFrame(tooltipTimer);
+              clearTimeout(tooltipTimer);
               tooltipTimer = null;
             }
-            
-            tooltip.style('opacity', 0);
-            if (tooltipRef.current) {
-              tooltipRef.current.style.opacity = '0';
-              tooltipRef.current.style.visibility = 'hidden';
+
+            // Apply hide delay
+            if (mergedTooltip.hideDelay && mergedTooltip.hideDelay > 0) {
+              hideTimer = window.setTimeout(() => {
+                setTooltipVisible(false);
+                setTooltipData(null);
+              }, mergedTooltip.hideDelay);
+            } else {
+              setTooltipVisible(false);
+              setTooltipData(null);
             }
+            
             verticalLine.style('opacity', 0);
             hoverCircles.forEach(circle => circle.style('opacity', 0));
           });
+      }
+
+      // Helper function to show tooltip
+      function showTooltipForData(dataPoints: Array<{ series: MultiLineChartSeries; dataPoint: MultiLineChartDataPoint; index: number; distance: number }>, containerX: number, containerY: number) {
+        // Remove the distance property for the tooltip data
+        const cleanedDataPoints = dataPoints.map(({ series, dataPoint, index }) => ({ series, dataPoint, index }));
+        
+        // containerX and containerY are already relative to the full chart container
+        setTooltipPosition({ x: containerX, y: containerY });
+        setTooltipData({ dataPoints: cleanedDataPoints });
+        setTooltipVisible(true);
       }
 
       // Axis labels
@@ -774,7 +787,50 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
             role="presentation"
             aria-hidden={keyboard}
           />
-          {showTooltip && (
+          {mergedTooltip.enabled && tooltipData && (
+            <ChartTooltip
+              visible={tooltipVisible}
+              position={tooltipPosition}
+              tooltipStyle={mergedTooltip.style}
+              placement={mergedTooltip.placement}
+              animationDuration={mergedTooltip.animationDuration}
+              containerDimensions={{ width, height }}
+              className={clsx('db-multilinechart__tooltip', mergedTooltip.className)}
+              role="tooltip"
+              aria-live="polite"
+            >
+              {mergedTooltip.component ? (
+                <mergedTooltip.component
+                  data={tooltipData.dataPoints}
+                  chartDimensions={{ width, height }}
+                />
+              ) : mergedTooltip.content ? (
+                <div 
+                  dangerouslySetInnerHTML={{ 
+                    __html: mergedTooltip.content(tooltipData.dataPoints) 
+                  }} 
+                />
+              ) : (
+                <div className="db-multilinechart__tooltip-content">
+                  {tooltipData.dataPoints.length > 0 && (
+                    <div className="db-chart-tooltip__label">
+                      {defaultFormatX(tooltipData.dataPoints[0].dataPoint.x)}
+                    </div>
+                  )}
+                  {tooltipData.dataPoints.map(({ series, dataPoint }, index) => (
+                    <DefaultTooltipContent
+                      key={`${series.name}-${index}`}
+                      label={series.name}
+                      value={defaultFormatY(dataPoint.y)}
+                      color={getSeriesColor(series, visibleSeries.indexOf(series))}
+                    />
+                  ))}
+                </div>
+              )}
+            </ChartTooltip>
+          )}
+          {/* Legacy tooltip support */}
+          {showTooltip && !mergedTooltip.enabled && (
             <div
               ref={tooltipRef}
               className="db-multilinechart__tooltip"

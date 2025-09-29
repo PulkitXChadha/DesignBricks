@@ -1,7 +1,14 @@
-import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext } from 'react';
+import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext, useState } from 'react';
 import clsx from 'clsx';
 import * as d3 from 'd3';
 import './PieChart.css';
+import { 
+  TooltipConfig, 
+  ChartTooltip, 
+  DefaultTooltipContent, 
+  CustomTooltipProps,
+  TooltipPosition 
+} from '../shared/ChartTooltip';
 
 // Chart Context for compound components
 interface PieChartContextValue {
@@ -86,9 +93,11 @@ export interface PieChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'dat
   /** Legend configuration */
   legend?: PieChartLegend;
   
-  /** Show interactive tooltip on hover */
+  /** Enhanced tooltip configuration */
+  tooltip?: TooltipConfig<PieChartDataPoint>;
+  /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
-  /** Format function for tooltip values */
+  /** @deprecated Use tooltip.content instead */
   formatTooltip?: (dataPoint: PieChartDataPoint, percentage?: number) => string;
   /** Show percentage labels on slices */
   showLabels?: boolean;
@@ -140,6 +149,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
       theme,
       animation,
       legend,
+      tooltip,
       showTooltip = true,
       formatTooltip,
       showLabels = true,
@@ -158,6 +168,15 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
   ) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    
+    // Tooltip state for new system
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition>({ x: 0, y: 0 });
+    const [tooltipData, setTooltipData] = useState<{
+      dataPoint: PieChartDataPoint;
+      percentage: number;
+      index: number;
+    } | null>(null);
 
     // Modern configuration with sensible defaults
     const mergedTheme: PieChartTheme = {
@@ -181,6 +200,20 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
       position: 'bottom',
       orientation: 'horizontal',
       ...legend,
+    };
+
+    // Merge tooltip configuration with backward compatibility
+    const mergedTooltip: TooltipConfig<PieChartDataPoint> = {
+      enabled: tooltip?.enabled !== undefined ? tooltip.enabled : showTooltip,
+      component: tooltip?.component,
+      content: tooltip?.content || formatTooltip,
+      style: tooltip?.style,
+      placement: tooltip?.placement || { placement: 'auto', offset: { x: 0, y: -10 } },
+      className: tooltip?.className,
+      animationDuration: tooltip?.animationDuration || 200,
+      showDelay: tooltip?.showDelay || 0,
+      hideDelay: tooltip?.hideDelay || 0,
+      ...tooltip,
     };
 
     const defaultMargin = {
@@ -345,19 +378,27 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
             return `${d.data.label}: ${d3.format(',')(d.data.value)} (${percentage.toFixed(1)}%)`;
           })
           .on('focus', function(event: any, d: any) {
-            if (showTooltip && tooltipRef.current) {
+            if (mergedTooltip.enabled) {
+              const index = data.indexOf(d.data);
               const percentage = (d.value / totalValue) * 100;
-              const tooltipContent = defaultFormatTooltip(d.data, percentage);
-              const tooltip = d3.select(tooltipRef.current);
-              tooltip.style('opacity', 1).html(tooltipContent);
+              
+              // For keyboard focus, show tooltip immediately at center of slice
+              const centroid = arc!.centroid(d);
+              setTooltipPosition({ 
+                x: centroid[0] + innerWidth / 2, 
+                y: centroid[1] + innerHeight / 2 
+              });
+              setTooltipData({ dataPoint: d.data, percentage, index });
+              setTooltipVisible(true);
             }
             
             // Highlight slice
             d3.select(this).style('filter', 'brightness(1.1)');
           })
           .on('blur', function() {
-            if (tooltipRef.current) {
-              d3.select(tooltipRef.current).style('opacity', 0);
+            if (mergedTooltip.enabled) {
+              setTooltipVisible(false);
+              setTooltipData(null);
             }
             
             // Remove highlight
@@ -365,72 +406,52 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
           });
       }
 
-      // Tooltip functionality
-      if (showTooltip && tooltipRef.current) {
-        const tooltip = d3.select(tooltipRef.current);
+      // Enhanced tooltip functionality
+      if (mergedTooltip.enabled) {
         let tooltipTimer: number | null = null;
+        let hideTimer: number | null = null;
 
         paths
           .on('mouseenter', function(event, d) {
+            const index = data.indexOf(d.data);
             const percentage = (d.value / totalValue) * 100;
-            const tooltipContent = defaultFormatTooltip(d.data, percentage);
             
-            tooltip
-              .style('opacity', 1)
-              .html(tooltipContent);
+            // Clear any existing timers
+            if (hideTimer) {
+              clearTimeout(hideTimer);
+              hideTimer = null;
+            }
+
+            // Apply show delay
+            if (mergedTooltip.showDelay && mergedTooltip.showDelay > 0) {
+              tooltipTimer = window.setTimeout(() => {
+                showTooltipForData(event, d.data, percentage, index);
+              }, mergedTooltip.showDelay);
+            } else {
+              showTooltipForData(event, d.data, percentage, index);
+            }
 
             // Highlight slice
             d3.select(this)
               .style('filter', 'brightness(1.1)')
               .style('stroke-width', 3);
-
-            // Position tooltip
-            if (tooltipRef.current && svgRef.current) {
-              const tooltipNode = tooltipRef.current;
-              const [x, y] = d3.pointer(event, svgRef.current);
-
-              if (tooltipTimer) window.cancelAnimationFrame(tooltipTimer);
-
-              tooltipTimer = window.requestAnimationFrame(() => {
-                tooltipNode.style.position = 'absolute';
-                tooltipNode.style.visibility = 'hidden';
-                tooltipNode.style.opacity = '0';
-
-                const tooltipWidth = tooltipNode.offsetWidth;
-                const tooltipHeight = tooltipNode.offsetHeight;
-
-                let left = x - tooltipWidth / 2;
-                let top = y - tooltipHeight - 15;
-
-                const padding = 10;
-
-                if (left < padding) {
-                  left = padding;
-                } else if (left + tooltipWidth > width - padding) {
-                  left = width - tooltipWidth - padding;
-                }
-
-                if (top < padding) {
-                  top = y + 15;
-                }
-
-                tooltipNode.style.left = `${left}px`;
-                tooltipNode.style.top = `${top}px`;
-                tooltipNode.style.visibility = 'visible';
-                tooltipNode.style.opacity = '1';
-              });
-            }
           })
           .on('mouseleave', function() {
+            // Clear show timer
             if (tooltipTimer) {
-              window.cancelAnimationFrame(tooltipTimer);
+              clearTimeout(tooltipTimer);
               tooltipTimer = null;
             }
 
-            tooltip.style('opacity', 0);
-            if (tooltipRef.current) {
-              tooltipRef.current.style.opacity = '0';
-              tooltipRef.current.style.visibility = 'hidden';
+            // Apply hide delay
+            if (mergedTooltip.hideDelay && mergedTooltip.hideDelay > 0) {
+              hideTimer = window.setTimeout(() => {
+                setTooltipVisible(false);
+                setTooltipData(null);
+              }, mergedTooltip.hideDelay);
+            } else {
+              setTooltipVisible(false);
+              setTooltipData(null);
             }
             
             // Remove highlight
@@ -438,6 +459,23 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
               .style('filter', 'none')
               .style('stroke-width', 2);
           });
+      }
+
+      // Helper function to show tooltip
+      function showTooltipForData(event: MouseEvent, dataPoint: PieChartDataPoint, percentage: number, index: number) {
+        if (!svgRef.current) return;
+        
+        // Get coordinates relative to the SVG element
+        const [svgX, svgY] = d3.pointer(event, svgRef.current);
+        
+        // Convert SVG coordinates to container coordinates
+        // SVG coordinates are relative to the SVG element, but tooltip needs container-relative coordinates
+        const containerX = svgX + defaultMargin.left;
+        const containerY = svgY + defaultMargin.top;
+        
+        setTooltipPosition({ x: containerX, y: containerY });
+        setTooltipData({ dataPoint, percentage, index });
+        setTooltipVisible(true);
       }
 
       // Legend
@@ -555,7 +593,47 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
             role="presentation"
             aria-hidden={keyboard}
           />
-          {showTooltip && (
+          {mergedTooltip.enabled && tooltipData && (
+            <ChartTooltip
+              visible={tooltipVisible}
+              position={tooltipPosition}
+              tooltipStyle={mergedTooltip.style}
+              placement={mergedTooltip.placement}
+              animationDuration={mergedTooltip.animationDuration}
+              containerDimensions={{ width, height }}
+              className={clsx('db-piechart__tooltip', mergedTooltip.className)}
+              role="tooltip"
+              aria-live="polite"
+            >
+              {mergedTooltip.component ? (
+                <mergedTooltip.component
+                  data={tooltipData.dataPoint}
+                  index={tooltipData.index}
+                  additionalData={tooltipData.percentage}
+                  chartDimensions={{ width, height }}
+                />
+              ) : mergedTooltip.content ? (
+                <div 
+                  dangerouslySetInnerHTML={{ 
+                    __html: mergedTooltip.content(
+                      tooltipData.dataPoint, 
+                      tooltipData.index, 
+                      tooltipData.percentage
+                    ) 
+                  }} 
+                />
+              ) : (
+                <DefaultTooltipContent
+                  label={tooltipData.dataPoint.label}
+                  value={d3.format(',')(tooltipData.dataPoint.value)}
+                  percentage={tooltipData.percentage}
+                  color={colorScale!(tooltipData.dataPoint.label)}
+                />
+              )}
+            </ChartTooltip>
+          )}
+          {/* Legacy tooltip support */}
+          {showTooltip && !mergedTooltip.enabled && (
             <div
               ref={tooltipRef}
               className="db-piechart__tooltip"

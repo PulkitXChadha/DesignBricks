@@ -1,7 +1,14 @@
-import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext } from 'react';
+import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext, useState } from 'react';
 import clsx from 'clsx';
 import * as d3 from 'd3';
 import './LineChart.css';
+import { 
+  TooltipConfig, 
+  ChartTooltip, 
+  DefaultTooltipContent, 
+  CustomTooltipProps,
+  TooltipPosition 
+} from '../shared/ChartTooltip';
 
 // Chart Context for compound components
 interface LineChartContextValue {
@@ -116,9 +123,11 @@ export interface LineChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'da
   
   /** Show data points on the line */
   showPoints?: boolean;
-  /** Show interactive tooltip on hover */
+  /** Enhanced tooltip configuration */
+  tooltip?: TooltipConfig<LineChartDataPoint>;
+  /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
-  /** Format function for tooltip values */
+  /** @deprecated Use tooltip.content instead */
   formatTooltip?: (dataPoint: LineChartDataPoint, index?: number) => string;
   /** Show percentage change in tooltip */
   showPercentageChange?: boolean;
@@ -154,6 +163,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       animation,
       responsive,
       showPoints = true,
+      tooltip,
       showTooltip = true,
       formatTooltip,
       showPercentageChange = false,
@@ -170,6 +180,14 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
   ) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    
+    // Tooltip state for new system
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition>({ x: 0, y: 0 });
+    const [tooltipData, setTooltipData] = useState<{
+      dataPoint: LineChartDataPoint;
+      index: number;
+    } | null>(null);
 
     // Modern configuration with sensible defaults
     const mergedXAxis: LineChartAxis = {
@@ -210,6 +228,20 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       easing: 'ease-out',
       ...animation,
     };
+
+    // Merge tooltip configuration with backward compatibility
+    const mergedTooltip: TooltipConfig<LineChartDataPoint> = useMemo(() => ({
+      enabled: tooltip?.enabled !== undefined ? tooltip.enabled : showTooltip,
+      component: tooltip?.component,
+      content: tooltip?.content || formatTooltip,
+      style: tooltip?.style,
+      placement: tooltip?.placement || { placement: 'auto', offset: { x: 0, y: -10 } },
+      className: tooltip?.className,
+      animationDuration: tooltip?.animationDuration || 200,
+      showDelay: tooltip?.showDelay || 0,
+      hideDelay: tooltip?.hideDelay || 0,
+      ...tooltip,
+    }), [tooltip, showTooltip, formatTooltip]);
 
     const defaultMargin = {
       top: title ? 40 : 20,
@@ -420,25 +452,26 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
             .attr('aria-label', (d, i) => `Data point ${i + 1}: ${defaultFormatX(d.x)}, ${defaultFormatY(d.y)}`)
             .on('focus', function(event: any, d: any) {
               const index = data.indexOf(d);
-              if (showTooltip && tooltipRef.current) {
-                // Show tooltip on keyboard focus
-                const tooltipContent = defaultFormatTooltip(d, index);
-                const tooltip = d3.select(tooltipRef.current);
-                tooltip.style('opacity', 1).html(tooltipContent);
+              if (mergedTooltip.enabled) {
+                // For keyboard focus, show tooltip at the data point position
+                const pointX = xScale!(d.x) || 0;
+                const pointY = yScale!(d.y) || 0;
+                showTooltipForData(d, index, pointX, pointY);
               }
             })
             .on('blur', function() {
-              if (tooltipRef.current) {
-                d3.select(tooltipRef.current).style('opacity', 0);
+              if (mergedTooltip.enabled) {
+                setTooltipVisible(false);
+                setTooltipData(null);
               }
             });
         }
       }
 
-      // Tooltip functionality
-      if (showTooltip && tooltipRef.current) {
-        const tooltip = d3.select(tooltipRef.current);
+      // Enhanced tooltip functionality
+      if (mergedTooltip.enabled) {
         let tooltipTimer: number | null = null;
+        let hideTimer: number | null = null;
         
         // Vertical line indicator
         const verticalLine = g.append('line')
@@ -481,102 +514,64 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
             const pointX = xScale(closestPoint.x) || 0;
             const pointY = yScale(closestPoint.y) || 0;
 
-            // Show vertical line
+            // Show visual indicators
             verticalLine
               .style('opacity', 1)
               .attr('x1', pointX)
               .attr('x2', pointX);
 
-            // Show hover circle
             hoverCircle
               .style('opacity', 1)
               .attr('cx', pointX)
               .attr('cy', pointY);
 
-            // Show tooltip
-            const tooltipContent = defaultFormatTooltip(closestPoint, closestIndex);
-            tooltip
-              .style('opacity', 1)
-              .html(tooltipContent);
+            // Clear hide timer
+            if (hideTimer) {
+              clearTimeout(hideTimer);
+              hideTimer = null;
+            }
 
-            // Position tooltip using improved container-relative positioning
-            if (tooltipRef.current && svgRef.current) {
-              const tooltipNode = tooltipRef.current;
-              const svgNode = svgRef.current;
-              
-              // Clear any existing positioning
-              if (tooltipTimer) window.cancelAnimationFrame(tooltipTimer);
-              
-              tooltipTimer = window.requestAnimationFrame(() => {
-                // First, position tooltip off-screen to get accurate dimensions
-                tooltipNode.style.position = 'absolute';
-                tooltipNode.style.visibility = 'hidden';
-                tooltipNode.style.opacity = '0';
-                tooltipNode.style.left = '0px';
-                tooltipNode.style.top = '0px';
-                
-                // Force a layout to get accurate dimensions
-                const tooltipWidth = tooltipNode.offsetWidth;
-                const tooltipHeight = tooltipNode.offsetHeight;
-                
-                // Convert chart coordinates to container coordinates
-                // pointX and pointY are relative to the inner chart area
-                const svgX = pointX + defaultMargin.left;
-                const svgY = pointY + defaultMargin.top;
-                
-                // Position tooltip above the data point, centered horizontally
-                let left = svgX - (tooltipWidth / 2);
-                let top = svgY - tooltipHeight - 12; // 12px gap above point
-                let isTooltipBelow = false;
-                
-                // Chart container bounds
-                const padding = 10;
-                
-                // Keep horizontal bounds within chart
-                if (left < padding) {
-                  left = padding;
-                } else if (left + tooltipWidth > width - padding) {
-                  left = width - tooltipWidth - padding;
-                }
-                
-                // Keep vertical bounds within chart
-                if (top < padding) {
-                  // If tooltip would go above chart, position below the point
-                  top = svgY + 12;
-                  isTooltipBelow = true;
-                }
-                
-                // Ensure tooltip doesn't go below chart
-                if (top + tooltipHeight > height - padding) {
-                  top = height - tooltipHeight - padding;
-                }
-                
-                // Add/remove CSS classes for arrow direction
-                tooltipNode.classList.toggle('tooltip-below', isTooltipBelow);
-                
-                // Set final position and make visible
-                tooltipNode.style.left = `${left}px`;
-                tooltipNode.style.top = `${top}px`;
-                tooltipNode.style.visibility = 'visible';
-                tooltipNode.style.opacity = '1';
-              });
+            // Apply show delay
+            if (mergedTooltip.showDelay && mergedTooltip.showDelay > 0) {
+              if (tooltipTimer) clearTimeout(tooltipTimer);
+              tooltipTimer = window.setTimeout(() => {
+                showTooltipForData(closestPoint, closestIndex, pointX, pointY);
+              }, mergedTooltip.showDelay);
+            } else {
+              showTooltipForData(closestPoint, closestIndex, pointX, pointY);
             }
           })
           .on('mouseout', () => {
-            // Clear any pending tooltip positioning
+            // Clear show timer
             if (tooltipTimer) {
-              window.cancelAnimationFrame(tooltipTimer);
+              clearTimeout(tooltipTimer);
               tooltipTimer = null;
             }
-            
-            tooltip.style('opacity', 0);
-            if (tooltipRef.current) {
-              tooltipRef.current.style.opacity = '0';
-              tooltipRef.current.style.visibility = 'hidden';
+
+            // Apply hide delay
+            if (mergedTooltip.hideDelay && mergedTooltip.hideDelay > 0) {
+              hideTimer = window.setTimeout(() => {
+                setTooltipVisible(false);
+                setTooltipData(null);
+              }, mergedTooltip.hideDelay);
+            } else {
+              setTooltipVisible(false);
+              setTooltipData(null);
             }
+            
             verticalLine.style('opacity', 0);
             hoverCircle.style('opacity', 0);
           });
+      }
+
+      // Helper function to show tooltip
+      function showTooltipForData(dataPoint: LineChartDataPoint, index: number, svgX: number, svgY: number) {
+        // Convert SVG coordinates to container coordinates by adding the margins
+        const containerX = svgX + defaultMargin.left;
+        const containerY = svgY + defaultMargin.top;
+        setTooltipPosition({ x: containerX, y: containerY });
+        setTooltipData({ dataPoint, index });
+        setTooltipVisible(true);
       }
 
       // Axis labels
@@ -608,7 +603,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
           .text(title);
       }
 
-    }, [data, width, height, xScale, yScale, lineGenerator, mergedGrid.show, showPoints, showTooltip, 
+    }, [data, width, height, xScale, yScale, lineGenerator, mergedGrid.show, showPoints, mergedTooltip, 
         color, mergedXAxis.label, mergedYAxis.label, title, defaultMargin, innerWidth, innerHeight, 
         defaultFormatX, defaultFormatY, defaultFormatTooltip, showPercentageChange, calculatePercentageChange]);
 
@@ -674,7 +669,44 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
             role="presentation"
             aria-hidden={keyboard}
           />
-          {showTooltip && (
+          {mergedTooltip.enabled && tooltipData && (
+            <ChartTooltip
+              visible={tooltipVisible}
+              position={tooltipPosition}
+              tooltipStyle={mergedTooltip.style}
+              placement={mergedTooltip.placement}
+              animationDuration={mergedTooltip.animationDuration}
+              containerDimensions={{ width, height }}
+              className={clsx('db-linechart__tooltip', mergedTooltip.className)}
+              role="tooltip"
+              aria-live="polite"
+            >
+              {mergedTooltip.component ? (
+                <mergedTooltip.component
+                  data={tooltipData.dataPoint}
+                  index={tooltipData.index}
+                  chartDimensions={{ width, height }}
+                />
+              ) : mergedTooltip.content ? (
+                <div 
+                  dangerouslySetInnerHTML={{ 
+                    __html: mergedTooltip.content(
+                      tooltipData.dataPoint, 
+                      tooltipData.index
+                    ) 
+                  }} 
+                />
+              ) : (
+                <DefaultTooltipContent
+                  label={defaultFormatX(tooltipData.dataPoint.x)}
+                  value={defaultFormatY(tooltipData.dataPoint.y)}
+                  color={`var(--chart-${color})`}
+                />
+              )}
+            </ChartTooltip>
+          )}
+          {/* Legacy tooltip support */}
+          {showTooltip && !mergedTooltip.enabled && (
             <div
               ref={tooltipRef}
               className="db-linechart__tooltip"

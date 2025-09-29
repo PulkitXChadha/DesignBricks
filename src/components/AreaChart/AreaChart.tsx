@@ -1,7 +1,14 @@
-import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext } from 'react';
+import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext, useState } from 'react';
 import clsx from 'clsx';
 import * as d3 from 'd3';
 import './AreaChart.css';
+import { 
+  TooltipConfig, 
+  ChartTooltip, 
+  DefaultTooltipContent, 
+  CustomTooltipProps,
+  TooltipPosition 
+} from '../shared/ChartTooltip';
 
 // Chart Context for compound components
 interface AreaChartContextValue {
@@ -120,9 +127,11 @@ export interface AreaChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'da
   
   /** Show data points on the line */
   showPoints?: boolean;
-  /** Show interactive tooltip on hover */
+  /** Enhanced tooltip configuration */
+  tooltip?: TooltipConfig<AreaChartDataPoint>;
+  /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
-  /** Format function for tooltip values */
+  /** @deprecated Use tooltip.content instead */
   formatTooltip?: (dataPoint: AreaChartDataPoint, index?: number) => string;
   /** Show percentage change in tooltip */
   showPercentageChange?: boolean;
@@ -160,6 +169,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       animation,
       responsive,
       showPoints = false,
+      tooltip,
       showTooltip = true,
       formatTooltip,
       showPercentageChange = false,
@@ -176,6 +186,14 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
   ) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    
+    // Tooltip state for new system
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition>({ x: 0, y: 0 });
+    const [tooltipData, setTooltipData] = useState<{
+      dataPoint: AreaChartDataPoint;
+      index: number;
+    } | null>(null);
 
     // Modern configuration with sensible defaults
     const mergedXAxis: AreaChartAxis = {
@@ -217,6 +235,20 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       easing: 'ease-out',
       ...animation,
     };
+
+    // Merge tooltip configuration with backward compatibility
+    const mergedTooltip: TooltipConfig<AreaChartDataPoint> = useMemo(() => ({
+      enabled: tooltip?.enabled !== undefined ? tooltip.enabled : showTooltip,
+      component: tooltip?.component,
+      content: tooltip?.content || formatTooltip,
+      style: tooltip?.style,
+      placement: tooltip?.placement || { placement: 'auto', offset: { x: 0, y: -10 } },
+      className: tooltip?.className,
+      animationDuration: tooltip?.animationDuration || 200,
+      showDelay: tooltip?.showDelay || 0,
+      hideDelay: tooltip?.hideDelay || 0,
+      ...tooltip,
+    }), [tooltip, showTooltip, formatTooltip]);
 
     const defaultMargin = {
       top: title ? 40 : 20,
@@ -444,25 +476,26 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             .attr('aria-label', (d, i) => `Data point ${i + 1}: ${defaultFormatX(d.x)}, ${defaultFormatY(d.y)}`)
             .on('focus', function(event: any, d: any) {
               const index = data.indexOf(d);
-              if (showTooltip && tooltipRef.current) {
-                // Show tooltip on keyboard focus
-                const tooltipContent = defaultFormatTooltip(d, index);
-                const tooltip = d3.select(tooltipRef.current);
-                tooltip.style('opacity', 1).html(tooltipContent);
+              if (mergedTooltip.enabled) {
+                // For keyboard focus, show tooltip at the data point position
+                const pointX = xScale!(d.x) || 0;
+                const pointY = yScale!(d.y) || 0;
+                showTooltipForData(d, index, pointX, pointY);
               }
             })
             .on('blur', function() {
-              if (tooltipRef.current) {
-                d3.select(tooltipRef.current).style('opacity', 0);
+              if (mergedTooltip.enabled) {
+                setTooltipVisible(false);
+                setTooltipData(null);
               }
             });
         }
       }
 
-      // Tooltip functionality
-      if (showTooltip && tooltipRef.current) {
-        const tooltip = d3.select(tooltipRef.current);
+      // Enhanced tooltip functionality
+      if (mergedTooltip.enabled) {
         let tooltipTimer: number | null = null;
+        let hideTimer: number | null = null;
         
         // Vertical line indicator
         const verticalLine = g.append('line')
@@ -505,87 +538,64 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             const pointX = xScale(closestPoint.x) || 0;
             const pointY = yScale(closestPoint.y) || 0;
 
-            // Show vertical line
+            // Show visual indicators
             verticalLine
               .style('opacity', 1)
               .attr('x1', pointX)
               .attr('x2', pointX);
 
-            // Show hover circle
             hoverCircle
               .style('opacity', 1)
               .attr('cx', pointX)
               .attr('cy', pointY);
 
-            // Show tooltip
-            const tooltipContent = defaultFormatTooltip(closestPoint, closestIndex);
-            tooltip
-              .style('opacity', 1)
-              .html(tooltipContent);
+            // Clear hide timer
+            if (hideTimer) {
+              clearTimeout(hideTimer);
+              hideTimer = null;
+            }
 
-            // Position tooltip
-            if (tooltipRef.current && svgRef.current) {
-              const tooltipNode = tooltipRef.current;
-              
-              if (tooltipTimer) window.cancelAnimationFrame(tooltipTimer);
-              
-              tooltipTimer = window.requestAnimationFrame(() => {
-                tooltipNode.style.position = 'absolute';
-                tooltipNode.style.visibility = 'hidden';
-                tooltipNode.style.opacity = '0';
-                tooltipNode.style.left = '0px';
-                tooltipNode.style.top = '0px';
-                
-                const tooltipWidth = tooltipNode.offsetWidth;
-                const tooltipHeight = tooltipNode.offsetHeight;
-                
-                const svgX = pointX + defaultMargin.left;
-                const svgY = pointY + defaultMargin.top;
-                
-                let left = svgX - (tooltipWidth / 2);
-                let top = svgY - tooltipHeight - 12;
-                let isTooltipBelow = false;
-                
-                const padding = 10;
-                
-                if (left < padding) {
-                  left = padding;
-                } else if (left + tooltipWidth > width - padding) {
-                  left = width - tooltipWidth - padding;
-                }
-                
-                if (top < padding) {
-                  top = svgY + 12;
-                  isTooltipBelow = true;
-                }
-                
-                if (top + tooltipHeight > height - padding) {
-                  top = height - tooltipHeight - padding;
-                }
-                
-                tooltipNode.classList.toggle('tooltip-below', isTooltipBelow);
-                
-                tooltipNode.style.left = `${left}px`;
-                tooltipNode.style.top = `${top}px`;
-                tooltipNode.style.visibility = 'visible';
-                tooltipNode.style.opacity = '1';
-              });
+            // Apply show delay
+            if (mergedTooltip.showDelay && mergedTooltip.showDelay > 0) {
+              if (tooltipTimer) clearTimeout(tooltipTimer);
+              tooltipTimer = window.setTimeout(() => {
+                showTooltipForData(closestPoint, closestIndex, pointX, pointY);
+              }, mergedTooltip.showDelay);
+            } else {
+              showTooltipForData(closestPoint, closestIndex, pointX, pointY);
             }
           })
           .on('mouseout', () => {
+            // Clear show timer
             if (tooltipTimer) {
-              window.cancelAnimationFrame(tooltipTimer);
+              clearTimeout(tooltipTimer);
               tooltipTimer = null;
             }
-            
-            tooltip.style('opacity', 0);
-            if (tooltipRef.current) {
-              tooltipRef.current.style.opacity = '0';
-              tooltipRef.current.style.visibility = 'hidden';
+
+            // Apply hide delay
+            if (mergedTooltip.hideDelay && mergedTooltip.hideDelay > 0) {
+              hideTimer = window.setTimeout(() => {
+                setTooltipVisible(false);
+                setTooltipData(null);
+              }, mergedTooltip.hideDelay);
+            } else {
+              setTooltipVisible(false);
+              setTooltipData(null);
             }
+            
             verticalLine.style('opacity', 0);
             hoverCircle.style('opacity', 0);
           });
+      }
+
+      // Helper function to show tooltip
+      function showTooltipForData(dataPoint: AreaChartDataPoint, index: number, svgX: number, svgY: number) {
+        // Convert SVG coordinates to container coordinates by adding the margins
+        const containerX = svgX + defaultMargin.left;
+        const containerY = svgY + defaultMargin.top;
+        setTooltipPosition({ x: containerX, y: containerY });
+        setTooltipData({ dataPoint, index });
+        setTooltipVisible(true);
       }
 
       // Axis labels
@@ -617,7 +627,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
           .text(title);
       }
 
-    }, [data, width, height, xScale, yScale, areaGenerator, lineGenerator, mergedGrid.show, showPoints, showTooltip, showStroke,
+    }, [data, width, height, xScale, yScale, areaGenerator, lineGenerator, mergedGrid.show, showPoints, mergedTooltip, showStroke,
         color, mergedXAxis.label, mergedYAxis.label, title, defaultMargin, innerWidth, innerHeight, fillOpacity,
         defaultFormatX, defaultFormatY, defaultFormatTooltip, showPercentageChange, calculatePercentageChange]);
 
@@ -683,7 +693,44 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             role="presentation"
             aria-hidden={keyboard}
           />
-          {showTooltip && (
+          {mergedTooltip.enabled && tooltipData && (
+            <ChartTooltip
+              visible={tooltipVisible}
+              position={tooltipPosition}
+              tooltipStyle={mergedTooltip.style}
+              placement={mergedTooltip.placement}
+              animationDuration={mergedTooltip.animationDuration}
+              containerDimensions={{ width, height }}
+              className={clsx('db-areachart__tooltip', mergedTooltip.className)}
+              role="tooltip"
+              aria-live="polite"
+            >
+              {mergedTooltip.component ? (
+                <mergedTooltip.component
+                  data={tooltipData.dataPoint}
+                  index={tooltipData.index}
+                  chartDimensions={{ width, height }}
+                />
+              ) : mergedTooltip.content ? (
+                <div 
+                  dangerouslySetInnerHTML={{ 
+                    __html: mergedTooltip.content(
+                      tooltipData.dataPoint, 
+                      tooltipData.index
+                    ) 
+                  }} 
+                />
+              ) : (
+                <DefaultTooltipContent
+                  label={defaultFormatX(tooltipData.dataPoint.x)}
+                  value={defaultFormatY(tooltipData.dataPoint.y)}
+                  color={`var(--chart-${color})`}
+                />
+              )}
+            </ChartTooltip>
+          )}
+          {/* Legacy tooltip support */}
+          {showTooltip && !mergedTooltip.enabled && (
             <div
               ref={tooltipRef}
               className="db-areachart__tooltip"

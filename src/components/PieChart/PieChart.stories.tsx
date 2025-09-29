@@ -341,3 +341,192 @@ export const InteractiveFeatures: Story = {
     }
   }
 };
+
+// Enhanced Tooltip Examples
+export const CustomTooltipHTML: Story = {
+  args: {
+    data: marketShareData,
+    width: 500,
+    height: 500,
+    title: 'Custom HTML Tooltip',
+    tooltip: {
+      enabled: true,
+      content: (dataPoint, index, percentage) => `
+        <div style="padding: 8px; border-left: 4px solid #2272B4;">
+          <h4 style="margin: 0 0 8px 0; color: #1890FF;">${dataPoint.label}</h4>
+          <p style="margin: 0; font-size: 16px; font-weight: bold;">${dataPoint.value.toLocaleString()}</p>
+          <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.8;">${percentage?.toFixed(1)}% of total</p>
+          <small style="color: #666;">Data point #${(index || 0) + 1}</small>
+        </div>
+      `,
+      style: {
+        backgroundColor: 'white',
+        color: '#333',
+        borderRadius: '8px',
+        padding: '0',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+        border: '1px solid #e8e8e8'
+      }
+    }
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates custom HTML tooltip content with enhanced styling and formatting.'
+      }
+    }
+  }
+};
+
+export const CustomTooltipComponent: Story = {
+  args: {
+    data: marketShareData,
+    width: 500,
+    height: 500,
+    title: 'Custom React Tooltip Component',
+    tooltip: {
+      enabled: true,
+      component: ({ data, additionalData }) => (
+        <div style={{
+          background: 'linear-gradient(145deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          padding: '16px',
+          borderRadius: '12px',
+          textAlign: 'center',
+          minWidth: '200px'
+        }}>
+          <div style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>
+            🍰 {data.label}
+          </div>
+          <div style={{ fontSize: '24px', fontWeight: '800', margin: '8px 0' }}>
+            {data.value.toLocaleString()}
+          </div>
+          <div style={{ fontSize: '14px', opacity: 0.9 }}>
+            {additionalData?.toFixed(1)}% share
+          </div>
+          <div style={{
+            marginTop: '12px',
+            padding: '6px 12px',
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            borderRadius: '6px',
+            fontSize: '12px'
+          }}>
+            Click for details
+          </div>
+        </div>
+      ),
+      style: {
+        padding: '0',
+        backgroundColor: 'transparent',
+        border: 'none',
+        boxShadow: '0 12px 48px rgba(0, 0, 0, 0.25)'
+      }
+    }
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows how to use a custom React component for rich, interactive tooltip content.'
+      }
+    }
+  }
+};
+
+export const TooltipVariations: Story = {
+  render: () => {
+    const data = [
+      { label: 'Design', value: 450 },
+      { label: 'Development', value: 320 },
+      { label: 'Marketing', value: 180 },
+      { label: 'Sales', value: 250 }
+    ];
+
+    return (
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '2rem', padding: '1rem' }}>
+        <div>
+          <h3>Delayed Tooltip</h3>
+          <PieChart
+            data={data}
+            width={300}
+            height={300}
+            tooltip={{
+              enabled: true,
+              showDelay: 500,
+              hideDelay: 200,
+              style: {
+                backgroundColor: '#ff6b6b',
+                color: 'white'
+              }
+            }}
+          />
+        </div>
+        
+        <div>
+          <h3>Custom Positioning</h3>
+          <PieChart
+            data={data}
+            width={300}
+            height={300}
+            tooltip={{
+              enabled: true,
+              placement: {
+                placement: 'top',
+                offset: { x: 0, y: -20 }
+              },
+              style: {
+                backgroundColor: '#4ecdc4',
+                color: 'white',
+                borderRadius: '20px'
+              }
+            }}
+          />
+        </div>
+        
+        <div>
+          <h3>Minimal Tooltip</h3>
+          <PieChart
+            data={data}
+            width={300}
+            height={300}
+            tooltip={{
+              enabled: true,
+              content: (dataPoint, index, percentage) => `${dataPoint.label}: ${percentage?.toFixed(0)}%`,
+              style: {
+                fontSize: '12px',
+                padding: '4px 8px',
+                backgroundColor: '#2c3e50',
+                borderRadius: '4px'
+              }
+            }}
+          />
+        </div>
+        
+        <div>
+          <h3>Animated Tooltip</h3>
+          <PieChart
+            data={data}
+            width={300}
+            height={300}
+            tooltip={{
+              enabled: true,
+              animationDuration: 500,
+              style: {
+                backgroundColor: '#9b59b6',
+                color: 'white',
+                transform: 'scale(1.05)',
+                transition: 'transform 0.3s ease'
+              }
+            }}
+          />
+        </div>
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Various tooltip configurations including delays, positioning, styling, and animations.'
+      }
+    }
+  }
+};

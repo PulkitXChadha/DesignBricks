@@ -1,7 +1,14 @@
-import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext } from 'react';
+import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext, useState } from 'react';
 import clsx from 'clsx';
 import * as d3 from 'd3';
 import './ScatterChart.css';
+import { 
+  TooltipConfig, 
+  ChartTooltip, 
+  DefaultTooltipContent, 
+  CustomTooltipProps,
+  TooltipPosition 
+} from '../shared/ChartTooltip';
 
 // Chart Context for compound components
 interface ScatterChartContextValue {
@@ -130,9 +137,11 @@ export interface ScatterChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   /** Responsive configuration */
   responsive?: ScatterChartResponsive;
   
-  /** Show interactive tooltip on hover */
+  /** Enhanced tooltip configuration */
+  tooltip?: TooltipConfig<ScatterChartDataPoint>;
+  /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
-  /** Format function for tooltip values */
+  /** @deprecated Use tooltip.content instead */
   formatTooltip?: (dataPoint: ScatterChartDataPoint, index?: number) => string;
   
   /** Enable keyboard navigation */
@@ -168,6 +177,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
       theme,
       animation,
       responsive,
+      tooltip,
       showTooltip = true,
       formatTooltip,
       keyboard = false,
@@ -182,6 +192,14 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
   ) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    
+    // Tooltip state for new system
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition>({ x: 0, y: 0 });
+    const [tooltipData, setTooltipData] = useState<{
+      dataPoint: ScatterChartDataPoint;
+      index: number;
+    } | null>(null);
 
     // Modern configuration with sensible defaults
     const mergedXAxis: ScatterChartAxis = {
@@ -221,6 +239,20 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
       duration: variant === 'detailed' ? 600 : 400,
       easing: 'ease-out',
       ...animation,
+    };
+
+    // Merge tooltip configuration with backward compatibility
+    const mergedTooltip: TooltipConfig<ScatterChartDataPoint> = {
+      enabled: tooltip?.enabled !== undefined ? tooltip.enabled : showTooltip,
+      component: tooltip?.component,
+      content: tooltip?.content || formatTooltip,
+      style: tooltip?.style,
+      placement: tooltip?.placement || { placement: 'auto', offset: { x: 0, y: -10 } },
+      className: tooltip?.className,
+      animationDuration: tooltip?.animationDuration || 200,
+      showDelay: tooltip?.showDelay || 0,
+      hideDelay: tooltip?.hideDelay || 0,
+      ...tooltip,
     };
 
     const defaultMargin = {
@@ -429,11 +461,15 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
           })
           .on('focus', function(event: any, d: any) {
             const index = data.indexOf(d);
-            if (showTooltip && tooltipRef.current) {
-              // Show tooltip on keyboard focus
-              const tooltipContent = defaultFormatTooltip(d, index);
-              const tooltip = d3.select(tooltipRef.current);
-              tooltip.style('opacity', 1).html(tooltipContent);
+            if (mergedTooltip.enabled) {
+              // For keyboard focus, show tooltip at the data point position
+              const pointX = xScale!(d.x) || 0;
+              const pointY = yScale!(d.y) || 0;
+              const svgX = pointX + defaultMargin.left;
+              const svgY = pointY + defaultMargin.top;
+              setTooltipPosition({ x: svgX, y: svgY });
+              setTooltipData({ dataPoint: d, index });
+              setTooltipVisible(true);
             }
             
             // Highlight point
@@ -442,8 +478,9 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
               .style('stroke-width', 2);
           })
           .on('blur', function() {
-            if (tooltipRef.current) {
-              d3.select(tooltipRef.current).style('opacity', 0);
+            if (mergedTooltip.enabled) {
+              setTooltipVisible(false);
+              setTooltipData(null);
             }
             
             // Remove highlight
@@ -452,19 +489,29 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
           });
       }
 
-      // Tooltip functionality
-      if (showTooltip && tooltipRef.current) {
-        const tooltip = d3.select(tooltipRef.current);
+      // Enhanced tooltip functionality
+      if (mergedTooltip.enabled) {
         let tooltipTimer: number | null = null;
+        let hideTimer: number | null = null;
 
         points
           .on('mouseenter', function(event, d) {
             const index = data.indexOf(d);
-            const tooltipContent = defaultFormatTooltip(d, index);
             
-            tooltip
-              .style('opacity', 1)
-              .html(tooltipContent);
+            // Clear any existing timers
+            if (hideTimer) {
+              clearTimeout(hideTimer);
+              hideTimer = null;
+            }
+
+            // Apply show delay
+            if (mergedTooltip.showDelay && mergedTooltip.showDelay > 0) {
+              tooltipTimer = window.setTimeout(() => {
+                showTooltipForData(event, d, index);
+              }, mergedTooltip.showDelay);
+            } else {
+              showTooltipForData(event, d, index);
+            }
 
             // Highlight point
             d3.select(this)
@@ -474,66 +521,23 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
               .duration(150)
               .attr('r', enableBubbles && sizeScale && d.size !== undefined ? 
                 (sizeScale(d.size) || 0) + 2 : pointRadius + 2);
-
-            // Position tooltip
-            if (tooltipRef.current && svgRef.current) {
-              const tooltipNode = tooltipRef.current;
-              const pointX = xScale(d.x) || 0;
-              const pointY = yScale(d.y) || 0;
-
-              if (tooltipTimer) window.cancelAnimationFrame(tooltipTimer);
-
-              tooltipTimer = window.requestAnimationFrame(() => {
-                tooltipNode.style.position = 'absolute';
-                tooltipNode.style.visibility = 'hidden';
-                tooltipNode.style.opacity = '0';
-
-                const tooltipWidth = tooltipNode.offsetWidth;
-                const tooltipHeight = tooltipNode.offsetHeight;
-
-                const svgX = pointX + defaultMargin.left;
-                const svgY = pointY + defaultMargin.top;
-
-                let left = svgX - tooltipWidth / 2;
-                let top = svgY - tooltipHeight - 15;
-                let isTooltipBelow = false;
-
-                const padding = 10;
-
-                if (left < padding) {
-                  left = padding;
-                } else if (left + tooltipWidth > width - padding) {
-                  left = width - tooltipWidth - padding;
-                }
-
-                if (top < padding) {
-                  top = svgY + 15;
-                  isTooltipBelow = true;
-                }
-
-                if (top + tooltipHeight > height - padding) {
-                  top = height - tooltipHeight - padding;
-                }
-
-                tooltipNode.classList.toggle('tooltip-below', isTooltipBelow);
-
-                tooltipNode.style.left = `${left}px`;
-                tooltipNode.style.top = `${top}px`;
-                tooltipNode.style.visibility = 'visible';
-                tooltipNode.style.opacity = '1';
-              });
-            }
           })
           .on('mouseleave', function(event, d) {
+            // Clear show timer
             if (tooltipTimer) {
-              window.cancelAnimationFrame(tooltipTimer);
+              clearTimeout(tooltipTimer);
               tooltipTimer = null;
             }
 
-            tooltip.style('opacity', 0);
-            if (tooltipRef.current) {
-              tooltipRef.current.style.opacity = '0';
-              tooltipRef.current.style.visibility = 'hidden';
+            // Apply hide delay
+            if (mergedTooltip.hideDelay && mergedTooltip.hideDelay > 0) {
+              hideTimer = window.setTimeout(() => {
+                setTooltipVisible(false);
+                setTooltipData(null);
+              }, mergedTooltip.hideDelay);
+            } else {
+              setTooltipVisible(false);
+              setTooltipData(null);
             }
             
             // Remove highlight
@@ -544,6 +548,23 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
               .attr('r', enableBubbles && sizeScale && d.size !== undefined ? 
                 sizeScale(d.size) || pointRadius : pointRadius);
           });
+      }
+
+      // Helper function to show tooltip
+      function showTooltipForData(event: MouseEvent, dataPoint: ScatterChartDataPoint, index: number) {
+        if (!svgRef.current) return;
+        
+        const pointX = xScale!(dataPoint.x) || 0;
+        const pointY = yScale!(dataPoint.y) || 0;
+        
+        // Convert SVG coordinates to container coordinates
+        // SVG coordinates are relative to the SVG element, but tooltip needs container-relative coordinates
+        const containerX = pointX + defaultMargin.left;
+        const containerY = pointY + defaultMargin.top;
+
+        setTooltipPosition({ x: containerX, y: containerY });
+        setTooltipData({ dataPoint, index });
+        setTooltipVisible(true);
       }
 
       // Axis labels
@@ -644,7 +665,49 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
             role="presentation"
             aria-hidden={keyboard}
           />
-          {showTooltip && (
+          {mergedTooltip.enabled && tooltipData && (
+            <ChartTooltip
+              visible={tooltipVisible}
+              position={tooltipPosition}
+              tooltipStyle={mergedTooltip.style}
+              placement={mergedTooltip.placement}
+              animationDuration={mergedTooltip.animationDuration}
+              containerDimensions={{ width, height }}
+              className={clsx('db-scatterchart__tooltip', mergedTooltip.className)}
+              role="tooltip"
+              aria-live="polite"
+            >
+              {mergedTooltip.component ? (
+                <mergedTooltip.component
+                  data={tooltipData.dataPoint}
+                  index={tooltipData.index}
+                  chartDimensions={{ width, height }}
+                />
+              ) : mergedTooltip.content ? (
+                <div 
+                  dangerouslySetInnerHTML={{ 
+                    __html: mergedTooltip.content(
+                      tooltipData.dataPoint, 
+                      tooltipData.index
+                    ) 
+                  }} 
+                />
+              ) : (
+                <DefaultTooltipContent
+                  label={tooltipData.dataPoint.label}
+                  value={`X: ${defaultFormatX(tooltipData.dataPoint.x)}, Y: ${defaultFormatY(tooltipData.dataPoint.y)}`}
+                  color={`var(--chart-${color})`}
+                  additionalInfo={
+                    enableBubbles && tooltipData.dataPoint.size !== undefined && (
+                      <div>Size: {tooltipData.dataPoint.size}</div>
+                    )
+                  }
+                />
+              )}
+            </ChartTooltip>
+          )}
+          {/* Legacy tooltip support */}
+          {showTooltip && !mergedTooltip.enabled && (
             <div
               ref={tooltipRef}
               className="db-scatterchart__tooltip"

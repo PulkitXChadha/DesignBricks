@@ -1,7 +1,14 @@
-import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext } from 'react';
+import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext, useState } from 'react';
 import clsx from 'clsx';
 import * as d3 from 'd3';
 import './BarChart.css';
+import { 
+  TooltipConfig, 
+  ChartTooltip, 
+  DefaultTooltipContent, 
+  CustomTooltipProps,
+  TooltipPosition 
+} from '../shared/ChartTooltip';
 
 // Chart Context for compound components
 interface BarChartContextValue {
@@ -120,9 +127,11 @@ export interface BarChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'dat
   /** Responsive configuration */
   responsive?: BarChartResponsive;
   
-  /** Show interactive tooltip on hover */
+  /** Enhanced tooltip configuration */
+  tooltip?: TooltipConfig<BarChartDataPoint>;
+  /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
-  /** Format function for tooltip values */
+  /** @deprecated Use tooltip.content instead */
   formatTooltip?: (dataPoint: BarChartDataPoint, index?: number) => string;
   /** Show value labels on bars */
   showValueLabels?: boolean;
@@ -157,6 +166,7 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       theme,
       animation,
       responsive,
+      tooltip,
       showTooltip = true,
       formatTooltip,
       showValueLabels = false,
@@ -172,6 +182,14 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
   ) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    
+    // Tooltip state for new system
+    const [tooltipVisible, setTooltipVisible] = useState(false);
+    const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition>({ x: 0, y: 0 });
+    const [tooltipData, setTooltipData] = useState<{
+      dataPoint: BarChartDataPoint;
+      index: number;
+    } | null>(null);
 
     // Modern configuration with sensible defaults
     const mergedXAxis: BarChartAxis = {
@@ -211,6 +229,20 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       duration: variant === 'detailed' ? 500 : 300,
       easing: 'ease-out',
       ...animation,
+    };
+
+    // Merge tooltip configuration with backward compatibility
+    const mergedTooltip: TooltipConfig<BarChartDataPoint> = {
+      enabled: tooltip?.enabled !== undefined ? tooltip.enabled : showTooltip,
+      component: tooltip?.component,
+      content: tooltip?.content || formatTooltip,
+      style: tooltip?.style,
+      placement: tooltip?.placement || { placement: 'auto', offset: { x: 0, y: -10 } },
+      className: tooltip?.className,
+      animationDuration: tooltip?.animationDuration || 200,
+      showDelay: tooltip?.showDelay || 0,
+      hideDelay: tooltip?.hideDelay || 0,
+      ...tooltip,
     };
 
     const defaultMargin = {
@@ -426,102 +458,104 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
           .attr('aria-label', (d, i) => `${d.x}: ${d3.format('.2s')(d.y)}`)
           .on('focus', function(event: any, d: any) {
             const index = data.indexOf(d);
-            if (showTooltip && tooltipRef.current) {
-              // Show tooltip on keyboard focus
-              const tooltipContent = defaultFormatTooltip(d, index);
-              const tooltip = d3.select(tooltipRef.current);
-              tooltip.style('opacity', 1).html(tooltipContent);
+            if (mergedTooltip.enabled) {
+              // For keyboard focus, show tooltip at the center of the bar
+              const rect = this.getBoundingClientRect();
+              const containerRect = svgRef.current?.getBoundingClientRect();
+              if (containerRect) {
+                const x = rect.left - containerRect.left + rect.width / 2;
+                const y = rect.top - containerRect.top + rect.height / 2;
+                setTooltipPosition({ x, y });
+                setTooltipData({ dataPoint: d, index });
+                setTooltipVisible(true);
+              }
             }
           })
           .on('blur', function() {
-            if (tooltipRef.current) {
-              d3.select(tooltipRef.current).style('opacity', 0);
+            if (mergedTooltip.enabled) {
+              setTooltipVisible(false);
+              setTooltipData(null);
             }
           });
       }
 
-      // Tooltip functionality
-      if (showTooltip && tooltipRef.current) {
-        const tooltip = d3.select(tooltipRef.current);
+      // Enhanced tooltip functionality
+      if (mergedTooltip.enabled) {
         let tooltipTimer: number | null = null;
+        let hideTimer: number | null = null;
 
         bars
           .on('mouseenter', function(event, d) {
             const index = data.indexOf(d);
-            const tooltipContent = defaultFormatTooltip(d, index);
             
-            tooltip
-              .style('opacity', 1)
-              .html(tooltipContent);
+            // Clear any existing timers
+            if (hideTimer) {
+              clearTimeout(hideTimer);
+              hideTimer = null;
+            }
+
+            // Apply show delay
+            if (mergedTooltip.showDelay && mergedTooltip.showDelay > 0) {
+              tooltipTimer = window.setTimeout(() => {
+                showTooltipForData(event, d, index);
+              }, mergedTooltip.showDelay);
+            } else {
+              showTooltipForData(event, d, index);
+            }
 
             // Highlight bar
             d3.select(this).classed('db-barchart__bar--hover', true);
-
-            // Position tooltip
-            if (tooltipRef.current && svgRef.current) {
-              const tooltipNode = tooltipRef.current;
-              const rect = this.getBoundingClientRect();
-              const containerRect = svgRef.current.getBoundingClientRect();
-
-              if (tooltipTimer) window.cancelAnimationFrame(tooltipTimer);
-
-              tooltipTimer = window.requestAnimationFrame(() => {
-                tooltipNode.style.position = 'absolute';
-                tooltipNode.style.visibility = 'hidden';
-                tooltipNode.style.opacity = '0';
-
-                const tooltipWidth = tooltipNode.offsetWidth;
-                const tooltipHeight = tooltipNode.offsetHeight;
-
-                let left: number;
-                let top: number;
-
-                if (orientation === 'vertical') {
-                  left = rect.left - containerRect.left + rect.width / 2 - tooltipWidth / 2;
-                  top = rect.top - containerRect.top - tooltipHeight - 10;
-                } else {
-                  left = rect.right - containerRect.left + 10;
-                  top = rect.top - containerRect.top + rect.height / 2 - tooltipHeight / 2;
-                }
-
-                const padding = 10;
-                
-                if (left < padding) {
-                  left = padding;
-                } else if (left + tooltipWidth > width - padding) {
-                  left = width - tooltipWidth - padding;
-                }
-
-                if (top < padding) {
-                  if (orientation === 'vertical') {
-                    top = rect.bottom - containerRect.top + 10;
-                  } else {
-                    top = padding;
-                  }
-                }
-
-                tooltipNode.style.left = `${left}px`;
-                tooltipNode.style.top = `${top}px`;
-                tooltipNode.style.visibility = 'visible';
-                tooltipNode.style.opacity = '1';
-              });
-            }
           })
           .on('mouseleave', function() {
+            // Clear show timer
             if (tooltipTimer) {
-              window.cancelAnimationFrame(tooltipTimer);
+              clearTimeout(tooltipTimer);
               tooltipTimer = null;
             }
 
-            tooltip.style('opacity', 0);
-            if (tooltipRef.current) {
-              tooltipRef.current.style.opacity = '0';
-              tooltipRef.current.style.visibility = 'hidden';
+            // Apply hide delay
+            if (mergedTooltip.hideDelay && mergedTooltip.hideDelay > 0) {
+              hideTimer = window.setTimeout(() => {
+                setTooltipVisible(false);
+                setTooltipData(null);
+              }, mergedTooltip.hideDelay);
+            } else {
+              setTooltipVisible(false);
+              setTooltipData(null);
             }
             
             // Remove highlight
             d3.select(this).classed('db-barchart__bar--hover', false);
           });
+      }
+
+      // Helper function to show tooltip
+      function showTooltipForData(event: MouseEvent, dataPoint: BarChartDataPoint, index: number) {
+        if (!svgRef.current) return;
+        
+        // Calculate tooltip position based on bar position
+        const rect = (event.target as Element).getBoundingClientRect();
+        const containerRect = svgRef.current.getBoundingClientRect();
+        
+        let svgX: number;
+        let svgY: number;
+
+        if (orientation === 'vertical') {
+          svgX = rect.left - containerRect.left + rect.width / 2;
+          svgY = rect.top - containerRect.top;
+        } else {
+          svgX = rect.right - containerRect.left;
+          svgY = rect.top - containerRect.top + rect.height / 2;
+        }
+
+        // Convert SVG coordinates to container coordinates
+        // SVG coordinates are relative to the SVG element, but tooltip needs container-relative coordinates
+        const containerX = svgX + defaultMargin.left;
+        const containerY = svgY + defaultMargin.top;
+
+        setTooltipPosition({ x: containerX, y: containerY });
+        setTooltipData({ dataPoint, index });
+        setTooltipVisible(true);
       }
 
       // Axis labels
@@ -621,7 +655,44 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
             role="presentation"
             aria-hidden={keyboard}
           />
-          {showTooltip && (
+          {mergedTooltip.enabled && tooltipData && (
+            <ChartTooltip
+              visible={tooltipVisible}
+              position={tooltipPosition}
+              tooltipStyle={mergedTooltip.style}
+              placement={mergedTooltip.placement}
+              animationDuration={mergedTooltip.animationDuration}
+              containerDimensions={{ width, height }}
+              className={clsx('db-barchart__tooltip', mergedTooltip.className)}
+              role="tooltip"
+              aria-live="polite"
+            >
+              {mergedTooltip.component ? (
+                <mergedTooltip.component
+                  data={tooltipData.dataPoint}
+                  index={tooltipData.index}
+                  chartDimensions={{ width, height }}
+                />
+              ) : mergedTooltip.content ? (
+                <div 
+                  dangerouslySetInnerHTML={{ 
+                    __html: mergedTooltip.content(
+                      tooltipData.dataPoint, 
+                      tooltipData.index
+                    ) 
+                  }} 
+                />
+              ) : (
+                <DefaultTooltipContent
+                  label={tooltipData.dataPoint.x}
+                  value={d3.format('.2s')(tooltipData.dataPoint.y)}
+                  color={`var(--chart-${color})`}
+                />
+              )}
+            </ChartTooltip>
+          )}
+          {/* Legacy tooltip support */}
+          {showTooltip && !mergedTooltip.enabled && (
             <div
               ref={tooltipRef}
               className="db-barchart__tooltip"
