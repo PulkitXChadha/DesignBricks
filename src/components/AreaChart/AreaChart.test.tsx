@@ -420,6 +420,103 @@ describe('AreaChart', () => {
     });
   });
 
+  // Multiple series tests
+  describe('Multiple Series', () => {
+    const multipleSeries = [
+      {
+        id: 'series1',
+        name: 'Series 1',
+        color: 'primary' as const,
+        data: sampleData
+      },
+      {
+        id: 'series2',
+        name: 'Series 2',
+        color: 'secondary' as const,
+        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.8 }))
+      },
+      {
+        id: 'series3',
+        name: 'Series 3',
+        color: 'success' as const,
+        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.6 }))
+      }
+    ];
+
+    it('renders multiple series', () => {
+      render(<AreaChart series={multipleSeries} />);
+      
+      const svg = document.querySelector('svg');
+      expect(svg).toBeInTheDocument();
+      
+      const areas = document.querySelectorAll('.db-areachart__area');
+      expect(areas.length).toBe(multipleSeries.length);
+    });
+
+    it('renders stacked area chart', () => {
+      render(<AreaChart series={multipleSeries} stacked />);
+      
+      const svg = document.querySelector('svg');
+      expect(svg).toBeInTheDocument();
+      
+      const areas = document.querySelectorAll('.db-areachart__area');
+      expect(areas.length).toBe(multipleSeries.length);
+    });
+
+    it('renders non-stacked multiple series', () => {
+      render(<AreaChart series={multipleSeries} stacked={false} />);
+      
+      const svg = document.querySelector('svg');
+      expect(svg).toBeInTheDocument();
+      
+      const areas = document.querySelectorAll('.db-areachart__area');
+      expect(areas.length).toBe(multipleSeries.length);
+    });
+
+    it('applies custom colors to series', () => {
+      const seriesWithCustomColors = [
+        {
+          id: 'custom1',
+          name: 'Custom 1',
+          customColor: '#ff0000',
+          data: sampleData
+        },
+        {
+          id: 'custom2',
+          name: 'Custom 2',
+          customColor: '#00ff00',
+          data: sampleData
+        }
+      ];
+
+      render(<AreaChart series={seriesWithCustomColors} />);
+      
+      const svg = document.querySelector('svg');
+      expect(svg).toBeInTheDocument();
+    });
+
+    it('has proper ARIA label for multiple series', () => {
+      render(<AreaChart series={multipleSeries} />);
+      
+      const chart = screen.getByRole('img', { name: `Area chart with ${multipleSeries.length} series` });
+      expect(chart).toBeInTheDocument();
+    });
+
+    it('supports accessibility with multiple series', async () => {
+      const { container } = render(<AreaChart series={multipleSeries} />);
+      
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+
+    it('supports stacked accessibility', async () => {
+      const { container } = render(<AreaChart series={multipleSeries} stacked />);
+      
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+  });
+
   // Edge cases
   describe('Edge Cases', () => {
     it('handles single data point', () => {

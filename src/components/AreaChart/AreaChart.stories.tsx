@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { AreaChart } from './AreaChart';
 
@@ -405,6 +406,113 @@ export const InteractiveFeatures: Story = {
     docs: {
       description: {
         story: 'Full-featured area chart with tooltips, percentage change indicators, and detailed styling. Hover over the chart to see interactive features.'
+      }
+    }
+  }
+};
+
+export const StackedAreaChart: Story = {
+  args: {
+    series: [
+      {
+        id: 'series1',
+        name: 'Product A',
+        color: 'primary',
+        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.6 }))
+      },
+      {
+        id: 'series2',
+        name: 'Product B',
+        color: 'secondary',
+        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.8 }))
+      },
+      {
+        id: 'series3',
+        name: 'Product C',
+        color: 'success',
+        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.5 }))
+      }
+    ],
+    stacked: true,
+    width: 700,
+    height: 450,
+    title: 'Stacked Revenue by Product',
+    xAxis: {
+      label: 'Month'
+    },
+    yAxis: {
+      label: 'Total Revenue ($)'
+    }
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Stacked area chart showing cumulative values across multiple series. Each series is stacked on top of the previous one, useful for showing part-to-whole relationships over time.'
+      }
+    }
+  }
+};
+
+export const MultiSeriesNonStacked: Story = {
+  args: {
+    series: [
+      {
+        id: 'mobile',
+        name: 'Mobile',
+        color: 'primary',
+        data: [
+          { x: new Date('2024-01'), y: 300 },
+          { x: new Date('2024-02'), y: 350 },
+          { x: new Date('2024-03'), y: 400 },
+          { x: new Date('2024-04'), y: 450 },
+          { x: new Date('2024-05'), y: 500 },
+          { x: new Date('2024-06'), y: 550 },
+        ]
+      },
+      {
+        id: 'desktop',
+        name: 'Desktop',
+        color: 'secondary',
+        data: [
+          { x: new Date('2024-01'), y: 500 },
+          { x: new Date('2024-02'), y: 480 },
+          { x: new Date('2024-03'), y: 520 },
+          { x: new Date('2024-04'), y: 510 },
+          { x: new Date('2024-05'), y: 530 },
+          { x: new Date('2024-06'), y: 540 },
+        ]
+      },
+      {
+        id: 'tablet',
+        name: 'Tablet',
+        color: 'warning',
+        data: [
+          { x: new Date('2024-01'), y: 200 },
+          { x: new Date('2024-02'), y: 210 },
+          { x: new Date('2024-03'), y: 230 },
+          { x: new Date('2024-04'), y: 250 },
+          { x: new Date('2024-05'), y: 260 },
+          { x: new Date('2024-06'), y: 280 },
+        ]
+      }
+    ],
+    stacked: false,
+    width: 700,
+    height: 450,
+    title: 'Traffic by Device Type',
+    fillOpacity: 0.2,
+    showStroke: true,
+    xAxis: {
+      label: 'Month'
+    },
+    yAxis: {
+      label: 'Visitors'
+    }
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Multiple overlapping area series without stacking. Each series maintains its own baseline, useful for comparing independent metrics.'
       }
     }
   }

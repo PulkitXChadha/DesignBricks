@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext, useState } from 'react';
+import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, useCallback, createContext, useContext, useState } from 'react';
 import clsx from 'clsx';
 import * as d3 from 'd3';
 import './AreaChart.css';
@@ -40,6 +40,19 @@ export interface AreaChartDataPoint {
   label?: string;
   /** Optional metadata for the data point */
   metadata?: Record<string, any>;
+}
+
+export interface AreaChartSeries {
+  /** Unique identifier for the series */
+  id: string;
+  /** Display name for the series */
+  name: string;
+  /** Data points for this series */
+  data: AreaChartDataPoint[];
+  /** Color override for this specific series */
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
+  /** Custom hex color */
+  customColor?: string;
 }
 
 // Enhanced configuration interfaces inspired by shadcn/ui patterns
@@ -93,15 +106,19 @@ export interface AreaChartResponsive {
 }
 
 export interface AreaChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'data'> {
-  /** Chart data points */
-  data: AreaChartDataPoint[];
+  /** Chart data points (for single series) */
+  data?: AreaChartDataPoint[];
+  /** Multiple series data (for stacked or multi-series charts) */
+  series?: AreaChartSeries[];
+  /** Enable stacked layout for multiple series */
+  stacked?: boolean;
   /** Chart width */
   width?: number;
   /** Chart height */
   height?: number;
   /** Chart variant */
   variant?: 'default' | 'minimal' | 'detailed';
-  /** Color scheme */
+  /** Color scheme (for single series) */
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error';
   /** Chart title */
   title?: string;
@@ -154,6 +171,8 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
   (
     {
       data = [],
+      series,
+      stacked = false,
       width = 600,
       height = 400,
       variant = 'default',
@@ -193,7 +212,24 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
     const [tooltipData, setTooltipData] = useState<{
       dataPoint: AreaChartDataPoint;
       index: number;
+      seriesData?: Array<{ name: string; value: number; color: string }>;
     } | null>(null);
+
+    // Normalize data to series format
+    const normalizedSeries = useMemo<AreaChartSeries[]>(() => {
+      if (series && series.length > 0) {
+        return series;
+      }
+      if (data && data.length > 0) {
+        return [{
+          id: 'default',
+          name: 'Series 1',
+          data,
+          color,
+        }];
+      }
+      return [];
+    }, [series, data, color]);
 
     // Modern configuration with sensible defaults
     const mergedXAxis: AreaChartAxis = {
@@ -260,35 +296,80 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
     const innerWidth = width - defaultMargin.left - defaultMargin.right;
     const innerHeight = height - defaultMargin.top - defaultMargin.bottom;
 
+    // Prepare stacked data if needed
+    const stackedData = useMemo(() => {
+      if (!stacked || normalizedSeries.length === 0) return null;
+      
+      // Get all unique x values across all series
+      const allXValues = Array.from(
+        new Set(normalizedSeries.flatMap(s => s.data.map(d => d.x)))
+      ).sort((a, b) => {
+        if (a instanceof Date && b instanceof Date) return a.getTime() - b.getTime();
+        if (typeof a === 'number' && typeof b === 'number') return a - b;
+        return String(a).localeCompare(String(b));
+      });
+
+      // Create a data structure for d3.stack
+      const stackData = allXValues.map(x => {
+        const point: any = { x };
+        normalizedSeries.forEach((s, idx) => {
+          const dataPoint = s.data.find(d => d.x === x);
+          point[s.id] = dataPoint ? dataPoint.y : 0;
+        });
+        return point;
+      });
+
+      // Use d3.stack to calculate cumulative positions
+      const stack = d3.stack()
+        .keys(normalizedSeries.map(s => s.id))
+        .order(d3.stackOrderNone)
+        .offset(d3.stackOffsetNone);
+
+      return stack(stackData);
+    }, [stacked, normalizedSeries]);
+
     // Memoize scales and generators
-    const { xScale, yScale, areaGenerator, lineGenerator } = useMemo(() => {
-      if (!data.length) {
-        return { xScale: null, yScale: null, areaGenerator: null, lineGenerator: null };
+    const { xScale, yScale, areaGenerators, lineGenerators } = useMemo(() => {
+      if (normalizedSeries.length === 0) {
+        return { xScale: null, yScale: null, areaGenerators: [], lineGenerators: [] };
       }
 
+      const allData = normalizedSeries.flatMap(s => s.data);
+      
       // Determine scale types based on data
-      const firstX = data[0].x;
+      const firstX = allData[0]?.x;
       const isDateScale = firstX instanceof Date;
       const isNumericScale = typeof firstX === 'number';
 
       let xScale: any;
       if (isDateScale) {
         xScale = d3.scaleTime()
-          .domain(d3.extent(data, d => d.x as Date) as [Date, Date])
+          .domain(d3.extent(allData, d => d.x as Date) as [Date, Date])
           .range([0, innerWidth]);
       } else if (isNumericScale) {
         xScale = d3.scaleLinear()
-          .domain(d3.extent(data, d => d.x as number) as [number, number])
+          .domain(d3.extent(allData, d => d.x as number) as [number, number])
           .range([0, innerWidth]);
       } else {
+        const uniqueX = Array.from(new Set(allData.map(d => d.x as string)));
         xScale = d3.scaleBand()
-          .domain(data.map(d => d.x as string))
+          .domain(uniqueX)
           .range([0, innerWidth])
           .padding(0.1);
       }
 
+      // Calculate Y domain based on stacked or regular data
+      let yMax: number;
+      if (stacked && stackedData) {
+        // For stacked, find max of cumulative values
+        yMax = d3.max(stackedData[stackedData.length - 1], d => d[1]) as number;
+      } else {
+        // For regular, find max across all series
+        yMax = d3.max(allData, d => d.y) as number;
+      }
+
       const yScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.y) as number])
+        .domain([0, yMax])
         .nice()
         .range([innerHeight, 0]);
 
@@ -297,26 +378,54 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
                        curve === 'step' ? d3.curveStepAfter :
                        d3.curveLinear;
 
-      // Area generator
-      const areaGenerator = d3.area<AreaChartDataPoint>()
-        .x(d => xScale(d.x) || 0)
-        .y0(innerHeight)
-        .y1(d => yScale(d.y) || 0)
-        .curve(curveType);
+      // Create area and line generators for each series
+      const areaGenerators = normalizedSeries.map((series, idx) => {
+        if (stacked && stackedData) {
+          // For stacked areas, use the stacked data
+          return d3.area<any>()
+            .x((d: any) => xScale(d.data.x) || 0)
+            .y0((d: any) => yScale(d[0]) || 0)
+            .y1((d: any) => yScale(d[1]) || 0)
+            .curve(curveType);
+        } else {
+          // For non-stacked areas
+          return d3.area<AreaChartDataPoint>()
+            .x(d => xScale(d.x) || 0)
+            .y0(innerHeight)
+            .y1(d => yScale(d.y) || 0)
+            .curve(curveType);
+        }
+      });
 
-      // Line generator for stroke
-      const lineGenerator = showStroke ? d3.line<AreaChartDataPoint>()
-        .x(d => xScale(d.x) || 0)
-        .y(d => yScale(d.y) || 0)
-        .curve(curveType) : null;
+      // Line generators for stroke
+      const lineGenerators = showStroke ? normalizedSeries.map((series, idx) => {
+        if (stacked && stackedData) {
+          return d3.line<any>()
+            .x((d: any) => xScale(d.data.x) || 0)
+            .y((d: any) => yScale(d[1]) || 0)
+            .curve(curveType);
+        } else {
+          return d3.line<AreaChartDataPoint>()
+            .x(d => xScale(d.x) || 0)
+            .y(d => yScale(d.y) || 0)
+            .curve(curveType);
+        }
+      }) : [];
 
-      return { xScale, yScale, areaGenerator, lineGenerator };
-    }, [data, innerWidth, innerHeight, curve, showStroke]);
+      return { xScale, yScale, areaGenerators, lineGenerators };
+    }, [normalizedSeries, innerWidth, innerHeight, curve, showStroke, stacked, stackedData]);
+
+    // Color mapping helper
+    const getSeriesColor = useCallback((series: AreaChartSeries) => {
+      if (series.customColor) return series.customColor;
+      const colorScheme = series.color || 'primary';
+      return colorScheme;
+    }, []);
 
     // Default formatters
     const defaultFormatX = useMemo(() => {
       if (mergedXAxis.tickFormatter) return mergedXAxis.tickFormatter;
-      const firstX = data[0]?.x;
+      const firstX = normalizedSeries[0]?.data[0]?.x;
       if (firstX instanceof Date) {
         const timeFormatter = d3.timeFormat('%b %d');
         return (value: any) => {
@@ -373,7 +482,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
     });
 
     useEffect(() => {
-      if (!svgRef.current || !data.length || !xScale || !yScale || !areaGenerator) {
+      if (!svgRef.current || normalizedSeries.length === 0 || !xScale || !yScale || areaGenerators.length === 0) {
         return;
       }
 
@@ -442,55 +551,66 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
         yAxisGroup.call(yAxisCall);
       }
 
-      // Area path
-      g.append('path')
-        .datum(data)
-        .attr('class', `db-areachart__area db-areachart__area--${color}`)
-        .attr('d', areaGenerator)
-        .style('opacity', fillOpacity);
+      // Render areas for each series
+      normalizedSeries.forEach((series, idx) => {
+        const seriesColor = getSeriesColor(series);
+        const areaGen = areaGenerators[idx];
+        const lineGen = lineGenerators[idx];
+        const seriesData = stacked && stackedData ? stackedData[idx] : series.data;
 
-      // Stroke line
-      if (showStroke && lineGenerator) {
+        // Area path
         g.append('path')
-          .datum(data)
-          .attr('class', `db-areachart__stroke db-areachart__stroke--${color}`)
-          .attr('d', lineGenerator);
-      }
+          .datum(seriesData)
+          .attr('class', `db-areachart__area db-areachart__area--${seriesColor}`)
+          .attr('d', areaGen as any)
+          .style('opacity', fillOpacity)
+          .style('fill', series.customColor || undefined);
 
-      // Data points
-      if (showPoints) {
-        const points = g.selectAll('.db-areachart__point')
-          .data(data)
-          .enter()
-          .append('circle')
-          .attr('class', `db-areachart__point db-areachart__point--${color}`)
-          .attr('cx', d => xScale(d.x) || 0)
-          .attr('cy', d => yScale(d.y) || 0)
-          .attr('r', variant === 'detailed' ? 5 : 4);
-
-        // Add keyboard navigation attributes conditionally
-        if (keyboard) {
-          points
-            .attr('tabindex', 0)
-            .attr('role', 'button')
-            .attr('aria-label', (d, i) => `Data point ${i + 1}: ${defaultFormatX(d.x)}, ${defaultFormatY(d.y)}`)
-            .on('focus', function(event: any, d: any) {
-              const index = data.indexOf(d);
-              if (mergedTooltip.enabled) {
-                // For keyboard focus, show tooltip at the data point position
-                const pointX = xScale!(d.x) || 0;
-                const pointY = yScale!(d.y) || 0;
-                showTooltipForData(d, index, pointX, pointY);
-              }
-            })
-            .on('blur', function() {
-              if (mergedTooltip.enabled) {
-                setTooltipVisible(false);
-                setTooltipData(null);
-              }
-            });
+        // Stroke line
+        if (showStroke && lineGen) {
+          g.append('path')
+            .datum(seriesData)
+            .attr('class', `db-areachart__stroke db-areachart__stroke--${seriesColor}`)
+            .attr('d', lineGen as any)
+            .style('stroke', series.customColor || undefined);
         }
-      }
+
+        // Data points for non-stacked charts
+        if (showPoints && !stacked) {
+          const points = g.selectAll(`.db-areachart__point--series-${idx}`)
+            .data(series.data)
+            .enter()
+            .append('circle')
+            .attr('class', `db-areachart__point db-areachart__point--${seriesColor} db-areachart__point--series-${idx}`)
+            .attr('cx', d => xScale(d.x) || 0)
+            .attr('cy', d => yScale(d.y) || 0)
+            .attr('r', variant === 'detailed' ? 5 : 4)
+            .style('fill', series.customColor || undefined);
+
+          // Add keyboard navigation attributes conditionally
+          if (keyboard) {
+            points
+              .attr('tabindex', 0)
+              .attr('role', 'button')
+              .attr('aria-label', (d, i) => `${series.name}: Data point ${i + 1}: ${defaultFormatX(d.x)}, ${defaultFormatY(d.y)}`)
+              .on('focus', function(event: any, d: any) {
+                const index = series.data.indexOf(d);
+                if (mergedTooltip.enabled) {
+                  // For keyboard focus, show tooltip at the data point position
+                  const pointX = xScale!(d.x) || 0;
+                  const pointY = yScale!(d.y) || 0;
+                  showTooltipForData(d, index, pointX, pointY);
+                }
+              })
+              .on('blur', function() {
+                if (mergedTooltip.enabled) {
+                  setTooltipVisible(false);
+                  setTooltipData(null);
+                }
+              });
+          }
+        }
+      });
 
       // Enhanced tooltip functionality
       if (mergedTooltip.enabled) {
@@ -504,11 +624,15 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
           .attr('y2', innerHeight)
           .style('opacity', 0);
 
-        // Hover circle
-        const hoverCircle = g.append('circle')
-          .attr('class', `db-areachart__hover-circle db-areachart__hover-circle--${color}`)
-          .attr('r', 6)
-          .style('opacity', 0);
+        // Hover circles for each series
+        const hoverCircles = normalizedSeries.map((series, idx) => {
+          const seriesColor = getSeriesColor(series);
+          return g.append('circle')
+            .attr('class', `db-areachart__hover-circle db-areachart__hover-circle--${seriesColor}`)
+            .attr('r', 6)
+            .style('opacity', 0)
+            .style('fill', series.customColor || undefined);
+        });
 
         // Invisible overlay for mouse events
         g.append('rect')
@@ -520,12 +644,15 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
           .on('mousemove', function(event) {
             const [mouseX] = d3.pointer(event);
             
-            // Find closest data point
-            let closestPoint = data[0];
-            let closestIndex = 0;
-            let minDistance = Math.abs((xScale(data[0].x) || 0) - mouseX);
+            // Find closest x value across all series
+            const firstSeries = normalizedSeries[0];
+            if (!firstSeries || !firstSeries.data.length) return;
             
-            data.forEach((d, i) => {
+            let closestPoint = firstSeries.data[0];
+            let closestIndex = 0;
+            let minDistance = Math.abs((xScale(firstSeries.data[0].x) || 0) - mouseX);
+            
+            firstSeries.data.forEach((d, i) => {
               const xPos = xScale(d.x) || 0;
               const distance = Math.abs(xPos - mouseX);
               if (distance < minDistance) {
@@ -536,7 +663,23 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             });
 
             const pointX = xScale(closestPoint.x) || 0;
-            const pointY = yScale(closestPoint.y) || 0;
+
+            // Collect all series values at this x position
+            const allSeriesData = normalizedSeries.map((series, idx) => {
+              const dataPoint = series.data.find(d => d.x === closestPoint.x) || 
+                               series.data[closestIndex];
+              const yValue = dataPoint ? dataPoint.y : 0;
+              const seriesColor = getSeriesColor(series);
+              return {
+                name: series.name,
+                value: yValue,
+                color: series.customColor || `var(--chart-${seriesColor})`,
+                point: dataPoint,
+              };
+            });
+
+            // Calculate display position (use top series for single hover circle)
+            const topSeriesY = yScale(allSeriesData[allSeriesData.length - 1].value) || 0;
 
             // Show visual indicators
             verticalLine
@@ -544,10 +687,15 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
               .attr('x1', pointX)
               .attr('x2', pointX);
 
-            hoverCircle
-              .style('opacity', 1)
-              .attr('cx', pointX)
-              .attr('cy', pointY);
+            // Show hover circles for each series
+            allSeriesData.forEach((seriesData, idx) => {
+              if (seriesData.point) {
+                hoverCircles[idx]
+                  .style('opacity', 1)
+                  .attr('cx', pointX)
+                  .attr('cy', yScale(seriesData.value) || 0);
+              }
+            });
 
             // Clear hide timer
             if (hideTimer) {
@@ -559,10 +707,10 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             if (mergedTooltip.showDelay && mergedTooltip.showDelay > 0) {
               if (tooltipTimer) clearTimeout(tooltipTimer);
               tooltipTimer = window.setTimeout(() => {
-                showTooltipForData(closestPoint, closestIndex, pointX, pointY);
+                showTooltipForData(closestPoint, closestIndex, pointX, topSeriesY, allSeriesData);
               }, mergedTooltip.showDelay);
             } else {
-              showTooltipForData(closestPoint, closestIndex, pointX, pointY);
+              showTooltipForData(closestPoint, closestIndex, pointX, topSeriesY, allSeriesData);
             }
           })
           .on('mouseout', () => {
@@ -584,17 +732,27 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             }
             
             verticalLine.style('opacity', 0);
-            hoverCircle.style('opacity', 0);
+            hoverCircles.forEach(circle => circle.style('opacity', 0));
           });
       }
 
       // Helper function to show tooltip
-      function showTooltipForData(dataPoint: AreaChartDataPoint, index: number, svgX: number, svgY: number) {
+      function showTooltipForData(
+        dataPoint: AreaChartDataPoint, 
+        index: number, 
+        svgX: number, 
+        svgY: number,
+        allSeriesData?: Array<{ name: string; value: number; color: string; point?: AreaChartDataPoint }>
+      ) {
         // Convert SVG coordinates to container coordinates by adding the margins
         const containerX = svgX + defaultMargin.left;
         const containerY = svgY + defaultMargin.top;
         setTooltipPosition({ x: containerX, y: containerY });
-        setTooltipData({ dataPoint, index });
+        setTooltipData({ 
+          dataPoint, 
+          index,
+          seriesData: allSeriesData?.map(s => ({ name: s.name, value: s.value, color: s.color }))
+        });
         setTooltipVisible(true);
       }
 
@@ -627,11 +785,11 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
           .text(title);
       }
 
-    }, [data, width, height, xScale, yScale, areaGenerator, lineGenerator, mergedGrid.show, showPoints, mergedTooltip, showStroke,
+    }, [normalizedSeries, width, height, xScale, yScale, areaGenerators, lineGenerators, mergedGrid.show, showPoints, mergedTooltip, showStroke,
         color, mergedXAxis.label, mergedYAxis.label, title, defaultMargin, innerWidth, innerHeight, fillOpacity,
-        defaultFormatX, defaultFormatY, defaultFormatTooltip, showPercentageChange, calculatePercentageChange]);
+        defaultFormatX, defaultFormatY, defaultFormatTooltip, showPercentageChange, calculatePercentageChange, stacked, stackedData, getSeriesColor]);
 
-    if (!data.length) {
+    if (normalizedSeries.length === 0) {
       return (
         <div
           ref={ref}
@@ -651,7 +809,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
 
     // Context value for compound components
     const contextValue: AreaChartContextValue = {
-      data,
+      data: normalizedSeries[0]?.data || [],
       width,
       height,
       color,
@@ -681,7 +839,9 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             ...(props.style || {}),
           } as React.CSSProperties}
           role="img"
-          aria-label={ariaLabel || `Area chart with ${data.length} data points`}
+          aria-label={ariaLabel || (normalizedSeries.length > 1 
+            ? `Area chart with ${normalizedSeries.length} series` 
+            : `Area chart with ${normalizedSeries[0]?.data.length || 0} data points`)}
           {...props}
         >
           <svg
@@ -719,6 +879,26 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
                     ) 
                   }} 
                 />
+              ) : tooltipData.seriesData && tooltipData.seriesData.length > 1 ? (
+                <div className="db-areachart__tooltip-content">
+                  <div className="db-areachart__tooltip-date">{defaultFormatX(tooltipData.dataPoint.x)}</div>
+                  {tooltipData.seriesData.map((series, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                      <div style={{ 
+                        width: '12px', 
+                        height: '12px', 
+                        borderRadius: '2px', 
+                        backgroundColor: series.color 
+                      }} />
+                      <span style={{ fontSize: '12px', color: 'var(--chart-muted-foreground)' }}>
+                        {series.name}:
+                      </span>
+                      <span style={{ fontSize: '14px', fontWeight: 600 }}>
+                        {defaultFormatY(series.value)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <DefaultTooltipContent
                   label={defaultFormatX(tooltipData.dataPoint.x)}
