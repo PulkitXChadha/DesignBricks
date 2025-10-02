@@ -144,7 +144,7 @@
 .db-barchart__bar--primary.db-barchart__bar--hover {
   fill: var(--chart-primary-hover);
   filter: drop-shadow(var(--chart-shadow-md));
-  transform: scale(1.02);
+  /* Removed scale transform to prevent flicker */
 }
 
 /* Bar styles - Secondary */
@@ -160,7 +160,7 @@
 .db-barchart__bar--secondary.db-barchart__bar--hover {
   fill: var(--chart-secondary-hover);
   filter: drop-shadow(var(--chart-shadow-md));
-  transform: scale(1.02);
+  /* Removed scale transform to prevent flicker */
 }
 
 /* Bar styles - Success */
@@ -176,7 +176,7 @@
 .db-barchart__bar--success.db-barchart__bar--hover {
   fill: var(--chart-success-hover);
   filter: drop-shadow(var(--chart-shadow-md));
-  transform: scale(1.02);
+  /* Removed scale transform to prevent flicker */
 }
 
 /* Bar styles - Warning */
@@ -192,7 +192,7 @@
 .db-barchart__bar--warning.db-barchart__bar--hover {
   fill: var(--chart-warning-hover);
   filter: drop-shadow(var(--chart-shadow-md));
-  transform: scale(1.02);
+  /* Removed scale transform to prevent flicker */
 }
 
 /* Bar styles - Error */
@@ -208,7 +208,23 @@
 .db-barchart__bar--error.db-barchart__bar--hover {
   fill: var(--chart-error-hover);
   filter: drop-shadow(var(--chart-shadow-md));
-  transform: scale(1.02);
+  /* Removed scale transform to prevent flicker */
+}
+
+/* Stacked bar styles */
+.db-barchart__bar--stacked {
+  cursor: pointer;
+  transition: var(--chart-transition);
+}
+
+.db-barchart__bar--stacked:hover,
+.db-barchart__bar--stacked.db-barchart__bar--hover {
+  opacity: 0.8;
+  filter: brightness(1.1);
+}
+
+.db-barchart__layer {
+  transition: var(--chart-transition);
 }
 
 /* Value labels */
@@ -233,7 +249,8 @@
   border-radius: var(--chart-radius);
   font-size: 13px;
   font-weight: 500;
-  pointer-events: none;
+  pointer-events: none; /* Critical: prevents tooltip from interfering with mouse events */
+  user-select: none;
   z-index: 1000;
   box-shadow: var(--chart-shadow-md);
   border: 1px solid var(--chart-border);

@@ -60,6 +60,14 @@ const meta: Meta<typeof BarChart> = {
     title: {
       control: 'text',
       description: 'Chart title'
+    },
+    stacked: {
+      control: 'boolean',
+      description: 'Enable stacked bars'
+    },
+    series: {
+      control: 'object',
+      description: 'Series configuration for stacked bars'
     }
   }
 };
@@ -94,12 +102,6 @@ const longLabelData = [
   { x: 'Extra Long Category Description', y: 6500 }
 ];
 
-const smallData = [
-  { x: 'A', y: 30 },
-  { x: 'B', y: 80 },
-  { x: 'C', y: 45 }
-];
-
 export const Default: Story = {
   args: {
     data: sampleData,
@@ -116,54 +118,15 @@ export const ColorVariants: Story = {
     data: categoryData,
     width: 500,
     height: 350,
+    color: 'primary',
     title: 'Color Variants'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Different color schemes available for the bar chart.'
+        story: 'Different color schemes available for the bar chart. Use the color control to switch between primary, secondary, success, warning, and error colors.'
       }
     }
-  }
-};
-
-export const Primary: Story = {
-  args: {
-    ...ColorVariants.args,
-    color: 'primary',
-    title: 'Primary Color'
-  }
-};
-
-export const Secondary: Story = {
-  args: {
-    ...ColorVariants.args,
-    color: 'secondary',
-    title: 'Secondary Color'
-  }
-};
-
-export const Success: Story = {
-  args: {
-    ...ColorVariants.args,
-    color: 'success',
-    title: 'Success Color'
-  }
-};
-
-export const Warning: Story = {
-  args: {
-    ...ColorVariants.args,
-    color: 'warning',
-    title: 'Warning Color'
-  }
-};
-
-export const Error: Story = {
-  args: {
-    ...ColorVariants.args,
-    color: 'error',
-    title: 'Error Color'
   }
 };
 
@@ -172,64 +135,33 @@ export const Variants: Story = {
     data: sampleData,
     width: 600,
     height: 400,
+    variant: 'default',
     title: 'Chart Variants'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Different visual variants: default shows grids and full styling, minimal removes grids and simplifies axes, detailed adds more visual elements.'
+        story: 'Different visual variants: default shows grids and full styling, minimal removes grids and simplifies axes, detailed adds more visual elements. Use the variant control to switch between them.'
       }
     }
   }
 };
 
-export const Minimal: Story = {
-  args: {
-    ...Variants.args,
-    variant: 'minimal',
-    title: 'Minimal Variant'
-  }
-};
-
-export const Detailed: Story = {
-  args: {
-    ...Variants.args,
-    variant: 'detailed',
-    title: 'Detailed Variant'
-  }
-};
-
-export const Orientations: Story = {
+export const HorizontalOrientation: Story = {
   args: {
     data: categoryData,
-    width: 600,
+    width: 700,
     height: 400,
-    title: 'Bar Orientations'
+    orientation: 'horizontal',
+    color: 'primary',
+    title: 'Horizontal Bars'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Bars can be oriented vertically (default) or horizontally for different layout needs.'
+        story: 'Bars can be oriented horizontally for different layout needs. Toggle the orientation control to switch between vertical and horizontal.'
       }
     }
-  }
-};
-
-export const Vertical: Story = {
-  args: {
-    ...Orientations.args,
-    orientation: 'vertical',
-    title: 'Vertical Bars'
-  }
-};
-
-export const Horizontal: Story = {
-  args: {
-    ...Orientations.args,
-    orientation: 'horizontal',
-    title: 'Horizontal Bars',
-    width: 700,
-    height: 400
   }
 };
 
@@ -254,7 +186,7 @@ export const CustomStyling: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Demonstrates customization options including border radius, bar padding, value labels, and axis labels.'
+        story: 'Demonstrates customization options including border radius, bar padding, value labels, and axis labels. All styling options are available through the controls panel.'
       }
     }
   }
@@ -262,9 +194,9 @@ export const CustomStyling: Story = {
 
 export const WithValueLabels: Story = {
   args: {
-    data: smallData,
-    width: 400,
-    height: 300,
+    data: categoryData,
+    width: 600,
+    height: 400,
     color: 'primary',
     showValueLabels: true,
     title: 'Bars with Value Labels'
@@ -272,7 +204,7 @@ export const WithValueLabels: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Bar chart displaying value labels on top of each bar.'
+        story: 'Bar chart displaying value labels on top of each bar. Works with both vertical and horizontal orientations.'
       }
     }
   }
@@ -293,67 +225,6 @@ export const LongCategoryNames: Story = {
     docs: {
       description: {
         story: 'Handling long category names with rotated labels for better readability.'
-      }
-    }
-  }
-};
-
-export const HorizontalWithLabels: Story = {
-  args: {
-    data: categoryData,
-    width: 600,
-    height: 400,
-    orientation: 'horizontal',
-    color: 'secondary',
-    showValueLabels: true,
-    title: 'Horizontal Bars with Labels',
-    xAxis: {
-      label: 'Amount ($)'
-    },
-    yAxis: {
-      label: 'Department'
-    }
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Horizontal bar chart with value labels positioned next to the bars.'
-      }
-    }
-  }
-};
-
-export const CustomPadding: Story = {
-  args: {
-    data: sampleData,
-    width: 500,
-    height: 300,
-    color: 'error',
-    barPadding: 0.05,
-    title: 'Tight Bar Spacing'
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Bar chart with minimal padding between bars for a more compact appearance.'
-      }
-    }
-  }
-};
-
-export const RoundedBars: Story = {
-  args: {
-    data: categoryData,
-    width: 600,
-    height: 400,
-    color: 'primary',
-    borderRadius: 8,
-    title: 'Rounded Corner Bars'
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Bar chart with rounded corners for a more modern appearance.'
       }
     }
   }
@@ -395,6 +266,7 @@ export const LargeDataset: Story = {
     height: 450,
     color: 'primary',
     variant: 'detailed',
+    showTooltip: true,
     title: 'Monthly Sales Data',
     xAxis: {
       label: 'Month',
@@ -407,35 +279,50 @@ export const LargeDataset: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Bar chart with a larger dataset showing monthly sales data.'
+        story: 'Bar chart with a larger dataset showing monthly sales data. Hover over bars to see interactive tooltips.'
       }
     }
   }
 };
 
-export const InteractiveFeatures: Story = {
+// Stacked bar chart data
+const stackedData = [
+  { x: 'Q1', product1: 2400, product2: 1500, product3: 800 },
+  { x: 'Q2', product1: 1398, product2: 2000, product3: 1200 },
+  { x: 'Q3', product1: 9800, product2: 1800, product3: 1000 },
+  { x: 'Q4', product1: 3908, product2: 2500, product3: 1500 },
+  { x: 'Q5', product1: 4800, product2: 2200, product3: 900 },
+];
+
+const stackedSeries = [
+  { key: 'product1', name: 'Product A', color: 'var(--chart-primary)' },
+  { key: 'product2', name: 'Product B', color: 'var(--chart-secondary)' },
+  { key: 'product3', name: 'Product C', color: 'var(--chart-success)' },
+];
+
+export const Stacked: Story = {
   args: {
-    data: categoryData,
+    data: stackedData,
+    series: stackedSeries,
+    stacked: true,
     width: 700,
     height: 450,
-    variant: 'detailed',
-    color: 'primary',
-    title: 'Interactive Bar Chart',
+    variant: 'default',
+    title: 'Stacked Bar Chart - Quarterly Sales by Product',
     showTooltip: true,
-    showValueLabels: false,
-    borderRadius: 4,
     xAxis: {
-      label: 'Department'
+      label: 'Quarter'
     },
     yAxis: {
-      label: 'Budget ($)'
+      label: 'Revenue ($)'
     }
   },
   parameters: {
     docs: {
       description: {
-        story: 'Full-featured bar chart with tooltips and detailed styling. Hover over bars to see interactive features.'
+        story: 'Stacked bar chart showing multiple data series stacked together. Each color represents a different product category. Use the orientation control to switch between vertical and horizontal stacking.'
       }
     }
   }
 };
+
