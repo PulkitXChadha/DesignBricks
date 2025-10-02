@@ -31,7 +31,7 @@ export interface DropdownItem {
   variant?: 'default' | 'danger' | 'success';
 }
 
-export interface DropdownProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSelect'> {
+export interface DropdownProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onSelect' | 'content'> {
   /** Trigger element */
   children: ReactNode;
   /** Array of dropdown items */
@@ -262,6 +262,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           window.removeEventListener('scroll', handleResize);
         };
       }
+      return undefined;
     }, [isOpen, placement]);
 
     const triggerProps = {

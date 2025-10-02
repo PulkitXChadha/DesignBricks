@@ -51,5 +51,7 @@ export * from './components/Command';
 // Design Tokens
 export * from './tokens';
 
-// Theme Utilities
+// Utilities
 export * from './lib/theme';
+export * from './lib/accessibility';
+export * from './lib/performance';

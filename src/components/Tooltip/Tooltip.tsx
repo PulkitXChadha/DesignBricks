@@ -50,7 +50,7 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
   ) => {
     const [internalOpen, setInternalOpen] = useState(false);
     const [position, setPosition] = useState({ top: 0, left: 0 });
-    const triggerRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLDivElement | null>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
     const showTimeoutRef = useRef<NodeJS.Timeout>();
     const hideTimeoutRef = useRef<NodeJS.Timeout>();
@@ -173,6 +173,7 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
           window.removeEventListener('scroll', handleScroll);
         };
       }
+      return undefined;
     }, [isOpen, placement]);
 
     useEffect(() => {
@@ -182,8 +183,17 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
       };
     }, []);
 
-    const triggerProps: React.HTMLAttributes<HTMLDivElement> = {
-      ref: triggerRef,
+    // Combine external ref with internal trigger ref
+    const combinedRef = (node: HTMLDivElement | null) => {
+      triggerRef.current = node;
+      if (typeof ref === 'function') {
+        ref(node);
+      } else if (ref) {
+        (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      }
+    };
+
+    const triggerProps = {
       ...(trigger === 'hover' && {
         onMouseEnter: show,
         onMouseLeave: hide,
@@ -228,7 +238,7 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
     return (
       <>
         <div
-          ref={ref}
+          ref={combinedRef}
           className="db-tooltip__trigger"
           {...triggerProps}
         >

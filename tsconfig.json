@@ -22,5 +22,5 @@
     "isolatedModules": true
   },
   "include": ["src/**/*", "project_plan/assets/DBDemos - AI-BI - Sales Pipeline Review - Genie_files", "project_plan/assets/Databricks_files"],
-  "exclude": ["node_modules", "dist", "**/*.stories.tsx", "**/*.test.tsx"]
+  "exclude": ["node_modules", "dist", "**/*.stories.tsx", "**/*.test.tsx", "**/test-setup.ts", "**/*.spec.tsx"]
 }
