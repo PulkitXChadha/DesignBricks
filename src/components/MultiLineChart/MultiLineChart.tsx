@@ -784,7 +784,7 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
             width={width}
             height={height}
             role="presentation"
-            aria-hidden={keyboard}
+            aria-hidden="true"
           />
           {mergedTooltip.enabled && tooltipData && (
             <ChartTooltip

@@ -662,7 +662,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
             width={width}
             height={height}
             role="presentation"
-            aria-hidden={keyboard}
+            aria-hidden="true"
           />
           {mergedTooltip.enabled && tooltipData && (
             <ChartTooltip

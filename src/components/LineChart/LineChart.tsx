@@ -666,7 +666,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
             width={width}
             height={height}
             role="presentation"
-            aria-hidden={keyboard}
+            aria-hidden="true"
           />
           {mergedTooltip.enabled && tooltipData && (
             <ChartTooltip
