@@ -195,7 +195,7 @@ export const Popover = forwardRef<HTMLDivElement, PopoverProps>(
         const triggerRect = triggerRef.current!.getBoundingClientRect();
         const popoverRect = popoverRef.current!.getBoundingClientRect();
         
-        let pos = getPosition(placement, triggerRect, popoverRect, offset);
+        const pos = getPosition(placement, triggerRect, popoverRect, offset);
         
         // Adjust for viewport bounds
         const viewport = { width: window.innerWidth, height: window.innerHeight };

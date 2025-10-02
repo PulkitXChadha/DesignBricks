@@ -1,0 +1,92 @@
+# Dependabot configuration for automated dependency updates
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Enable version updates for npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    # Group related updates to reduce PR noise
+    groups:
+      testing:
+        patterns:
+          - "@testing-library/*"
+          - "jest*"
+          - "@types/jest"
+          - "jest-*"
+      eslint:
+        patterns:
+          - "eslint*"
+          - "@typescript-eslint/*"
+          - "eslint-*"
+      storybook:
+        patterns:
+          - "@storybook/*"
+          - "storybook"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react*"
+      development-dependencies:
+        dependency-type: "development"
+        exclude-patterns:
+          - "@testing-library/*"
+          - "jest*"
+          - "eslint*"
+          - "@storybook/*"
+          - "react*"
+    # Limit number of open PRs to prevent overwhelming the team
+    open-pull-requests-limit: 5
+    # Automatically rebase PRs when base branch is updated
+    rebase-strategy: "auto"
+    # Add reviewers for security-critical updates
+    reviewers:
+      - "dependabot-reviewers-team"
+    # Add labels to categorize PRs
+    labels:
+      - "dependencies"
+      - "automated"
+    # Commit message configuration
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    # Only create PRs for security and important updates during weekdays
+    target-branch: "main"
+    # Ignore specific packages that need manual review
+    ignore:
+      # Ignore major version updates for these critical packages
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      # Ignore dev dependencies with frequent releases
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-patch"]
+
+  # Enable security updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+      timezone: "UTC"
+    open-pull-requests-limit: 3
+    labels:
+      - "github-actions"
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+
+

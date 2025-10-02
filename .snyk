@@ -1,0 +1,25 @@
+# Snyk configuration for vulnerability scanning
+# https://docs.snyk.io/snyk-cli/test-for-vulnerabilities/the-.snyk-file
+
+# Language settings
+language-settings:
+  javascript:
+    # Ignore dev dependencies in production builds
+    ignoreDevDependencies: true
+
+# Vulnerability patches and ignores
+patches: {}
+
+# Ignored vulnerabilities with reasons
+ignore:
+  # Example: Temporarily ignore specific vulnerabilities
+  # SNYK-JS-PACKAGENAME-XXXXXXXX:
+  #   - '*':
+  #       reason: "Waiting for upstream fix, low severity"
+  #       expires: '2024-12-31T23:59:59.999Z'
+
+# Version of this file format
+version: v1.0.0
+
+
+

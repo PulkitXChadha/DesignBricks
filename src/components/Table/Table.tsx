@@ -8,7 +8,7 @@ export interface Column<T = any> {
   width?: number | string;
   align?: 'left' | 'center' | 'right';
   sortable?: boolean;
-  render?: (value: any, row: T, index: number) => React.ReactNode;
+  render?: (_value: any, _row: T, _index: number) => React.ReactNode;
 }
 
 export interface TableProps<T = any> extends Omit<HTMLAttributes<HTMLTableElement>, 'children'> {
@@ -31,9 +31,9 @@ export interface TableProps<T = any> extends Omit<HTMLAttributes<HTMLTableElemen
   /** Empty state message */
   emptyMessage?: React.ReactNode;
   /** Row click handler */
-  onRowClick?: (row: T, index: number) => void;
+  onRowClick?: (_row: T, _index: number) => void;
   /** Sort handler */
-  onSort?: (key: string, direction: 'asc' | 'desc') => void;
+  onSort?: (_key: string, _direction: 'asc' | 'desc') => void;
   /** Current sort state */
   sortBy?: { key: string; direction: 'asc' | 'desc' };
 }

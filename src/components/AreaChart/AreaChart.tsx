@@ -6,7 +6,7 @@ import {
   TooltipConfig, 
   ChartTooltip, 
   DefaultTooltipContent, 
-  CustomTooltipProps,
+  // CustomTooltipProps, // Commented out as not currently used
   TooltipPosition 
 } from '../shared/ChartTooltip';
 
@@ -132,11 +132,11 @@ export interface AreaChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'da
   /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
   /** @deprecated Use tooltip.content instead */
-  formatTooltip?: (dataPoint: AreaChartDataPoint, index?: number) => string;
+  formatTooltip?: (_dataPoint: AreaChartDataPoint, _index?: number) => string;
   /** Show percentage change in tooltip */
   showPercentageChange?: boolean;
   /** Function to calculate percentage change */
-  calculatePercentageChange?: (current: AreaChartDataPoint, previous: AreaChartDataPoint) => number;
+  calculatePercentageChange?: (_current: AreaChartDataPoint, _previous: AreaChartDataPoint) => number;
   
   /** Enable keyboard navigation */
   keyboard?: boolean;
@@ -167,7 +167,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       grid,
       theme,
       animation,
-      responsive,
+      responsive: _responsive,
       showPoints = false,
       tooltip,
       showTooltip = true,
@@ -682,7 +682,6 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
           } as React.CSSProperties}
           role="img"
           aria-label={ariaLabel || `Area chart with ${data.length} data points`}
-          tabIndex={keyboard ? 0 : undefined}
           {...props}
         >
           <svg

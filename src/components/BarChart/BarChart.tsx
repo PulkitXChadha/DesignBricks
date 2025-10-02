@@ -644,7 +644,6 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
           } as React.CSSProperties}
           role="img"
           aria-label={ariaLabel || `Bar chart with ${data.length} categories`}
-          tabIndex={keyboard ? 0 : undefined}
           {...props}
         >
           <svg

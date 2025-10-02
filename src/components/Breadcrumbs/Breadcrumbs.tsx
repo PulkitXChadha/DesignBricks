@@ -12,7 +12,7 @@ export interface BreadcrumbItem {
   /** URL for navigation (makes item clickable) */
   href?: string;
   /** Click handler (alternative to href) */
-  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+  onClick?: (_event: React.MouseEvent<HTMLElement>) => void;
   /** Whether this item is disabled */
   disabled?: boolean;
 }

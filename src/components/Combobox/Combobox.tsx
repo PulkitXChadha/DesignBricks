@@ -201,6 +201,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
             className="db-combobox__input"
             role="combobox"
             aria-expanded={isOpen}
+            aria-controls={isOpen ? 'combobox-listbox' : undefined}
             aria-haspopup="listbox"
             aria-autocomplete="list"
             autoComplete="off"
@@ -222,6 +223,7 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
             <ul
               ref={listRef}
               role="listbox"
+              id="combobox-listbox"
               className="db-combobox__list"
             >
               {loading ? (
@@ -251,10 +253,17 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
                             }
                           )}
                           onClick={() => handleSelect(option)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              handleSelect(option);
+                            }
+                          }}
                           onMouseEnter={() => {
                             setHighlightedIndex(index);
                             setFocusedByMouse(true);
                           }}
+                          tabIndex={option.disabled ? -1 : 0}
                         >
                           {option.icon && (
                             <div className="db-combobox__option-icon">
@@ -284,6 +293,15 @@ export const Combobox = forwardRef<HTMLInputElement, ComboboxProps>(
                         onCreate?.(inputValue.trim());
                         setIsOpen(false);
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          onCreate?.(inputValue.trim());
+                          setIsOpen(false);
+                        }
+                      }}
+                      tabIndex={0}
+                      aria-selected={false}
                     >
                       <div className="db-combobox__option-icon">
                         <svg width="12" height="12" fill="none" viewBox="0 0 12 12">

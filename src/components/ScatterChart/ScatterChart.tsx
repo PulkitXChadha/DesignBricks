@@ -654,7 +654,6 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
           } as React.CSSProperties}
           role="img"
           aria-label={ariaLabel || `Scatter plot with ${data.length} data points`}
-          tabIndex={keyboard ? 0 : undefined}
           {...props}
         >
           <svg

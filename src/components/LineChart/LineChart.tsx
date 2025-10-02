@@ -658,7 +658,6 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
           } as React.CSSProperties}
           role="img"
           aria-label={ariaLabel || `Line chart with ${data.length} data points`}
-          tabIndex={keyboard ? 0 : undefined}
           {...props}
         >
           <svg

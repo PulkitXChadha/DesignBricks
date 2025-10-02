@@ -207,6 +207,7 @@ export const Select: React.FC<SelectProps> = ({
         tabIndex={disabled ? -1 : 0}
         role="combobox"
         aria-expanded={isOpen}
+        aria-controls={isOpen ? 'select-listbox' : undefined}
         aria-haspopup="listbox"
         aria-disabled={disabled}
       >
@@ -219,7 +220,6 @@ export const Select: React.FC<SelectProps> = ({
             onChange={(e) => setSearchTerm(e.target.value)}
             onClick={(e) => e.stopPropagation()}
             placeholder={getDisplayText() || placeholder}
-            autoFocus
           />
         ) : (
           <span className="db-select__value">
@@ -271,6 +271,7 @@ export const Select: React.FC<SelectProps> = ({
           className="db-select__dropdown"
           style={{ maxHeight }}
           role="listbox"
+          id="select-listbox"
           aria-multiselectable={multiple}
         >
           {filteredOptions.length === 0 ? (
@@ -297,10 +298,17 @@ export const Select: React.FC<SelectProps> = ({
                         isFocused ? 'db-select__option--focused' : ''
                       }`}
                       onClick={() => !option.disabled && handleSelect(option.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          !option.disabled && handleSelect(option.value);
+                        }
+                      }}
                       onMouseEnter={() => setFocusedIndex(globalIndex)}
                       role="option"
                       aria-selected={isSelected}
                       aria-disabled={option.disabled}
+                      tabIndex={option.disabled ? -1 : 0}
                     >
                       {multiple && (
                         <span className="db-select__checkbox">

@@ -126,7 +126,7 @@ export const ChartTooltip: React.FC<ChartTooltipProps> = ({
 
   // Calculate actual position with offset and placement
   const calculatePosition = (): CSSProperties => {
-    let { x, y } = position;
+    const { x, y } = position;
     const { x: offsetX = 0, y: offsetY = -10 } = offset;
 
     // Auto-placement logic when near container edges

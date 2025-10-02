@@ -57,7 +57,7 @@ export const Playground: Story = {
   args: {
     title: 'Alert Title',
     children: 'This is an alert message with controls to customize.',
-    onClose: () => console.log('Alert closed'),
+    onClose: () => alert('Alert closed'), // Using alert for demo purposes
   },
 };
 
@@ -136,12 +136,11 @@ export const WithTitle: Story = {
   },
 };
 
-export const Dismissible: Story = {
-  render: () => {
-    const [alerts, setAlerts] = React.useState([
-      { id: 1, severity: 'success' as const, message: 'File uploaded successfully' },
-      { id: 2, severity: 'info' as const, message: 'Processing your request...' },
-      { id: 3, severity: 'warning' as const, message: 'Low disk space detected' },
+const DismissibleAlertsExample = () => {
+  const [alerts, setAlerts] = React.useState([
+    { id: 1, severity: 'success' as const, message: 'File uploaded successfully' },
+    { id: 2, severity: 'info' as const, message: 'Processing your request...' },
+    { id: 3, severity: 'warning' as const, message: 'Low disk space detected' },
       { id: 4, severity: 'error' as const, message: 'Network connection lost' },
     ]);
 
@@ -165,7 +164,10 @@ export const Dismissible: Story = {
         )}
       </div>
     );
-  },
+};
+
+export const Dismissible: Story = {
+  render: () => <DismissibleAlertsExample />,
   parameters: {
     docs: {
       description: {

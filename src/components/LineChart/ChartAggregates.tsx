@@ -68,7 +68,7 @@ export const ChartAggregates = forwardRef<HTMLDivElement, ChartAggregatesProps>(
         {
           label: 'Change',
           value: formatValue(lastValue),
-          change: change,
+          change,
           color: change >= 0 ? 'success' as const : 'error' as const,
         },
       ];

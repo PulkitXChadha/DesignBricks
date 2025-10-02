@@ -776,7 +776,6 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
           } as React.CSSProperties}
           role="img"
           aria-label={ariaLabel || `Multi-line chart with ${visibleSeries.length} data series`}
-          tabIndex={keyboard ? 0 : undefined}
           {...props}
         >
           <svg

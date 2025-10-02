@@ -582,7 +582,6 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
           } as React.CSSProperties}
           role="img"
           aria-label={ariaLabel || `${isDonut ? 'Donut' : 'Pie'} chart with ${data.length} categories`}
-          tabIndex={keyboard ? 0 : undefined}
           {...props}
         >
           <svg

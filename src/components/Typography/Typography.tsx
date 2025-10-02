@@ -1,4 +1,4 @@
-import { HTMLAttributes, forwardRef } from 'react';
+import React, { HTMLAttributes, forwardRef } from 'react';
 import clsx from 'clsx';
 import './Typography.css';
 
@@ -39,10 +39,10 @@ interface TypographyProps extends HTMLAttributes<HTMLElement> {
   /** Font weight */
   weight?: 'normal' | 'medium' | 'semibold' | 'bold';
   /** Custom component/element */
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
 }
 
-const variantMapping: Record<TypographyVariant, keyof JSX.IntrinsicElements> = {
+const variantMapping: Record<TypographyVariant, keyof React.JSX.IntrinsicElements> = {
   h1: 'h1',
   h2: 'h2',
   h3: 'h3',
