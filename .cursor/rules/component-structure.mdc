@@ -1,0 +1,207 @@
+---
+globs: src/components/**/*.tsx,src/components/**/*.ts
+description: Component creation, structure, and implementation standards for DesignBricks
+---
+
+# Component Structure Standards
+
+## File Organization
+Every component lives in `src/components/ComponentName/` with **exactly 4 files**:
+
+```
+ComponentName/
+├── ComponentName.tsx        # Component implementation
+├── ComponentName.css        # Component styles
+├── ComponentName.stories.tsx # Storybook documentation
+├── ComponentName.test.tsx   # Component tests
+└── index.ts                 # Exports
+```
+
+## Component Implementation Pattern
+
+### 1. Basic Template
+```typescript
+import React, { forwardRef, HTMLAttributes } from 'react';
+import clsx from 'clsx';
+import './ComponentName.css';
+
+export interface ComponentNameProps extends HTMLAttributes<HTMLDivElement> {
+  /** Component variant */
+  variant?: 'primary' | 'secondary';
+  /** Component size */
+  size?: 'small' | 'medium' | 'large';
+  /** Additional CSS classes */
+  className?: string;
+  /** Component children */
+  children?: React.ReactNode;
+}
+
+export const ComponentName = forwardRef<HTMLDivElement, ComponentNameProps>(
+  (
+    {
+      variant = 'primary',
+      size = 'medium',
+      className,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <div
+        ref={ref}
+        className={clsx(
+          'db-componentname',
+          `db-componentname--${variant}`,
+          `db-componentname--${size}`,
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+
+ComponentName.displayName = 'ComponentName';
+```
+
+## Key Requirements
+
+### Import Order
+1. React and React types
+2. External libraries (clsx, d3, etc.)
+3. Internal utilities and tokens
+4. Component CSS (always last)
+
+### Props Interface
+- **Extend HTML attributes** for the appropriate element
+- **JSDoc comments** for every prop
+- **Optional props** should have `?` and default values in component
+- **Group related props** logically
+
+### Component Implementation
+- **Always use forwardRef** for ref forwarding support
+- **Set displayName** for debugging: `ComponentName.displayName = 'ComponentName'`
+- **Use clsx** for conditional className logic
+- **Destructure props** with defaults at the top
+- **Spread remaining props** onto root element
+
+### CSS Class Naming
+- **BEM methodology** with `db-` prefix
+- **Base class**: `db-componentname`
+- **Modifiers**: `db-componentname--variant`
+- **Elements**: `db-componentname__element`
+- **States**: `db-componentname--state`
+
+Example:
+```css
+.db-button                    /* Base */
+.db-button--primary           /* Variant modifier */
+.db-button--large             /* Size modifier */
+.db-button__icon              /* Child element */
+.db-button--loading           /* State modifier */
+```
+
+### Export Pattern
+Each component's `index.ts`:
+```typescript
+export { ComponentName } from './ComponentName';
+export type { ComponentNameProps } from './ComponentName';
+```
+
+## Component Categories
+
+When creating components, classify them in [src/index.ts](mdc:src/index.ts):
+
+- **Foundation**: Core building blocks (Button, Typography, UserAvatar)
+- **Layout**: Layout containers (Flex, Grid)
+- **Inputs**: Form controls (TextField, Checkbox, Toggle, Select)
+- **Navigation**: Navigation components (Tabs, Sidebar, TopBar, Breadcrumbs)
+- **Feedback**: Status indicators (Alert, Badge, Progress, Notification)
+- **Data Display**: Data visualization (Card, Table, Charts)
+- **Overlays**: Modal dialogs (Modal, Tooltip, Dropdown, Popover)
+
+## Component Generator
+
+Use the built-in generator to scaffold new components:
+
+```bash
+npm run generate:component -- ComponentName
+```
+
+This creates all 4 required files with proper structure and templates.
+
+## Common Patterns
+
+### Compound Components
+```typescript
+export const Tabs = Object.assign(TabsRoot, {
+  List: TabsList,
+  Tab: TabsTab,
+  Panel: TabsPanel,
+});
+
+// Usage: <Tabs.List><Tabs.Tab /></Tabs.List>
+```
+
+### Conditional Rendering
+```typescript
+{loading && (
+  <span className="db-button__spinner" aria-hidden="true">
+    <Spinner />
+  </span>
+)}
+```
+
+### Icon Support
+```typescript
+{iconBefore && !loading && (
+  <span className="db-button__icon db-button__icon--before">
+    {iconBefore}
+  </span>
+)}
+```
+
+## Design Token Integration
+
+Import and use tokens from [src/tokens](mdc:src/tokens/index.ts):
+
+```typescript
+import { tokens } from '../../tokens';
+
+// In styles or inline
+style={{
+  padding: tokens.spacing.md,
+  borderRadius: tokens.borderRadius.md,
+}}
+```
+
+## TypeScript Best Practices
+
+- **Explicit types** for all props and return values
+- **Generic constraints** when needed
+- **Union types** for variants
+- **Proper HTML element typing** when extending native elements
+
+Example:
+```typescript
+export interface ButtonProps 
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
+  // Button-specific props
+}
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (props, ref) => {
+    // Implementation
+  }
+);
+```
+
+## References
+
+- Main export: [src/index.ts](mdc:src/index.ts)
+- Example component: [src/components/Button/Button.tsx](mdc:src/components/Button/Button.tsx)
+- Design tokens: [src/tokens/index.ts](mdc:src/tokens/index.ts)
+- Generator script: [scripts/generate-component.js](mdc:scripts/generate-component.js)

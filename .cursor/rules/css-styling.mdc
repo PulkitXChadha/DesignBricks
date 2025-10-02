@@ -1,0 +1,384 @@
+---
+globs: src/components/**/*.css,src/styles/**/*.css
+description: CSS styling patterns, naming conventions, and best practices
+---
+
+# CSS Styling Standards
+
+## File Organization
+
+Each component has its own CSS file:
+- File name: `ComponentName.css`
+- Location: Same directory as component
+- Import: Last import in component file
+
+## BEM Naming Convention
+
+Use BEM (Block Element Modifier) with `db-` prefix:
+
+```css
+/* Block (Component base) */
+.db-button { }
+
+/* Element (Child of block) */
+.db-button__icon { }
+.db-button__text { }
+.db-button__spinner { }
+
+/* Modifier (Variant of block or element) */
+.db-button--primary { }
+.db-button--large { }
+.db-button--loading { }
+
+/* Combined modifier + element */
+.db-button__icon--before { }
+.db-button__icon--after { }
+```
+
+## CSS Structure Template
+
+```css
+/* ==========================================================================
+   Component Name
+   ========================================================================== */
+
+/* Base Styles
+   ========================================================================== */
+.db-component {
+  /* Layout */
+  display: flex;
+  position: relative;
+  
+  /* Box model */
+  padding: var(--db-spacing-md);
+  margin: 0;
+  
+  /* Typography */
+  font-family: var(--db-font-family-primary);
+  font-size: var(--db-font-size-md);
+  
+  /* Visual */
+  background-color: var(--db-color-background-default);
+  border-radius: var(--db-border-radius-md);
+  
+  /* Animation */
+  transition: var(--db-transition-base);
+  
+  /* Misc */
+  box-sizing: border-box;
+}
+
+/* Variants
+   ========================================================================== */
+.db-component--primary {
+  background-color: var(--db-color-primary-main);
+  color: var(--db-color-text-inverse);
+}
+
+.db-component--secondary {
+  background-color: var(--db-color-neutral-100);
+  color: var(--db-color-text-primary);
+}
+
+/* Sizes
+   ========================================================================== */
+.db-component--small {
+  padding: var(--db-spacing-sm);
+  font-size: var(--db-font-size-sm);
+}
+
+.db-component--medium {
+  padding: var(--db-spacing-md);
+  font-size: var(--db-font-size-md);
+}
+
+.db-component--large {
+  padding: var(--db-spacing-lg);
+  font-size: var(--db-font-size-lg);
+}
+
+/* Elements
+   ========================================================================== */
+.db-component__icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.db-component__text {
+  flex: 1;
+}
+
+/* States
+   ========================================================================== */
+.db-component:hover {
+  background-color: var(--db-color-primary-dark);
+}
+
+.db-component:focus-visible {
+  outline: 2px solid var(--db-color-focus);
+  outline-offset: 2px;
+}
+
+.db-component:active {
+  transform: scale(0.98);
+}
+
+.db-component--disabled,
+.db-component:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Responsive Design
+   ========================================================================== */
+@media (max-width: 768px) {
+  .db-component {
+    font-size: var(--db-font-size-sm);
+  }
+}
+
+/* Accessibility
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .db-component {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .db-component {
+    border: 1px solid currentColor;
+  }
+}
+
+/* Dark Mode (if applicable)
+   ========================================================================== */
+[data-theme="dark"] .db-component {
+  background-color: var(--db-color-background-dark);
+  color: var(--db-color-text-inverse);
+}
+```
+
+## CSS Custom Properties (Variables)
+
+Reference design tokens through CSS variables:
+
+```css
+/* Colors */
+--db-color-primary-main: #2272B4;
+--db-color-primary-dark: #1A5A8C;
+--db-color-primary-light: #4A90CC;
+
+/* Spacing (4px base unit) */
+--db-spacing-xs: 4px;
+--db-spacing-sm: 8px;
+--db-spacing-md: 16px;
+--db-spacing-lg: 24px;
+--db-spacing-xl: 32px;
+
+/* Typography */
+--db-font-size-sm: 12px;
+--db-font-size-md: 14px;
+--db-font-size-lg: 16px;
+--db-font-weight-normal: 400;
+--db-font-weight-medium: 500;
+--db-font-weight-bold: 700;
+
+/* Border Radius */
+--db-border-radius-sm: 4px;
+--db-border-radius-md: 8px;
+--db-border-radius-lg: 12px;
+
+/* Transitions */
+--db-transition-fast: 150ms ease-in-out;
+--db-transition-base: 250ms ease-in-out;
+--db-transition-slow: 350ms ease-in-out;
+
+/* Shadows */
+--db-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+--db-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+--db-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+```
+
+## Layout Patterns
+
+### Flexbox
+```css
+.db-component--flex {
+  display: flex;
+  align-items: center;
+  gap: var(--db-spacing-sm);
+}
+
+.db-component--flex-column {
+  flex-direction: column;
+}
+```
+
+### Grid
+```css
+.db-component--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--db-spacing-md);
+}
+```
+
+## Animation Patterns
+
+### Simple Transitions
+```css
+.db-component {
+  transition: all var(--db-transition-base);
+}
+```
+
+### Keyframe Animations
+```css
+@keyframes db-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.db-component--animated {
+  animation: db-fade-in var(--db-transition-base);
+}
+```
+
+### Spinner Animation
+```css
+@keyframes db-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.db-spinner {
+  animation: db-spin 1s linear infinite;
+}
+```
+
+## Performance Best Practices
+
+### Use Transform for Animations
+```css
+/* ✅ Good - GPU accelerated */
+.db-component {
+  transform: translateX(0);
+  transition: transform var(--db-transition-base);
+}
+
+.db-component--moved {
+  transform: translateX(100px);
+}
+
+/* ❌ Avoid - triggers layout */
+.db-component {
+  left: 0;
+  transition: left var(--db-transition-base);
+}
+```
+
+### Containment
+```css
+.db-component {
+  contain: layout style paint;
+}
+```
+
+### Will-change (Use Sparingly)
+```css
+.db-component--animating {
+  will-change: transform;
+}
+```
+
+## Accessibility Requirements
+
+### Focus States
+```css
+.db-component:focus-visible {
+  outline: 2px solid var(--db-color-focus);
+  outline-offset: 2px;
+}
+
+/* Remove default outline */
+.db-component:focus {
+  outline: none;
+}
+```
+
+### High Contrast Mode
+```css
+@media (prefers-contrast: high) {
+  .db-component {
+    border: 1px solid;
+  }
+}
+```
+
+### Reduced Motion
+```css
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+## Common Utility Classes
+
+```css
+/* Full width */
+.db-component--full-width {
+  width: 100%;
+}
+
+/* Truncate text */
+.db-component--truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Visually hidden (accessible) */
+.db-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+```
+
+## Do's and Don'ts
+
+### ✅ Do
+- Use CSS custom properties for theming
+- Follow BEM naming convention
+- Include focus states for interactive elements
+- Support reduced motion preferences
+- Use semantic units (rem, em) for typography
+- Group related styles with comments
+- Use design tokens consistently
+
+### ❌ Don't
+- Use inline styles (except for dynamic values)
+- Use !important (unless absolutely necessary)
+- Hard-code colors, spacing, or font sizes
+- Forget accessibility states (focus, hover, active)
+- Nest classes more than 3 levels deep
+- Use overly specific selectors
+
+## References
+
+- Design tokens: [src/tokens/index.ts](mdc:src/tokens/index.ts)
+- Global styles: [src/styles](mdc:src/styles)
+- Example component CSS: [src/components/Button/Button.css](mdc:src/components/Button/Button.css)

@@ -1,0 +1,528 @@
+---
+globs: src/components/**/*.stories.tsx,**/*.stories.ts
+description: Storybook story creation and documentation standards
+---
+
+# Storybook Documentation Standards
+
+## Story File Structure
+
+Each component has a stories file: `ComponentName.stories.tsx`
+
+```
+ComponentName/
+├── ComponentName.tsx
+├── ComponentName.css
+├── ComponentName.stories.tsx  ← Story file
+├── ComponentName.test.tsx
+└── index.ts
+```
+
+## Story Template
+
+```typescript
+import type { Meta, StoryObj } from '@storybook/react';
+import { ComponentName } from './ComponentName';
+
+const meta: Meta<typeof ComponentName> = {
+  title: 'Components/ComponentName',
+  component: ComponentName,
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component: 'Brief description of the component and its purpose.',
+      },
+    },
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['primary', 'secondary', 'tertiary'],
+      description: 'The visual variant of the component',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: 'primary' },
+      },
+    },
+    size: {
+      control: 'select',
+      options: ['small', 'medium', 'large'],
+      description: 'The size of the component',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: 'medium' },
+      },
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the component is disabled',
+    },
+    children: {
+      control: 'text',
+      description: 'Content to display inside the component',
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof ComponentName>;
+
+// Default story
+export const Default: Story = {
+  args: {
+    children: 'ComponentName Content',
+    variant: 'primary',
+    size: 'medium',
+  },
+};
+
+// Variant stories
+export const Primary: Story = {
+  args: {
+    ...Default.args,
+    variant: 'primary',
+  },
+};
+
+export const Secondary: Story = {
+  args: {
+    ...Default.args,
+    variant: 'secondary',
+  },
+};
+
+export const Tertiary: Story = {
+  args: {
+    ...Default.args,
+    variant: 'tertiary',
+  },
+};
+
+// Size stories
+export const Small: Story = {
+  args: {
+    ...Default.args,
+    size: 'small',
+  },
+};
+
+export const Medium: Story = {
+  args: {
+    ...Default.args,
+    size: 'medium',
+  },
+};
+
+export const Large: Story = {
+  args: {
+    ...Default.args,
+    size: 'large',
+  },
+};
+
+// State stories
+export const Disabled: Story = {
+  args: {
+    ...Default.args,
+    disabled: true,
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    ...Default.args,
+    loading: true,
+  },
+};
+
+// Complex example
+export const WithIcons: Story = {
+  args: {
+    ...Default.args,
+    iconBefore: '→',
+    iconAfter: '←',
+  },
+};
+
+// Interactive example
+export const Interactive: Story = {
+  render: (args) => {
+    const [count, setCount] = React.useState(0);
+    return (
+      <ComponentName {...args} onClick={() => setCount(count + 1)}>
+        Clicked {count} times
+      </ComponentName>
+    );
+  },
+};
+
+// Multiple components example
+export const Playground: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+      <ComponentName variant="primary">Primary</ComponentName>
+      <ComponentName variant="secondary">Secondary</ComponentName>
+      <ComponentName variant="tertiary">Tertiary</ComponentName>
+    </div>
+  ),
+};
+```
+
+## Story Organization
+
+### Meta Configuration
+
+```typescript
+const meta: Meta<typeof ComponentName> = {
+  // Hierarchical path in Storybook sidebar
+  title: 'Category/ComponentName',
+  
+  // Component reference
+  component: ComponentName,
+  
+  // Layout options: 'centered' | 'fullscreen' | 'padded'
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component: 'Component description with usage guidelines.',
+      },
+    },
+  },
+  
+  // Enable automatic documentation
+  tags: ['autodocs'],
+  
+  // Control configuration
+  argTypes: { /* ... */ },
+  
+  // Default args for all stories
+  args: { /* ... */ },
+};
+```
+
+### Title Organization by Category
+
+```typescript
+// Foundation
+title: 'Foundation/Button'
+title: 'Foundation/Typography'
+
+// Layout
+title: 'Layout/Flex'
+title: 'Layout/Grid'
+
+// Inputs
+title: 'Inputs/TextField'
+title: 'Inputs/Checkbox'
+
+// Navigation
+title: 'Navigation/Tabs'
+title: 'Navigation/Sidebar'
+
+// Feedback
+title: 'Feedback/Alert'
+title: 'Feedback/Badge'
+
+// Data Display
+title: 'Data Display/Card'
+title: 'Data Display/Table'
+title: 'Data Display/LineChart'
+
+// Overlays
+title: 'Overlays/Modal'
+title: 'Overlays/Tooltip'
+```
+
+## Control Types
+
+### Select
+```typescript
+variant: {
+  control: 'select',
+  options: ['primary', 'secondary', 'tertiary'],
+}
+```
+
+### Radio
+```typescript
+size: {
+  control: 'radio',
+  options: ['small', 'medium', 'large'],
+}
+```
+
+### Boolean
+```typescript
+disabled: {
+  control: 'boolean',
+}
+```
+
+### Text
+```typescript
+children: {
+  control: 'text',
+}
+```
+
+### Number
+```typescript
+count: {
+  control: { type: 'number', min: 0, max: 100, step: 1 },
+}
+```
+
+### Range
+```typescript
+opacity: {
+  control: { type: 'range', min: 0, max: 1, step: 0.1 },
+}
+```
+
+### Color
+```typescript
+backgroundColor: {
+  control: 'color',
+}
+```
+
+### Object
+```typescript
+style: {
+  control: 'object',
+}
+```
+
+### Date
+```typescript
+date: {
+  control: 'date',
+}
+```
+
+## Story Patterns
+
+### Basic Story
+```typescript
+export const Basic: Story = {
+  args: {
+    children: 'Content',
+  },
+};
+```
+
+### Story with Render Function
+```typescript
+export const CustomRender: Story = {
+  render: (args) => (
+    <div style={{ padding: '20px' }}>
+      <ComponentName {...args} />
+    </div>
+  ),
+  args: {
+    children: 'Content',
+  },
+};
+```
+
+### Interactive Story
+```typescript
+export const Interactive: Story = {
+  render: (args) => {
+    const [value, setValue] = React.useState('');
+    return (
+      <ComponentName
+        {...args}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+    );
+  },
+};
+```
+
+### Multiple Components
+```typescript
+export const Variations: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '16px' }}>
+      {['small', 'medium', 'large'].map(size => (
+        <ComponentName key={size} size={size}>
+          {size}
+        </ComponentName>
+      ))}
+    </div>
+  ),
+};
+```
+
+### With Decorators
+```typescript
+export const WithBackground: Story = {
+  args: {
+    children: 'Content',
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ backgroundColor: '#f0f0f0', padding: '20px' }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+```
+
+## Documentation Enhancements
+
+### Component Description
+```typescript
+parameters: {
+  docs: {
+    description: {
+      component: `
+The ComponentName is used for [purpose]. It supports multiple variants
+and sizes for different use cases.
+
+## Usage Guidelines
+- Use primary variant for main actions
+- Use secondary variant for supporting actions
+- Always provide accessible labels
+      `,
+    },
+  },
+},
+```
+
+### Story Description
+```typescript
+export const Example: Story = {
+  args: { /* ... */ },
+  parameters: {
+    docs: {
+      description: {
+        story: 'This story demonstrates a specific use case...',
+      },
+    },
+  },
+};
+```
+
+### Code Snippets
+```typescript
+export const CodeExample: Story = {
+  args: { /* ... */ },
+  parameters: {
+    docs: {
+      source: {
+        code: `
+<ComponentName variant="primary" size="large">
+  Custom Example
+</ComponentName>
+        `,
+      },
+    },
+  },
+};
+```
+
+## Accessibility Add-on
+
+Enable a11y testing in stories:
+
+```typescript
+parameters: {
+  a11y: {
+    element: '#root',
+    config: {
+      rules: [
+        {
+          id: 'color-contrast',
+          enabled: true,
+        },
+      ],
+    },
+    options: {},
+  },
+},
+```
+
+## Actions
+
+Track user interactions:
+
+```typescript
+export const WithActions: Story = {
+  args: {
+    onClick: fn(), // Uses Storybook's fn() utility
+    onFocus: fn(),
+    onBlur: fn(),
+  },
+};
+```
+
+## Best Practices
+
+### ✅ Do
+- Create a Default story as the baseline
+- Show all variants and sizes
+- Include interactive examples
+- Document usage guidelines
+- Test accessibility in stories
+- Use realistic content/data
+- Group related stories together
+- Provide code examples
+
+### ❌ Don't
+- Create overly complex stories
+- Test implementation details
+- Duplicate prop descriptions
+- Use placeholder text like "Lorem ipsum" excessively
+- Forget to update stories when component changes
+- Mix unrelated component examples
+
+## Running Storybook
+
+```bash
+# Start Storybook dev server
+npm run storybook
+
+# Build static Storybook
+npm run build-storybook
+
+# View built Storybook
+npx http-server storybook-static
+```
+
+## Story Testing
+
+Test stories with Storybook Testing Library:
+
+```typescript
+import { composeStories } from '@storybook/react';
+import * as stories from './ComponentName.stories';
+
+const { Default, Primary, Disabled } = composeStories(stories);
+
+describe('ComponentName Stories', () => {
+  it('renders Default story', () => {
+    const { container } = render(<Default />);
+    expect(container).toBeInTheDocument();
+  });
+  
+  it('renders Primary story', () => {
+    const { container } = render(<Primary />);
+    expect(container.firstChild).toHaveClass('db-componentname--primary');
+  });
+});
+```
+
+## References
+
+- Storybook config: [.storybook/](mdc:.storybook)
+- Live Storybook: https://pulkitxchadha.github.io/DesignBricks/
+- Example stories: [src/components/Button/Button.stories.tsx](mdc:src/components/Button/Button.stories.tsx)
+- Storybook docs: https://storybook.js.org/docs/react
+- Documentation: [STORYBOOK.md](mdc:STORYBOOK.md)

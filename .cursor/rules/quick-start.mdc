@@ -1,0 +1,267 @@
+---
+alwaysApply: true
+---
+
+# DesignBricks Quick Reference
+
+## 🚀 Quick Start
+
+### Create New Component
+```bash
+npm run generate:component -- ComponentName
+```
+
+This generates all 4 required files:
+- `ComponentName.tsx` - Component implementation
+- `ComponentName.css` - Styles
+- `ComponentName.stories.tsx` - Storybook documentation
+- `ComponentName.test.tsx` - Tests
+- `index.ts` - Exports
+
+**Don't forget:** Update [src/index.ts](mdc:src/index.ts) to export your new component!
+
+### Development Commands
+```bash
+npm run storybook      # Start Storybook dev server
+npm test              # Run tests
+npm run test:watch    # Run tests in watch mode
+npm run build         # Build library
+npm run lint          # Run linter
+npm run lint:fix      # Fix linting issues
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── components/           # All components (37 total)
+│   └── ComponentName/
+│       ├── ComponentName.tsx
+│       ├── ComponentName.css
+│       ├── ComponentName.stories.tsx
+│       ├── ComponentName.test.tsx
+│       └── index.ts
+├── tokens/              # Design tokens
+│   ├── colors.ts
+│   ├── typography.ts
+│   ├── spacing.ts
+│   └── index.ts
+├── lib/                 # Utilities
+│   ├── accessibility.ts
+│   ├── performance.ts
+│   └── theme.ts
+└── index.ts            # Main export (update when adding components!)
+```
+
+## 🎨 Design Tokens
+
+Quick access to tokens:
+
+```typescript
+import { tokens } from '../tokens';
+
+// Colors
+tokens.colors.primary.main
+tokens.colors.semantic.success
+
+// Spacing (4px base)
+tokens.spacing.sm   // 8px
+tokens.spacing.md   // 16px
+tokens.spacing.lg   // 24px
+
+// Typography
+tokens.typography.fontSize.md
+tokens.typography.fontWeight.bold
+
+// Shadows
+tokens.boxShadow.md
+
+// Border Radius
+tokens.borderRadius.md
+
+// Transitions
+tokens.transition.base
+```
+
+## 📝 Component Template Quick Copy
+
+```typescript
+import React, { forwardRef, HTMLAttributes } from 'react';
+import clsx from 'clsx';
+import './ComponentName.css';
+
+export interface ComponentNameProps extends HTMLAttributes<HTMLDivElement> {
+  variant?: 'primary' | 'secondary';
+  size?: 'small' | 'medium' | 'large';
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export const ComponentName = forwardRef<HTMLDivElement, ComponentNameProps>(
+  ({ variant = 'primary', size = 'medium', className, children, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={clsx(
+          'db-componentname',
+          `db-componentname--${variant}`,
+          `db-componentname--${size}`,
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+
+ComponentName.displayName = 'ComponentName';
+```
+
+## 🧪 Test Template Quick Copy
+
+```typescript
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import { ComponentName } from './ComponentName';
+
+expect.extend(toHaveNoViolations);
+
+describe('ComponentName', () => {
+  it('renders without crashing', () => {
+    render(<ComponentName>Content</ComponentName>);
+    expect(screen.getByText('Content')).toBeInTheDocument();
+  });
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(<ComponentName>Content</ComponentName>);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+});
+```
+
+## 📚 Component Categories
+
+When adding to [src/index.ts](mdc:src/index.ts):
+
+- **Foundation**: Button, Typography, UserAvatar
+- **Layout**: Flex, Grid
+- **Inputs**: TextField, Checkbox, Toggle, Select, SearchInput
+- **Navigation**: Tabs, Sidebar, TopBar, Breadcrumbs
+- **Feedback**: Alert, Badge, Progress, Notification
+- **Data Display**: Card, Table, LineChart, BarChart, PieChart
+- **Overlays**: Modal, Tooltip, Dropdown, Popover
+
+## 🎯 CSS Class Naming (BEM)
+
+```css
+.db-button                    /* Block */
+.db-button--primary           /* Modifier */
+.db-button__icon              /* Element */
+.db-button__icon--before      /* Element + Modifier */
+```
+
+## ♿ Accessibility Checklist
+
+- [ ] Proper semantic HTML
+- [ ] ARIA attributes where needed
+- [ ] Keyboard navigation support
+- [ ] Focus visible states
+- [ ] Color contrast compliance
+- [ ] Reduced motion support
+- [ ] Screen reader tested
+- [ ] jest-axe tests passing
+
+## 📖 Documentation Links
+
+- [Getting Started](mdc:docs/GETTING-STARTED.md) - Comprehensive tutorial
+- [API Documentation](mdc:docs/API.md) - Component API reference
+- [Developer Tools](mdc:docs/DEVELOPER-TOOLS.md) - CLI and tooling
+- [Migration Guide](mdc:docs/MIGRATION.md) - From other libraries
+- [Real-World Examples](mdc:examples/README.md) - Production examples
+
+## 🛠️ Developer Tools
+
+```bash
+# Component Generator
+npm run generate:component -- MyComponent
+
+# Token Validator
+npm run validate:tokens
+
+# API Docs Generator
+npm run docs:generate
+
+# Type Check
+npm run type-check
+
+# Format Code
+npm run format
+```
+
+## 🔍 Key Files
+
+- Main export: [src/index.ts](mdc:src/index.ts)
+- TypeScript config: [tsconfig.json](mdc:tsconfig.json)
+- Jest config: [jest.config.js](mdc:jest.config.js)
+- Package config: [package.json](mdc:package.json)
+- Design tokens: [src/tokens/index.ts](mdc:src/tokens/index.ts)
+- Component generator: [scripts/generate-component.js](mdc:scripts/generate-component.js)
+
+## 📊 Project Stats
+
+- **37 components** - Production-ready
+- **2,222 tests** - Comprehensive coverage
+- **77.93% coverage** - Above target
+- **WCAG 2.1 AA** - Accessibility compliant
+- **< 100KB gzipped** - Optimized bundle
+
+## 🎨 Live Storybook
+
+View components interactively:
+https://pulkitxchadha.github.io/DesignBricks/
+
+## 💡 Common Tasks
+
+### Add a new variant to existing component
+1. Update component props interface
+2. Add className logic in component
+3. Add CSS styles for variant
+4. Add tests for variant
+5. Add Storybook story for variant
+
+### Fix linting errors
+```bash
+npm run lint:fix
+```
+
+### Update design tokens
+1. Edit token files in `src/tokens/`
+2. Run validator: `npm run validate:tokens`
+3. Update component CSS to use new tokens
+4. Test changes in Storybook
+
+### Run specific test
+```bash
+npm test -- ComponentName
+```
+
+## 🚨 Before Committing
+
+- [ ] Tests pass: `npm test`
+- [ ] Linting clean: `npm run lint`
+- [ ] TypeScript compiles: `npm run build`
+- [ ] Storybook works: `npm run storybook`
+- [ ] Updated exports in [src/index.ts](mdc:src/index.ts)
+
+## 🎓 Learning Resources
+
+New to the project? Start here:
+1. Read [Getting Started Guide](mdc:docs/GETTING-STARTED.md)
+2. Explore [Storybook](https://pulkitxchadha.github.io/DesignBricks/)
+3. Review [Button component](mdc:src/components/Button/Button.tsx) as example
+4. Try generating a component: `npm run generate:component -- Test`
+5. Read [API Documentation](mdc:docs/API.md)
