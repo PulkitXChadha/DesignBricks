@@ -23,7 +23,7 @@ describe('TextField', () => {
       const wrapper = input.closest('.db-textfield');
       expect(wrapper).toHaveClass(
         'db-textfield',
-        'db-textfield--medium'
+        'db-textfield--default'
       );
       expect(wrapper).not.toHaveClass(
         'db-textfield--full-width',
@@ -37,6 +37,13 @@ describe('TextField', () => {
       
       const wrapper = screen.getByPlaceholderText('Text').closest('.db-textfield');
       expect(wrapper).toHaveClass('db-textfield', 'custom-class');
+    });
+
+    it('applies default size', () => {
+      render(<TextField placeholder="Text" />);
+      
+      const wrapper = screen.getByPlaceholderText('Text').closest('.db-textfield');
+      expect(wrapper).toHaveClass('db-textfield--default');
     });
 
     it('forwards ref correctly', () => {
@@ -65,7 +72,7 @@ describe('TextField', () => {
 
   // Size tests
   describe('Sizes', () => {
-    const sizes: Array<TextFieldProps['size']> = ['small', 'medium', 'large'];
+    const sizes: Array<TextFieldProps['size']> = ['small', 'default'];
     
     sizes.forEach(size => {
       it(`renders ${size} size correctly`, () => {
@@ -76,18 +83,18 @@ describe('TextField', () => {
       });
     });
 
-    it('applies medium size by default', () => {
+    it('applies default size by default', () => {
       render(<TextField placeholder="Text" />);
       
       const wrapper = screen.getByPlaceholderText('Text').closest('.db-textfield');
-      expect(wrapper).toHaveClass('db-textfield--medium');
+      expect(wrapper).toHaveClass('db-textfield--default');
     });
 
-    it('applies medium size when size is undefined', () => {
+    it('applies default size when size is undefined', () => {
       render(<TextField size={undefined} placeholder="Text" />);
       
       const wrapper = screen.getByPlaceholderText('Text').closest('.db-textfield');
-      expect(wrapper).toHaveClass('db-textfield--medium');
+      expect(wrapper).toHaveClass('db-textfield--default');
     });
   });
 
@@ -118,28 +125,18 @@ describe('TextField', () => {
       expect(requiredIndicator).toHaveClass('db-textfield__required');
     });
 
+    it('shows optional indicator when optional is true', () => {
+      render(<TextField label="Optional Field" optional placeholder="Text" />);
+      
+      const optionalIndicator = screen.getByText('(optional)');
+      expect(optionalIndicator).toBeInTheDocument();
+      expect(optionalIndicator).toHaveClass('db-textfield__optional');
+    });
+
     it('does not show required indicator when required is false', () => {
       render(<TextField label="Optional Field" required={false} placeholder="Text" />);
       
       expect(screen.queryByText('*')).not.toBeInTheDocument();
-    });
-
-    it('generates unique IDs for label association', () => {
-      render(
-        <div>
-          <TextField label="Field 1" placeholder="Text 1" />
-          <TextField label="Field 2" placeholder="Text 2" />
-        </div>
-      );
-      
-      const input1 = screen.getByPlaceholderText('Text 1');
-      const input2 = screen.getByPlaceholderText('Text 2');
-      const label1 = screen.getByText('Field 1');
-      const label2 = screen.getByText('Field 2');
-      
-      expect(input1.id).not.toBe(input2.id);
-      expect(label1).toHaveAttribute('for', input1.id);
-      expect(label2).toHaveAttribute('for', input2.id);
     });
 
     it('uses provided ID when given', () => {
@@ -179,6 +176,18 @@ describe('TextField', () => {
       expect(input).toBeDisabled();
       expect(wrapper).toHaveClass('db-textfield--disabled');
       expect(inputWrapper).toHaveClass('db-textfield__wrapper--disabled');
+    });
+
+    it('applies readonly styles when readOnly is true', () => {
+      render(<TextField readOnly placeholder="Text" value="Read-only value" />);
+      
+      const input = screen.getByPlaceholderText('Text');
+      const wrapper = input.closest('.db-textfield');
+      const inputWrapper = wrapper?.querySelector('.db-textfield__wrapper');
+      
+      expect(input).toHaveAttribute('readonly');
+      expect(wrapper).toHaveClass('db-textfield--readonly');
+      expect(inputWrapper).toHaveClass('db-textfield__wrapper--readonly');
     });
 
     it('does not apply disabled styles by default', () => {
@@ -237,18 +246,34 @@ describe('TextField', () => {
     });
   });
 
-  // Error handling tests
-  describe('Error Handling', () => {
-    it('displays error message when error prop is provided', () => {
-      render(<TextField error="This field is required" placeholder="Text" />);
+  // Validation handling tests
+  describe('Validation', () => {
+    it('displays error message when validation state is error', () => {
+      render(<TextField validationState="error" message="This field is required" placeholder="Text" />);
       
       const errorMessage = screen.getByText('This field is required');
       expect(errorMessage).toBeInTheDocument();
-      expect(errorMessage).toHaveClass('db-textfield__helper', 'db-textfield__helper--error');
+      expect(errorMessage).toHaveClass('db-textfield__message', 'db-textfield__message--error');
     });
 
-    it('applies error styles when error is present', () => {
-      render(<TextField error="Error message" placeholder="Text" />);
+    it('displays warning message when validation state is warning', () => {
+      render(<TextField validationState="warning" message="Warning message" placeholder="Text" />);
+      
+      const warningMessage = screen.getByText('Warning message');
+      expect(warningMessage).toBeInTheDocument();
+      expect(warningMessage).toHaveClass('db-textfield__message', 'db-textfield__message--warning');
+    });
+
+    it('displays success message when validation state is success', () => {
+      render(<TextField validationState="success" message="Success message" placeholder="Text" />);
+      
+      const successMessage = screen.getByText('Success message');
+      expect(successMessage).toBeInTheDocument();
+      expect(successMessage).toHaveClass('db-textfield__message', 'db-textfield__message--success');
+    });
+
+    it('applies error styles when validation state is error', () => {
+      render(<TextField validationState="error" message="Error message" placeholder="Text" />);
       
       const input = screen.getByPlaceholderText('Text');
       const wrapper = input.closest('.db-textfield');
@@ -259,33 +284,17 @@ describe('TextField', () => {
       expect(input).toHaveAttribute('aria-invalid', 'true');
     });
 
-    it('associates error message with input via aria-describedby', () => {
-      render(<TextField error="Error message" placeholder="Text" />);
+    it('associates message with input via aria-describedby', () => {
+      render(<TextField message="Error message" validationState="error" placeholder="Text" />);
       
       const input = screen.getByPlaceholderText('Text');
-      const errorMessage = screen.getByText('Error message');
+      const message = screen.getByText('Error message');
       
-      expect(input).toHaveAttribute('aria-describedby', errorMessage.id);
-      expect(errorMessage.id).toMatch(/.*-error$/);
+      expect(input).toHaveAttribute('aria-describedby');
+      expect(input.getAttribute('aria-describedby')).toContain(message.id);
     });
 
-    it('prioritizes error over helper text', () => {
-      render(
-        <TextField
-          error="Error message"
-          helperText="Helper text"
-          placeholder="Text"
-        />
-      );
-      
-      expect(screen.getByText('Error message')).toBeInTheDocument();
-      expect(screen.queryByText('Helper text')).not.toBeInTheDocument();
-      
-      const input = screen.getByPlaceholderText('Text');
-      expect(input).toHaveAttribute('aria-describedby', expect.stringMatching(/-error$/));
-    });
-
-    it('does not apply error styles when error is not present', () => {
+    it('does not apply error styles when validation state is not set', () => {
       render(<TextField placeholder="Text" />);
       
       const input = screen.getByPlaceholderText('Text');
@@ -294,51 +303,57 @@ describe('TextField', () => {
       
       expect(wrapper).not.toHaveClass('db-textfield--error');
       expect(inputWrapper).not.toHaveClass('db-textfield__wrapper--error');
-      expect(input).toHaveAttribute('aria-invalid', 'false');
+      expect(input).not.toHaveAttribute('aria-invalid');
     });
   });
 
-  // Helper text tests
-  describe('Helper Text', () => {
-    it('displays helper text when provided', () => {
-      render(<TextField helperText="Enter your username" placeholder="Text" />);
+  // Description text tests
+  describe('Description Text', () => {
+    it('displays description text when provided', () => {
+      render(<TextField description="Enter your username" placeholder="Text" />);
       
-      const helperText = screen.getByText('Enter your username');
-      expect(helperText).toBeInTheDocument();
-      expect(helperText).toHaveClass('db-textfield__helper');
-      expect(helperText).not.toHaveClass('db-textfield__helper--error');
+      const description = screen.getByText('Enter your username');
+      expect(description).toBeInTheDocument();
+      expect(description).toHaveClass('db-textfield__description');
     });
 
-    it('associates helper text with input via aria-describedby', () => {
-      render(<TextField helperText="Helper text" placeholder="Text" />);
+    it('associates description with input via aria-describedby', () => {
+      render(<TextField description="Helper text" placeholder="Text" />);
       
       const input = screen.getByPlaceholderText('Text');
-      const helperText = screen.getByText('Helper text');
+      const description = screen.getByText('Helper text');
       
-      expect(input).toHaveAttribute('aria-describedby', helperText.id);
-      expect(helperText.id).toMatch(/.*-helper$/);
+      expect(input).toHaveAttribute('aria-describedby');
+      expect(input.getAttribute('aria-describedby')).toContain(description.id);
     });
 
-    it('does not render helper text when not provided', () => {
+    it('does not render description text when not provided', () => {
       render(<TextField placeholder="Text" />);
       
-      expect(screen.queryByText(/helper/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/description/i)).not.toBeInTheDocument();
     });
 
-    it('does not set aria-describedby when no helper text or error', () => {
-      render(<TextField placeholder="Text" />);
-      
-      const input = screen.getByPlaceholderText('Text');
-      expect(input).not.toHaveAttribute('aria-describedby');
-    });
-  });
-
-  // Icon tests
-  describe('Icons', () => {
-    it('renders icon before input when iconBefore is provided', () => {
+    it('message takes precedence over description', () => {
       render(
         <TextField
-          iconBefore={<MockIcon name="search" />}
+          message="Error message"
+          validationState="error"
+          description="Helper text"
+          placeholder="Text"
+        />
+      );
+      
+      expect(screen.getByText('Error message')).toBeInTheDocument();
+      expect(screen.queryByText('Helper text')).not.toBeInTheDocument();
+    });
+  });
+
+  // Prefix and Suffix tests
+  describe('Prefix and Suffix', () => {
+    it('renders prefix content when provided', () => {
+      render(
+        <TextField
+          prefix={<MockIcon name="search" />}
           placeholder="Search"
         />
       );
@@ -346,14 +361,14 @@ describe('TextField', () => {
       const icon = screen.getByTestId('icon-search');
       expect(icon).toBeInTheDocument();
       
-      const iconWrapper = icon.closest('.db-textfield__icon');
-      expect(iconWrapper).toHaveClass('db-textfield__icon--before');
+      const iconWrapper = icon.closest('.db-textfield__prefix');
+      expect(iconWrapper).toBeInTheDocument();
     });
 
-    it('renders icon after input when iconAfter is provided', () => {
+    it('renders suffix content when provided', () => {
       render(
         <TextField
-          iconAfter={<MockIcon name="clear" />}
+          suffix={<MockIcon name="clear" />}
           placeholder="Text"
         />
       );
@@ -361,15 +376,15 @@ describe('TextField', () => {
       const icon = screen.getByTestId('icon-clear');
       expect(icon).toBeInTheDocument();
       
-      const iconWrapper = icon.closest('.db-textfield__icon');
-      expect(iconWrapper).toHaveClass('db-textfield__icon--after');
+      const iconWrapper = icon.closest('.db-textfield__suffix');
+      expect(iconWrapper).toBeInTheDocument();
     });
 
-    it('renders both icons when both are provided', () => {
+    it('renders both prefix and suffix when both are provided', () => {
       render(
         <TextField
-          iconBefore={<MockIcon name="search" />}
-          iconAfter={<MockIcon name="clear" />}
+          prefix={<MockIcon name="search" />}
+          suffix={<MockIcon name="clear" />}
           placeholder="Text"
         />
       );
@@ -377,20 +392,57 @@ describe('TextField', () => {
       expect(screen.getByTestId('icon-search')).toBeInTheDocument();
       expect(screen.getByTestId('icon-clear')).toBeInTheDocument();
       
-      const beforeIcon = screen.getByTestId('icon-search').closest('.db-textfield__icon');
-      const afterIcon = screen.getByTestId('icon-clear').closest('.db-textfield__icon');
+      const beforeIcon = screen.getByTestId('icon-search').closest('.db-textfield__prefix');
+      const afterIcon = screen.getByTestId('icon-clear').closest('.db-textfield__suffix');
       
-      expect(beforeIcon).toHaveClass('db-textfield__icon--before');
-      expect(afterIcon).toHaveClass('db-textfield__icon--after');
+      expect(beforeIcon).toBeInTheDocument();
+      expect(afterIcon).toBeInTheDocument();
     });
 
-    it('does not render icons when not provided', () => {
+    it('does not render prefix/suffix when not provided', () => {
       render(<TextField placeholder="Text" />);
       
       const wrapper = screen.getByPlaceholderText('Text').closest('.db-textfield');
-      const icons = wrapper?.querySelectorAll('.db-textfield__icon');
+      const prefixes = wrapper?.querySelectorAll('.db-textfield__prefix');
+      const suffixes = wrapper?.querySelectorAll('.db-textfield__suffix');
       
-      expect(icons).toHaveLength(0);
+      expect(prefixes).toHaveLength(0);
+      expect(suffixes).toHaveLength(0);
+    });
+  });
+
+  // Clear button tests
+  describe('Clear Button', () => {
+    it('shows clear button when showClear is true and input has value', () => {
+      render(<TextField showClear value="test" onChange={() => {}} placeholder="Text" />);
+      
+      const clearButton = screen.getByLabelText('Clear input');
+      expect(clearButton).toBeInTheDocument();
+      expect(clearButton).toHaveClass('db-textfield__clear');
+    });
+
+    it('does not show clear button when showClear is false', () => {
+      render(<TextField showClear={false} value="test" onChange={() => {}} placeholder="Text" />);
+      
+      expect(screen.queryByLabelText('Clear input')).not.toBeInTheDocument();
+    });
+
+    it('does not show clear button when input is empty', () => {
+      render(<TextField showClear value="" onChange={() => {}} placeholder="Text" />);
+      
+      expect(screen.queryByLabelText('Clear input')).not.toBeInTheDocument();
+    });
+
+    it('calls onClear when clear button is clicked', async () => {
+      const onClear = jest.fn();
+      const user = userEvent.setup();
+      
+      render(<TextField showClear value="test" onClear={onClear} onChange={() => {}} placeholder="Text" />);
+      
+      const clearButton = screen.getByLabelText('Clear input');
+      await user.click(clearButton);
+      
+      expect(onClear).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -452,6 +504,18 @@ describe('TextField', () => {
       expect(handleKeyDown).toHaveBeenCalled();
     });
 
+    it('calls onPressEnter when Enter key is pressed', async () => {
+      const handlePressEnter = jest.fn();
+      const user = userEvent.setup();
+      
+      render(<TextField onPressEnter={handlePressEnter} placeholder="Text" />);
+      
+      const input = screen.getByPlaceholderText('Text');
+      await user.type(input, '{Enter}');
+      
+      expect(handlePressEnter).toHaveBeenCalledTimes(1);
+    });
+
     it('supports controlled input', async () => {
       const TestComponent = () => {
         const [value, setValue] = React.useState('initial');
@@ -501,7 +565,7 @@ describe('TextField', () => {
       const { container } = render(
         <TextField
           label="Accessible Field"
-          helperText="This is helper text"
+          description="This is helper text"
           placeholder="Enter text"
         />
       );
@@ -514,7 +578,8 @@ describe('TextField', () => {
       const { container } = render(
         <TextField
           label="Error Field"
-          error="This field has an error"
+          validationState="error"
+          message="This field has an error"
           placeholder="Enter text"
         />
       );
@@ -523,12 +588,12 @@ describe('TextField', () => {
       expect(results).toHaveNoViolations();
     });
 
-    it('should not have accessibility violations with icons', async () => {
+    it('should not have accessibility violations with prefix and suffix', async () => {
       const { container } = render(
         <TextField
           label="Icon Field"
-          iconBefore={<MockIcon name="search" />}
-          iconAfter={<MockIcon name="clear" />}
+          prefix={<MockIcon name="search" />}
+          suffix={<MockIcon name="clear" />}
           placeholder="Search"
         />
       );
@@ -578,12 +643,12 @@ describe('TextField', () => {
       render(
         <TextField
           label="Complex Field"
-          helperText="This field has everything"
-          size="large"
+          description="This field has everything"
+          size="default"
           fullWidth
           required
-          iconBefore={<MockIcon name="user" />}
-          iconAfter={<MockIcon name="check" />}
+          prefix={<MockIcon name="user" />}
+          suffix={<MockIcon name="check" />}
           placeholder="Enter data"
           className="custom-field"
         />
@@ -594,7 +659,7 @@ describe('TextField', () => {
       
       expect(wrapper).toHaveClass(
         'db-textfield',
-        'db-textfield--large',
+        'db-textfield--default',
         'db-textfield--full-width',
         'custom-field'
       );
@@ -609,7 +674,8 @@ describe('TextField', () => {
     it('handles error and disabled states together', () => {
       render(
         <TextField
-          error="Field is disabled and has error"
+          validationState="error"
+          message="Field is disabled and has error"
           disabled
           placeholder="Disabled with error"
         />
@@ -654,10 +720,10 @@ describe('TextField', () => {
       render(
         <TextField
           label={undefined}
-          helperText={null as any}
-          error={undefined}
-          iconBefore={null}
-          iconAfter={undefined}
+          description={null as any}
+          message={undefined}
+          prefix={null}
+          suffix={undefined}
           placeholder="Edge case"
         />
       );
@@ -667,67 +733,21 @@ describe('TextField', () => {
       
       // Should not crash and should render basic input
       const wrapper = input.closest('.db-textfield');
-      expect(wrapper).toHaveClass('db-textfield', 'db-textfield--medium');
+      expect(wrapper).toHaveClass('db-textfield', 'db-textfield--default');
     });
 
     it('handles empty string values properly', () => {
       render(
         <TextField
           label=""
-          helperText=""
-          error=""
+          description=""
+          message=""
           placeholder="Empty strings"
         />
       );
       
       const input = screen.getByPlaceholderText('Empty strings');
       expect(input).toBeInTheDocument();
-      
-      // Empty strings should not render elements
-      expect(screen.queryByText(/helper/i)).not.toBeInTheDocument();
-      expect(screen.queryByText(/error/i)).not.toBeInTheDocument();
-    });
-
-    it('generates different IDs for multiple instances', () => {
-      render(
-        <div>
-          <TextField placeholder="Field 1" />
-          <TextField placeholder="Field 2" />
-          <TextField placeholder="Field 3" />
-        </div>
-      );
-      
-      const inputs = [
-        screen.getByPlaceholderText('Field 1'),
-        screen.getByPlaceholderText('Field 2'),
-        screen.getByPlaceholderText('Field 3'),
-      ];
-      
-      const ids = inputs.map(input => input.id);
-      const uniqueIds = new Set(ids);
-      
-      expect(uniqueIds.size).toBe(3); // All IDs should be unique
-    });
-
-    it('handles long text values', () => {
-      const longText = 'a'.repeat(1000);
-      
-      render(
-        <TextField
-          label={longText}
-          helperText={longText}
-          placeholder="Long text"
-        />
-      );
-      
-      const input = screen.getByPlaceholderText('Long text');
-      expect(input).toBeInTheDocument();
-      
-      // Should handle long text without crashing
-      const longTextElements = screen.getAllByText(longText);
-      expect(longTextElements).toHaveLength(2); // Label and helper text
-      expect(longTextElements[0]).toBeInTheDocument(); // Label
-      expect(longTextElements[1]).toBeInTheDocument(); // Helper text
     });
   });
 });

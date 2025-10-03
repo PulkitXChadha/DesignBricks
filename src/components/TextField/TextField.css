@@ -1,3 +1,9 @@
+/* ==========================================================================
+   TextField
+   ========================================================================== */
+
+/* Base Styles
+   ========================================================================== */
 .db-textfield {
   display: inline-flex;
   flex-direction: column;
@@ -9,28 +15,38 @@
   width: 100%;
 }
 
+/* Label
+   ========================================================================== */
 .db-textfield__label {
   font-size: 13px;
   font-weight: 500;
   color: var(--primary-text-color);
   line-height: 1.2;
+  margin-bottom: 2px;
 }
 
 .db-textfield__required {
   color: var(--db-color-error-500);
 }
 
+.db-textfield__optional {
+  color: var(--secondary-text-color);
+  font-weight: 400;
+}
+
+/* Input Wrapper
+   ========================================================================== */
 .db-textfield__wrapper {
   display: flex;
   align-items: center;
-  background-color: var(--primary-background-color);
+  background-color: #FFFFFF;
   border: 1px solid var(--button-border-color);
   border-radius: var(--db-border-radius-base);
   transition: all var(--db-transition-fast);
   position: relative;
 }
 
-.db-textfield__wrapper:hover:not(.db-textfield__wrapper--disabled) {
+.db-textfield__wrapper:hover:not(.db-textfield__wrapper--disabled):not(.db-textfield__wrapper--locked) {
   border-color: var(--db-color-neutral-400);
 }
 
@@ -39,6 +55,19 @@
   box-shadow: 0 0 0 1px var(--db-color-primary-600);
 }
 
+.db-textfield__wrapper--disabled {
+  background-color: #FAFAFA;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.db-textfield__wrapper--readonly {
+  background-color: #FAFAFA;
+  cursor: default;
+}
+
+/* Validation States
+   ========================================================================== */
 .db-textfield__wrapper--error {
   border-color: var(--db-color-error-500);
 }
@@ -47,11 +76,24 @@
   box-shadow: 0 0 0 1px var(--db-color-error-500);
 }
 
-.db-textfield__wrapper--disabled {
-  background-color: var(--secondary-background-color);
-  cursor: not-allowed;
+.db-textfield__wrapper--warning {
+  border-color: #FFA500;
 }
 
+.db-textfield__wrapper--warning.db-textfield__wrapper--focused {
+  box-shadow: 0 0 0 1px #FFA500;
+}
+
+.db-textfield__wrapper--success {
+  border-color: var(--db-color-success-500);
+}
+
+.db-textfield__wrapper--success.db-textfield__wrapper--focused {
+  box-shadow: 0 0 0 1px var(--db-color-success-500);
+}
+
+/* Input Element
+   ========================================================================== */
 .db-textfield__input {
   flex: 1;
   background: transparent;
@@ -60,6 +102,7 @@
   font-family: inherit;
   color: var(--primary-text-color);
   width: 100%;
+  min-width: 0;
 }
 
 .db-textfield__input::placeholder {
@@ -71,7 +114,12 @@
   cursor: not-allowed;
 }
 
-/* Sizes */
+.db-textfield__input:read-only {
+  cursor: default;
+}
+
+/* Sizes
+   ========================================================================== */
 .db-textfield--small .db-textfield__wrapper {
   height: 24px;
   padding: 0 var(--db-spacing-sm);
@@ -81,25 +129,20 @@
   font-size: 12px;
 }
 
-.db-textfield--medium .db-textfield__wrapper {
-  height: 28px;
-  padding: 0 var(--db-spacing-base);
-}
-
-.db-textfield--medium .db-textfield__input {
-  font-size: 13px;
-}
-
-.db-textfield--large .db-textfield__wrapper {
+/* Default size (aligned with Databricks design system) */
+.db-textfield--default .db-textfield__wrapper {
   height: 32px;
   padding: 0 var(--db-spacing-base);
 }
 
-.db-textfield--large .db-textfield__input {
-  font-size: 14px;
+.db-textfield--default .db-textfield__input {
+  font-size: 13px;
 }
 
-/* Icons */
+/* Prefix & Suffix (formerly Icons)
+   ========================================================================== */
+.db-textfield__prefix,
+.db-textfield__suffix,
 .db-textfield__icon {
   display: flex;
   align-items: center;
@@ -108,38 +151,109 @@
   color: var(--secondary-text-color);
 }
 
+.db-textfield__prefix svg,
+.db-textfield__suffix svg,
 .db-textfield__icon svg {
   width: 16px;
   height: 16px;
 }
 
+.db-textfield__prefix,
 .db-textfield__icon--before {
   margin-right: var(--db-spacing-sm);
   margin-left: calc(-1 * var(--db-spacing-xs));
 }
 
+.db-textfield__suffix,
 .db-textfield__icon--after {
   margin-left: var(--db-spacing-sm);
   margin-right: calc(-1 * var(--db-spacing-xs));
 }
 
-/* Helper text */
-.db-textfield__helper {
-  font-size: 12px;
+/* Clear Button
+   ========================================================================== */
+.db-textfield__clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-left: var(--db-spacing-xs);
+  cursor: pointer;
   color: var(--secondary-text-color);
-  line-height: 1.2;
-  margin-top: 2px;
+  transition: color var(--db-transition-fast);
+  flex-shrink: 0;
 }
 
-.db-textfield__helper--error {
+.db-textfield__clear:hover {
+  color: var(--primary-text-color);
+}
+
+.db-textfield__clear:focus {
+  outline: none;
+  color: var(--primary-text-color);
+}
+
+.db-textfield__clear svg {
+  display: block;
+}
+
+/* Description Text (Helper Text)
+   ========================================================================== */
+.db-textfield__description {
+  font-size: 12px;
+  color: var(--secondary-text-color);
+  line-height: 1.33;
+  margin-top: 4px;
+}
+
+/* Validation Messages
+   ========================================================================== */
+.db-textfield__message {
+  font-size: 12px;
+  line-height: 1.33;
+  margin-top: 4px;
+}
+
+.db-textfield__message--error {
   color: var(--db-color-error-500);
 }
 
-/* Disabled state */
+.db-textfield__message--warning {
+  color: #FFA500;
+}
+
+.db-textfield__message--success {
+  color: var(--db-color-success-500);
+}
+
+/* State-specific Styles
+   ========================================================================== */
 .db-textfield--disabled .db-textfield__label {
   color: var(--tertiary-text-color);
 }
 
-.db-textfield--disabled .db-textfield__helper {
+.db-textfield--disabled .db-textfield__description {
   color: var(--tertiary-text-color);
+}
+
+.db-textfield--readonly .db-textfield__label {
+  color: var(--primary-text-color);
+}
+
+/* Reduced Motion Support
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .db-textfield__wrapper {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High Contrast Mode Support
+   ========================================================================== */
+@media (prefers-contrast: high) {
+  .db-textfield__wrapper {
+    border-width: 2px;
+  }
 }

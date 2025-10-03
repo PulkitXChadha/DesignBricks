@@ -8,7 +8,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component: 'Text fields allow users to enter and edit text content.',
+        component: 'A TextField (Input) component refactored to align with the Databricks DuBois design system. Features validation states, prefix/suffix content, read-only state, and enhanced accessibility.',
       },
     },
   },
@@ -22,20 +22,25 @@ const meta = {
       control: 'text',
       description: 'Placeholder text',
     },
-    helperText: {
+    description: {
       control: 'text',
-      description: 'Helper text displayed below the field',
+      description: 'Description text displayed below the field',
     },
-    error: {
+    validationState: {
+      control: 'select',
+      options: [undefined, 'error', 'warning', 'success'],
+      description: 'Validation state',
+    },
+    message: {
       control: 'text',
-      description: 'Error message',
+      description: 'Message displayed below the field (typically with validation state)',
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
-      description: 'Field size',
+      options: ['small', 'default'],
+      description: 'Field size - small = 24px, default = 32px',
       table: {
-        defaultValue: { summary: 'medium' },
+        defaultValue: { summary: 'default' },
       },
     },
     fullWidth: {
@@ -52,9 +57,30 @@ const meta = {
         defaultValue: { summary: false },
       },
     },
+    optional: {
+      control: 'boolean',
+      description: 'Optional field indicator',
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
     disabled: {
       control: 'boolean',
       description: 'Disable the field',
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
+    readOnly: {
+      control: 'boolean',
+      description: 'Read-only state (focusable but not editable)',
+      table: {
+        defaultValue: { summary: false },
+      },
+    },
+    showClear: {
+      control: 'boolean',
+      description: 'Show clear button when input has value',
       table: {
         defaultValue: { summary: false },
       },
@@ -71,7 +97,7 @@ const meta = {
   args: {
     label: 'Label',
     placeholder: 'Enter text...',
-    size: 'medium',
+    size: 'default',
   },
 } satisfies Meta<typeof TextField>;
 
@@ -93,20 +119,50 @@ export const Basic: Story = {
   },
 };
 
-export const WithHelperText: Story = {
+export const WithDescription: Story = {
   args: {
     label: 'Password',
     type: 'password',
-    helperText: 'Must be at least 8 characters',
+    description: 'Must be at least 8 characters',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Description text provides additional instructions for an Input.',
+      },
+    },
   },
 };
 
-export const WithError: Story = {
-  args: {
-    label: 'Email',
-    type: 'email',
-    value: 'invalid-email',
-    error: 'Please enter a valid email address',
+export const ValidationStates: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
+      <TextField
+        label="Error State"
+        value="invalid-email"
+        validationState="error"
+        message="Please enter a valid email address"
+      />
+      <TextField
+        label="Warning State"
+        value="password123"
+        validationState="warning"
+        message="Consider using a stronger password"
+      />
+      <TextField
+        label="Success State"
+        value="user@example.com"
+        validationState="success"
+        message="Email address is valid"
+      />
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Input supports error, warning, and success validation states aligned with the Databricks design system.',
+      },
+    },
   },
 };
 
@@ -118,11 +174,48 @@ export const Required: Story = {
   },
 };
 
+export const Optional: Story = {
+  args: {
+    label: 'Optional Field',
+    optional: true,
+    placeholder: 'This field is optional',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use the optional prop to explicitly mark a field as optional.',
+      },
+    },
+  },
+};
+
 export const Disabled: Story = {
   args: {
     label: 'Disabled Field',
     value: 'Cannot edit this',
     disabled: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Avoid using a disabled Input whenever possible. It is low-contrast and outside the tab order.',
+      },
+    },
+  },
+};
+
+export const ReadOnly: Story = {
+  args: {
+    label: 'Read-Only Field',
+    value: 'You can select and copy this value',
+    readOnly: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use a read-only input to help users read and copy a value they can\'t edit. Read-only inputs can still receive focus in the tab order, unlike disabled inputs.',
+      },
+    },
   },
 };
 
@@ -131,37 +224,32 @@ export const Sizes: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
       <TextField
         size="small"
-        label="Small"
+        label="Small (24px height)"
         placeholder="Small size field"
       />
       <TextField
-        size="medium"
-        label="Medium"
-        placeholder="Medium size field"
-      />
-      <TextField
-        size="large"
-        label="Large"
-        placeholder="Large size field"
+        size="default"
+        label="Default (32px height)"
+        placeholder="Default size field"
       />
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Different field sizes.',
+        story: 'Two sizes are available: small (24px) for constrained spaces, and default (32px) as the standard size.',
       },
     },
   },
 };
 
-export const WithIcons: Story = {
+export const WithPrefixAndSuffix: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '300px' }}>
       <TextField
         label="Search"
         placeholder="Search..."
-        iconBefore={
+        prefix={
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
           </svg>
@@ -171,7 +259,7 @@ export const WithIcons: Story = {
         label="Email"
         placeholder="Enter email"
         type="email"
-        iconBefore={
+        prefix={
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/>
           </svg>
@@ -181,15 +269,41 @@ export const WithIcons: Story = {
         label="Amount"
         placeholder="0.00"
         type="number"
-        iconBefore={<span>$</span>}
-        iconAfter={<span>USD</span>}
+        prefix={<span>$</span>}
+        suffix={<span>USD</span>}
       />
     </div>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Text fields with icons.',
+        story: 'An Input can have prefix or suffix content (icon or text). This is most helpful when the icon is commonly recognized.',
+      },
+    },
+  },
+};
+
+export const WithClearButton: Story = {
+  render: () => {
+    const [value, setValue] = React.useState('You can clear this text');
+    
+    return (
+      <div style={{ width: '300px' }}>
+        <TextField
+          label="Clearable Input"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onClear={() => setValue('')}
+          showClear
+          placeholder="Type something..."
+        />
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'When showClear is true, a clear button appears when the input has a value.',
       },
     },
   },
@@ -244,6 +358,43 @@ export const InputTypes: Story = {
   },
 };
 
+export const OnPressEnter: Story = {
+  render: () => {
+    const [log, setLog] = React.useState<string[]>([]);
+    
+    return (
+      <div style={{ width: '300px' }}>
+        <TextField
+          label="Press Enter to Submit"
+          placeholder="Type and press Enter..."
+          onPressEnter={(e) => {
+            const value = e.currentTarget.value;
+            setLog([...log, value]);
+            e.currentTarget.value = '';
+          }}
+        />
+        {log.length > 0 && (
+          <div style={{ marginTop: '16px', fontSize: '13px' }}>
+            <strong>Submitted values:</strong>
+            <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+              {log.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'The onPressEnter callback is triggered when the user presses Enter.',
+      },
+    },
+  },
+};
+
 export const FormExample: Story = {
   render: () => {
     const [values, setValues] = React.useState({
@@ -253,27 +404,40 @@ export const FormExample: Story = {
       password: '',
     });
 
-    const [errors, setErrors] = React.useState<Record<string, string>>({});
+    const [validationStates, setValidationStates] = React.useState<Record<string, {
+      state?: 'error' | 'warning' | 'success';
+      message?: string;
+    }>>({});
 
     const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setValues({ ...values, [field]: e.target.value });
-      setErrors({ ...errors, [field]: '' });
+      setValidationStates({ ...validationStates, [field]: {} });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault();
-      const newErrors: Record<string, string> = {};
+      const newValidation: Record<string, { state: 'error' | 'warning' | 'success'; message: string }> = {};
 
-      if (!values.firstName) newErrors.firstName = 'First name is required';
-      if (!values.lastName) newErrors.lastName = 'Last name is required';
-      if (!values.email) newErrors.email = 'Email is required';
-      if (values.email && !values.email.includes('@')) newErrors.email = 'Invalid email format';
-      if (!values.password) newErrors.password = 'Password is required';
-      if (values.password && values.password.length < 8) newErrors.password = 'Password must be at least 8 characters';
+      if (!values.firstName) {
+        newValidation.firstName = { state: 'error', message: 'First name is required' };
+      }
+      if (!values.lastName) {
+        newValidation.lastName = { state: 'error', message: 'Last name is required' };
+      }
+      if (!values.email) {
+        newValidation.email = { state: 'error', message: 'Email is required' };
+      } else if (!values.email.includes('@')) {
+        newValidation.email = { state: 'error', message: 'Invalid email format' };
+      }
+      if (!values.password) {
+        newValidation.password = { state: 'error', message: 'Password is required' };
+      } else if (values.password.length < 8) {
+        newValidation.password = { state: 'error', message: 'Password must be at least 8 characters' };
+      }
 
-      setErrors(newErrors);
+      setValidationStates(newValidation);
 
-      if (Object.keys(newErrors).length === 0) {
+      if (Object.keys(newValidation).length === 0) {
         alert('Form submitted successfully!');
       }
     };
@@ -287,7 +451,8 @@ export const FormExample: Story = {
             fullWidth
             value={values.firstName}
             onChange={handleChange('firstName')}
-            error={errors.firstName}
+            validationState={validationStates.firstName?.state}
+            message={validationStates.firstName?.message}
           />
           <TextField
             label="Last Name"
@@ -295,7 +460,8 @@ export const FormExample: Story = {
             fullWidth
             value={values.lastName}
             onChange={handleChange('lastName')}
-            error={errors.lastName}
+            validationState={validationStates.lastName?.state}
+            message={validationStates.lastName?.message}
           />
         </div>
         <div style={{ marginBottom: '16px' }}>
@@ -306,8 +472,9 @@ export const FormExample: Story = {
             fullWidth
             value={values.email}
             onChange={handleChange('email')}
-            error={errors.email}
-            helperText="We'll never share your email"
+            validationState={validationStates.email?.state}
+            message={validationStates.email?.message}
+            description="We'll never share your email"
           />
         </div>
         <div style={{ marginBottom: '24px' }}>
@@ -318,8 +485,9 @@ export const FormExample: Story = {
             fullWidth
             value={values.password}
             onChange={handleChange('password')}
-            error={errors.password}
-            helperText="Must be at least 8 characters"
+            validationState={validationStates.password?.state}
+            message={validationStates.password?.message}
+            description="Must be at least 8 characters"
           />
         </div>
         <button type="submit" className="db-button db-button--primary db-button--medium">
@@ -331,7 +499,7 @@ export const FormExample: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Interactive form example with validation.',
+        story: 'Interactive form example with validation using validationState and message props.',
       },
     },
   },
