@@ -13,10 +13,7 @@
   font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1700;
-  opacity: 0;
-  transform: scale(0.95);
-  transition: all 150ms ease-in-out;
-  animation: tooltipFadeIn 150ms ease-in-out forwards;
+  opacity: 1;
   pointer-events: none;
   user-select: none;
 }
@@ -86,17 +83,6 @@
   transform: translateY(-50%) rotate(45deg);
 }
 
-/* Animation */
-@keyframes tooltipFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
 
 /* Dark mode styles (assuming dark mode uses data attribute) */
 [data-theme="dark"] .db-tooltip {
@@ -126,10 +112,9 @@
   }
 }
 
-/* Reduced motion support */
+/* Reduced motion support - no animations used */
 @media (prefers-reduced-motion: reduce) {
   .db-tooltip {
-    animation: none;
-    transition: opacity 0ms;
+    /* No animations to disable */
   }
 }

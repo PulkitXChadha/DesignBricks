@@ -8,20 +8,77 @@ const meta: Meta<typeof Tooltip> = {
   component: Tooltip,
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component: `
+Tooltip component provides contextual information when users hover, click, or focus on an element.
+
+## Features
+- Multiple placement options (8 positions)
+- Various trigger methods (hover, click, focus, manual)
+- Customizable delays for showing/hiding
+- Rich content support
+- Automatic viewport boundary detection
+- Portal-based rendering for proper z-index layering
+
+## Accessibility
+- Uses \`role="tooltip"\` for screen readers
+- Respects reduced motion preferences
+- Keyboard accessible with focus trigger
+        `,
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {
+    content: {
+      control: 'text',
+      description: 'Content to display in the tooltip',
+    },
     placement: {
       control: { type: 'select' },
       options: ['top', 'bottom', 'left', 'right', 'top-start', 'top-end', 'bottom-start', 'bottom-end'],
+      description: 'Tooltip placement relative to trigger element',
+      table: {
+        defaultValue: { summary: 'top' },
+      },
     },
     trigger: {
       control: { type: 'select' },
       options: ['hover', 'click', 'focus', 'manual'],
+      description: 'How the tooltip is triggered',
+      table: {
+        defaultValue: { summary: 'hover' },
+      },
     },
-    showDelay: { control: 'number' },
-    hideDelay: { control: 'number' },
-    disabled: { control: 'boolean' },
+    showDelay: {
+      control: { type: 'number', min: 0, max: 2000, step: 100 },
+      description: 'Delay before showing tooltip (ms)',
+      table: {
+        defaultValue: { summary: '500' },
+      },
+    },
+    hideDelay: {
+      control: { type: 'number', min: 0, max: 2000, step: 100 },
+      description: 'Delay before hiding tooltip (ms)',
+      table: {
+        defaultValue: { summary: '0' },
+      },
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disable the tooltip',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
+    maxWidth: {
+      control: { type: 'number', min: 100, max: 500, step: 10 },
+      description: 'Maximum width of tooltip',
+      table: {
+        defaultValue: { summary: '250' },
+      },
+    },
   },
 };
 
@@ -67,22 +124,36 @@ export const Placements: Story = {
       </Tooltip>
     </div>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates all 8 available placement positions for the tooltip.',
+      },
+    },
+  },
 };
 
-export const Triggers: Story = {
+export const TriggerMethods: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '20px', padding: '40px' }}>
       <Tooltip content="Appears on hover (default)" trigger="hover">
-        <Button>Hover</Button>
+        <Button>Hover Me</Button>
       </Tooltip>
       <Tooltip content="Appears on click" trigger="click">
-        <Button>Click</Button>
+        <Button>Click Me</Button>
       </Tooltip>
       <Tooltip content="Appears on focus" trigger="focus">
-        <Button>Focus</Button>
+        <Button>Focus Me</Button>
       </Tooltip>
     </div>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Tooltips can be triggered by hover (default), click, or focus events for different interaction patterns.',
+      },
+    },
+  },
 };
 
 export const ManualControl: Story = {
@@ -104,49 +175,61 @@ export const ManualControl: Story = {
       </div>
     );
   },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Use the `manual` trigger to control tooltip visibility programmatically with the `open` and `onOpenChange` props.',
+      },
+    },
+  },
 };
 
-export const WithDelay: Story = {
+export const WithCustomization: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '20px', padding: '40px' }}>
-      <Tooltip content="Shows immediately" showDelay={0}>
-        <Button>No Delay</Button>
-      </Tooltip>
-      <Tooltip content="Shows after 1 second" showDelay={1000}>
-        <Button>1s Delay</Button>
-      </Tooltip>
-      <Tooltip content="Hides after 1 second" hideDelay={1000}>
-        <Button>Hide Delay</Button>
-      </Tooltip>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '40px' }}>
+      <div style={{ display: 'flex', gap: '20px' }}>
+        <Tooltip content="Shows immediately" showDelay={0}>
+          <Button>No Delay</Button>
+        </Tooltip>
+        <Tooltip content="Shows after 1 second" showDelay={1000}>
+          <Button>1s Show Delay</Button>
+        </Tooltip>
+        <Tooltip content="Hides after 1 second" hideDelay={1000}>
+          <Button>1s Hide Delay</Button>
+        </Tooltip>
+      </div>
+      
+      <div style={{ display: 'flex', gap: '20px' }}>
+        <Tooltip 
+          content="This is a much longer tooltip content that demonstrates how the tooltip handles wrapping text and maintains proper spacing and readability even with multiple lines of text." 
+          maxWidth={200}
+        >
+          <Button>Long Content</Button>
+        </Tooltip>
+        
+        <Tooltip 
+          content={
+            <div>
+              <strong>Rich Content</strong>
+              <br />
+              This tooltip contains <em>formatted</em> text
+            </div>
+          }
+        >
+          <Button>Rich Content</Button>
+        </Tooltip>
+        
+        <Tooltip content="You won't see this" disabled>
+          <Button disabled>Disabled</Button>
+        </Tooltip>
+      </div>
     </div>
   ),
-};
-
-export const LongContent: Story = {
-  args: {
-    content: 'This is a much longer tooltip content that demonstrates how the tooltip handles wrapping text and maintains proper spacing and readability even with multiple lines of text.',
-    maxWidth: 200,
-    children: <Button>Long Content</Button>,
-  },
-};
-
-export const DisabledTooltip: Story = {
-  args: {
-    content: "You won't see this",
-    disabled: true,
-    children: <Button disabled>Disabled Button</Button>,
-  },
-};
-
-export const InteractiveContent: Story = {
-  args: {
-    content: (
-      <div>
-        <strong>Interactive Tooltip</strong>
-        <br />
-        This tooltip contains rich content
-      </div>
-    ),
-    children: <Button>Rich Content</Button>,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Customize tooltips with delays, max width, rich content, and disabled states.',
+      },
+    },
   },
 };
