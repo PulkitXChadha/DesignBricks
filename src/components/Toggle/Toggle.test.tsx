@@ -592,6 +592,183 @@ describe('Toggle', () => {
     });
   });
 
+  // New Status Label Pattern Tests
+  describe('Status Label Pattern (New Recommended)', () => {
+    it('renders with new label pattern when all status labels are provided', () => {
+      render(
+        <Toggle
+          label="Test Toggle"
+          activeLabel="On"
+          inactiveLabel="Off"
+          disabledLabel="Disabled"
+        />
+      );
+      
+      const wrapper = screen.getByRole('checkbox').closest('.db-toggle');
+      expect(wrapper).toHaveClass('db-toggle--new-pattern');
+      expect(screen.getByText('Test Toggle')).toHaveClass('db-toggle__label--main');
+      expect(screen.getByText('Off')).toHaveClass('db-toggle__status-label');
+    });
+
+    it('shows correct status label based on state - unchecked', () => {
+      render(
+        <Toggle
+          label="Feature"
+          activeLabel="Enabled"
+          inactiveLabel="Disabled"
+          disabledLabel="Unavailable"
+          checked={false}
+          readOnly
+        />
+      );
+      
+      expect(screen.getByText('Disabled')).toBeInTheDocument();
+      expect(screen.queryByText('Enabled')).not.toBeInTheDocument();
+    });
+
+    it('shows correct status label based on state - checked', () => {
+      render(
+        <Toggle
+          label="Feature"
+          activeLabel="Enabled"
+          inactiveLabel="Disabled"
+          disabledLabel="Unavailable"
+          checked
+          readOnly
+        />
+      );
+      
+      expect(screen.getByText('Enabled')).toBeInTheDocument();
+      expect(screen.queryByText('Disabled')).not.toBeInTheDocument();
+    });
+
+    it('shows disabled label when toggle is disabled', () => {
+      render(
+        <Toggle
+          label="Feature"
+          activeLabel="Enabled"
+          inactiveLabel="Disabled"
+          disabledLabel="Unavailable"
+          disabled
+        />
+      );
+      
+      expect(screen.getByText('Unavailable')).toBeInTheDocument();
+    });
+
+    it('status label has aria-live attribute for accessibility', () => {
+      render(
+        <Toggle
+          label="Feature"
+          activeLabel="On"
+          inactiveLabel="Off"
+          disabledLabel="Disabled"
+        />
+      );
+      
+      const statusLabel = screen.getByText('Off');
+      expect(statusLabel).toHaveAttribute('aria-live', 'polite');
+    });
+
+    it('does not use new pattern if any status label is missing', () => {
+      render(
+        <Toggle
+          label="Test"
+          activeLabel="On"
+          inactiveLabel="Off"
+          // missing disabledLabel
+        />
+      );
+      
+      const wrapper = screen.getByRole('checkbox').closest('.db-toggle');
+      expect(wrapper).not.toHaveClass('db-toggle--new-pattern');
+    });
+
+    it('does not render helper text in new pattern', () => {
+      render(
+        <Toggle
+          label="Test"
+          activeLabel="On"
+          inactiveLabel="Off"
+          disabledLabel="Disabled"
+          helperText="This should not appear"
+        />
+      );
+      
+      expect(screen.queryByText('This should not appear')).not.toBeInTheDocument();
+    });
+  });
+
+  // Inline Content Tests
+  describe('Inline Content (checkedChildren/unCheckedChildren)', () => {
+    it('renders checkedChildren when checked', () => {
+      render(
+        <Toggle
+          label="Test"
+          checkedChildren="ON"
+          unCheckedChildren="OFF"
+          checked
+          readOnly
+        />
+      );
+      
+      expect(screen.getByText('ON')).toBeInTheDocument();
+      expect(screen.getByText('ON')).toHaveClass('db-toggle__content--checked');
+      expect(screen.queryByText('OFF')).not.toBeInTheDocument();
+    });
+
+    it('renders unCheckedChildren when unchecked', () => {
+      render(
+        <Toggle
+          label="Test"
+          checkedChildren="ON"
+          unCheckedChildren="OFF"
+          checked={false}
+          readOnly
+        />
+      );
+      
+      expect(screen.getByText('OFF')).toBeInTheDocument();
+      expect(screen.getByText('OFF')).toHaveClass('db-toggle__content--unchecked');
+      expect(screen.queryByText('ON')).not.toBeInTheDocument();
+    });
+
+    it('does not render content when not provided', () => {
+      render(<Toggle label="Test" checked readOnly />);
+      
+      expect(document.querySelector('.db-toggle__content')).not.toBeInTheDocument();
+    });
+
+    it('inline content has aria-hidden for accessibility', () => {
+      render(
+        <Toggle
+          label="Test"
+          checkedChildren="YES"
+          checked
+          readOnly
+        />
+      );
+      
+      const contentWrapper = document.querySelector('.db-toggle__content--checked');
+      expect(contentWrapper).toHaveAttribute('aria-hidden', 'true');
+    });
+
+    it('handles ReactNode content types', () => {
+      render(
+        <Toggle
+          label="Test"
+          checkedChildren={<span data-testid="custom-check">✓</span>}
+          unCheckedChildren={<span data-testid="custom-cross">✗</span>}
+          checked
+          readOnly
+        />
+      );
+      
+      expect(screen.getByTestId('custom-check')).toBeInTheDocument();
+      expect(screen.queryByTestId('custom-cross')).not.toBeInTheDocument();
+    });
+  });
+
   // Edge cases
   describe('Edge Cases', () => {
     it('handles undefined props gracefully', () => {
