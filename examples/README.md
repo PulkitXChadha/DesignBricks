@@ -80,7 +80,7 @@ Comprehensive settings interface:
 - Theme customization
 
 **Key Components Used:**
-- `TextField`, `Toggle`, `Select`, `Button`, `Alert`, `Checkbox`, `UserAvatar`
+- `TextField`, `Select`, `Button`, `Alert`, `Checkbox`, `UserAvatar`
 
 **Location:** `examples/settings-panel/`
 

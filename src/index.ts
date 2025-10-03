@@ -13,7 +13,6 @@ export * from './components/TextField';
 export * from './components/Checkbox';
 export * from './components/SearchInput';
 export * from './components/Select';
-export * from './components/Toggle';
 export * from './components/PillControl';
 
 // Navigation
@@ -45,7 +44,6 @@ export * from './components/Dropdown';
 export * from './components/Tooltip';
 export * from './components/Notification';
 export * from './components/Popover';
-export * from './components/Command';
 
 // Design Tokens
 export * from './tokens';
