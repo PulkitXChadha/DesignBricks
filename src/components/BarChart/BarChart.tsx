@@ -415,64 +415,64 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       [formatTooltip]
     );
 
-    // Memoize tooltip handler functions to prevent recreation on every render
-    const showTooltipForData = useCallback((event: MouseEvent, dataPoint: BarChartDataPoint, index: number) => {
-      if (!svgRef.current) return;
-      
-      const rect = (event.target as Element).getBoundingClientRect();
-      const containerRect = svgRef.current.getBoundingClientRect();
-      
-      let svgX: number;
-      let svgY: number;
-
-      if (orientation === 'vertical') {
-        svgX = rect.left - containerRect.left + rect.width / 2;
-        svgY = rect.top - containerRect.top;
-      } else {
-        svgX = rect.right - containerRect.left;
-        svgY = rect.top - containerRect.top + rect.height / 2;
-      }
-
-      const containerX = svgX + defaultMargin.left;
-      const containerY = svgY + defaultMargin.top;
-
-      setTooltipPosition({ x: containerX, y: containerY });
-      setTooltipData({ dataPoint, index });
-      setTooltipVisible(true);
-    }, [orientation, defaultMargin, setTooltipPosition, setTooltipData, setTooltipVisible]);
-
-    const showStackedTooltip = useCallback((event: MouseEvent, category: string, seriesName: string, value: number) => {
-      if (!svgRef.current) return;
-      
-      const rect = (event.target as Element).getBoundingClientRect();
-      const containerRect = svgRef.current.getBoundingClientRect();
-      
-      let svgX: number;
-      let svgY: number;
-
-      if (orientation === 'vertical') {
-        svgX = rect.left - containerRect.left + rect.width / 2;
-        svgY = rect.top - containerRect.top;
-      } else {
-        svgX = rect.right - containerRect.left;
-        svgY = rect.top - containerRect.top + rect.height / 2;
-      }
-
-      const containerX = svgX + defaultMargin.left;
-      const containerY = svgY + defaultMargin.top;
-
-      setTooltipPosition({ x: containerX, y: containerY });
-      setTooltipData({ 
-        dataPoint: { x: `${category} - ${seriesName}`, y: value } as BarChartDataPoint, 
-        index: 0 
-      });
-      setTooltipVisible(true);
-    }, [orientation, defaultMargin, setTooltipPosition, setTooltipData, setTooltipVisible]);
-
     useEffect(() => {
       if (!svgRef.current || !data.length || !xScale || !yScale) {
         return;
       }
+
+      // Define tooltip handlers inside useEffect to avoid them being dependencies
+      const showTooltipForData = (event: MouseEvent, dataPoint: BarChartDataPoint, index: number) => {
+        if (!svgRef.current) return;
+        
+        const rect = (event.target as Element).getBoundingClientRect();
+        const containerRect = svgRef.current.getBoundingClientRect();
+        
+        let svgX: number;
+        let svgY: number;
+
+        if (orientation === 'vertical') {
+          svgX = rect.left - containerRect.left + rect.width / 2;
+          svgY = rect.top - containerRect.top;
+        } else {
+          svgX = rect.right - containerRect.left;
+          svgY = rect.top - containerRect.top + rect.height / 2;
+        }
+
+        const containerX = svgX + defaultMargin.left;
+        const containerY = svgY + defaultMargin.top;
+
+        setTooltipPosition({ x: containerX, y: containerY });
+        setTooltipData({ dataPoint, index });
+        setTooltipVisible(true);
+      };
+
+      const showStackedTooltip = (event: MouseEvent, category: string, seriesName: string, value: number) => {
+        if (!svgRef.current) return;
+        
+        const rect = (event.target as Element).getBoundingClientRect();
+        const containerRect = svgRef.current.getBoundingClientRect();
+        
+        let svgX: number;
+        let svgY: number;
+
+        if (orientation === 'vertical') {
+          svgX = rect.left - containerRect.left + rect.width / 2;
+          svgY = rect.top - containerRect.top;
+        } else {
+          svgX = rect.right - containerRect.left;
+          svgY = rect.top - containerRect.top + rect.height / 2;
+        }
+
+        const containerX = svgX + defaultMargin.left;
+        const containerY = svgY + defaultMargin.top;
+
+        setTooltipPosition({ x: containerX, y: containerY });
+        setTooltipData({ 
+          dataPoint: { x: `${category} - ${seriesName}`, y: value } as BarChartDataPoint, 
+          index: 0 
+        });
+        setTooltipVisible(true);
+      };
 
       const svg = d3.select(svgRef.current);
       svg.selectAll('*').remove();
@@ -816,10 +816,11 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       keyboard,
       // Memoized values (stable unless their dependencies change)
       defaultMargin, defaultFormatX, defaultFormatY, defaultStackColors, mergedTooltip.enabled,
-      // Tooltip callbacks (memoized with useCallback)
-      showTooltipForData, showStackedTooltip,
-      // State setters (stable references from useState)
-      setTooltipVisible, setTooltipData
+      // Tooltip config for delays and behavior
+      mergedTooltip.showDelay, mergedTooltip.hideDelay,
+      // NOTE: Tooltip handler functions are now defined INSIDE useEffect
+      // This prevents the chart from being redrawn on every hover/tooltip interaction
+      // State setters (setTooltipVisible, setTooltipData, setTooltipPosition) are stable and don't trigger re-renders
     ]);
 
     if (!data.length) {

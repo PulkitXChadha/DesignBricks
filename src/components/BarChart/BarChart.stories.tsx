@@ -102,6 +102,48 @@ const longLabelData = [
   { x: 'Extra Long Category Description', y: 6500 }
 ];
 
+const largeMonthlyData = [
+  { x: 'Jan', y: 4000 },
+  { x: 'Feb', y: 3000 },
+  { x: 'Mar', y: 5000 },
+  { x: 'Apr', y: 4500 },
+  { x: 'May', y: 6000 },
+  { x: 'Jun', y: 5500 },
+  { x: 'Jul', y: 7000 },
+  { x: 'Aug', y: 6500 },
+  { x: 'Sep', y: 5800 },
+  { x: 'Oct', y: 6200 },
+  { x: 'Nov', y: 7200 },
+  { x: 'Dec', y: 8000 }
+];
+
+// Stacked bar chart data
+const stackedData = [
+  { x: 'Q1', product1: 2400, product2: 1500, product3: 800 },
+  { x: 'Q2', product1: 1398, product2: 2000, product3: 1200 },
+  { x: 'Q3', product1: 9800, product2: 1800, product3: 1000 },
+  { x: 'Q4', product1: 3908, product2: 2500, product3: 1500 },
+  { x: 'Q5', product1: 4800, product2: 2200, product3: 900 },
+];
+
+const stackedSeries = [
+  { key: 'product1', name: 'Product A', color: 'var(--chart-primary)' },
+  { key: 'product2', name: 'Product B', color: 'var(--chart-secondary)' },
+  { key: 'product3', name: 'Product C', color: 'var(--chart-success)' },
+];
+
+// Define axis configurations as constants to prevent object reference changes
+const customStylingXAxis = { label: 'Quarter' };
+const customStylingYAxis = { label: 'Revenue ($)' };
+
+const largeDatasetXAxis = { label: 'Month', rotateLabels: false };
+const largeDatasetYAxis = { label: 'Sales ($)' };
+
+const stackedXAxis = { label: 'Quarter' };
+const stackedYAxis = { label: 'Revenue ($)' };
+
+const longLabelXAxis = { rotateLabels: true };
+
 export const Default: Story = {
   args: {
     data: sampleData,
@@ -176,12 +218,8 @@ export const CustomStyling: Story = {
     barPadding: 0.2,
     showValueLabels: true,
     title: 'Custom Styling Options',
-    xAxis: {
-      label: 'Quarter'
-    },
-    yAxis: {
-      label: 'Revenue ($)'
-    }
+    xAxis: customStylingXAxis,
+    yAxis: customStylingYAxis
   },
   parameters: {
     docs: {
@@ -217,9 +255,7 @@ export const LongCategoryNames: Story = {
     height: 450,
     color: 'warning',
     title: 'Long Category Names',
-    xAxis: {
-      rotateLabels: true
-    }
+    xAxis: longLabelXAxis
   },
   parameters: {
     docs: {
@@ -248,33 +284,15 @@ export const NoData: Story = {
 
 export const LargeDataset: Story = {
   args: {
-    data: [
-      { x: 'Jan', y: 4000 },
-      { x: 'Feb', y: 3000 },
-      { x: 'Mar', y: 5000 },
-      { x: 'Apr', y: 4500 },
-      { x: 'May', y: 6000 },
-      { x: 'Jun', y: 5500 },
-      { x: 'Jul', y: 7000 },
-      { x: 'Aug', y: 6500 },
-      { x: 'Sep', y: 5800 },
-      { x: 'Oct', y: 6200 },
-      { x: 'Nov', y: 7200 },
-      { x: 'Dec', y: 8000 }
-    ],
+    data: largeMonthlyData,
     width: 800,
     height: 450,
     color: 'primary',
     variant: 'detailed',
     showTooltip: true,
     title: 'Monthly Sales Data',
-    xAxis: {
-      label: 'Month',
-      rotateLabels: false
-    },
-    yAxis: {
-      label: 'Sales ($)'
-    }
+    xAxis: largeDatasetXAxis,
+    yAxis: largeDatasetYAxis
   },
   parameters: {
     docs: {
@@ -284,21 +302,6 @@ export const LargeDataset: Story = {
     }
   }
 };
-
-// Stacked bar chart data
-const stackedData = [
-  { x: 'Q1', product1: 2400, product2: 1500, product3: 800 },
-  { x: 'Q2', product1: 1398, product2: 2000, product3: 1200 },
-  { x: 'Q3', product1: 9800, product2: 1800, product3: 1000 },
-  { x: 'Q4', product1: 3908, product2: 2500, product3: 1500 },
-  { x: 'Q5', product1: 4800, product2: 2200, product3: 900 },
-];
-
-const stackedSeries = [
-  { key: 'product1', name: 'Product A', color: 'var(--chart-primary)' },
-  { key: 'product2', name: 'Product B', color: 'var(--chart-secondary)' },
-  { key: 'product3', name: 'Product C', color: 'var(--chart-success)' },
-];
 
 export const Stacked: Story = {
   args: {
@@ -310,12 +313,8 @@ export const Stacked: Story = {
     variant: 'default',
     title: 'Stacked Bar Chart - Quarterly Sales by Product',
     showTooltip: true,
-    xAxis: {
-      label: 'Quarter'
-    },
-    yAxis: {
-      label: 'Revenue ($)'
-    }
+    xAxis: stackedXAxis,
+    yAxis: stackedYAxis
   },
   parameters: {
     docs: {
