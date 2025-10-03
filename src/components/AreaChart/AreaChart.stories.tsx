@@ -220,7 +220,7 @@ export const AllVariants: Story = {
   }
 };
 
-export const AllCurveTypes: Story = {
+export const CurveTypes: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <AreaChart
@@ -264,38 +264,14 @@ export const AllCurveTypes: Story = {
   }
 };
 
-export const CustomStyling: Story = {
-  args: {
-    data: sampleData,
-    width: 600,
-    height: 400,
-    variant: 'default',
-    color: 'primary',
-    fillOpacity: 0.6,
-    showStroke: true,
-    showPoints: true,
-    title: 'Custom Styling Options',
-    xAxis: {
-      label: 'Month'
-    },
-    yAxis: {
-      label: 'Revenue ($)'
-    }
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Demonstrates customization options including fill opacity, stroke visibility, data points, and axis labels.'
-      }
-    }
-  }
-};
-
-export const StylingOptions: Story = {
+export const Styling: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
         <h3>With Stroke and Data Points</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          Complete styling with visible stroke line, data points, and custom opacity
+        </p>
         <AreaChart
           data={numericData}
           width={500}
@@ -304,12 +280,16 @@ export const StylingOptions: Story = {
           showStroke={true}
           showPoints={true}
           fillOpacity={0.6}
-          title="Full Styling"
+          xAxis={{ label: 'Time Period' }}
+          yAxis={{ label: 'Value' }}
         />
       </div>
       
       <div>
         <h3>Area Only (No Stroke)</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          Pure area fill without stroke line or data points
+        </p>
         <AreaChart
           data={numericData}
           width={500}
@@ -318,12 +298,14 @@ export const StylingOptions: Story = {
           showStroke={false}
           showPoints={false}
           fillOpacity={0.5}
-          title="Area Without Stroke Line"
         />
       </div>
       
       <div>
-        <h3>Low Opacity with Stroke</h3>
+        <h3>Subtle Fill with Emphasis on Line</h3>
+        <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+          Low opacity area with prominent stroke line for data emphasis
+        </p>
         <AreaChart
           data={numericData}
           width={500}
@@ -332,7 +314,6 @@ export const StylingOptions: Story = {
           showStroke={true}
           showPoints={false}
           fillOpacity={0.1}
-          title="Subtle Fill with Emphasis on Line"
         />
       </div>
     </div>
@@ -340,30 +321,7 @@ export const StylingOptions: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Various styling options including stroke visibility, data points, and fill opacity combinations.'
-      }
-    }
-  }
-};
-
-export const NumericData: Story = {
-  args: {
-    data: numericData,
-    width: 500,
-    height: 300,
-    color: 'secondary',
-    title: 'Numeric X-Axis Data',
-    xAxis: {
-      label: 'Time (hours)'
-    },
-    yAxis: {
-      label: 'Value'
-    }
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Area chart with numeric values on the X-axis instead of dates.'
+        story: 'Comprehensive styling options including stroke visibility, data points, fill opacity, and axis labels. Use these patterns to customize the visual appearance for different use cases.'
       }
     }
   }
@@ -411,55 +369,13 @@ export const InteractiveFeatures: Story = {
   }
 };
 
-export const StackedAreaChart: Story = {
-  args: {
-    series: [
-      {
-        id: 'series1',
-        name: 'Product A',
-        color: 'primary',
-        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.6 }))
-      },
-      {
-        id: 'series2',
-        name: 'Product B',
-        color: 'secondary',
-        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.8 }))
-      },
-      {
-        id: 'series3',
-        name: 'Product C',
-        color: 'success',
-        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.5 }))
-      }
-    ],
-    stacked: true,
-    width: 700,
-    height: 450,
-    title: 'Stacked Revenue by Product',
-    xAxis: {
-      label: 'Month'
-    },
-    yAxis: {
-      label: 'Total Revenue ($)'
-    }
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Stacked area chart showing cumulative values across multiple series. Each series is stacked on top of the previous one, useful for showing part-to-whole relationships over time.'
-      }
-    }
-  }
-};
-
-export const MultiSeriesNonStacked: Story = {
-  args: {
-    series: [
+export const MultiSeries: Story = {
+  render: () => {
+    const multiSeriesData = [
       {
         id: 'mobile',
         name: 'Mobile',
-        color: 'primary',
+        color: 'primary' as const,
         data: [
           { x: new Date('2024-01'), y: 300 },
           { x: new Date('2024-02'), y: 350 },
@@ -472,7 +388,7 @@ export const MultiSeriesNonStacked: Story = {
       {
         id: 'desktop',
         name: 'Desktop',
-        color: 'secondary',
+        color: 'secondary' as const,
         data: [
           { x: new Date('2024-01'), y: 500 },
           { x: new Date('2024-02'), y: 480 },
@@ -485,7 +401,7 @@ export const MultiSeriesNonStacked: Story = {
       {
         id: 'tablet',
         name: 'Tablet',
-        color: 'warning',
+        color: 'warning' as const,
         data: [
           { x: new Date('2024-01'), y: 200 },
           { x: new Date('2024-02'), y: 210 },
@@ -495,24 +411,71 @@ export const MultiSeriesNonStacked: Story = {
           { x: new Date('2024-06'), y: 280 },
         ]
       }
-    ],
-    stacked: false,
-    width: 700,
-    height: 450,
-    title: 'Traffic by Device Type',
-    fillOpacity: 0.2,
-    showStroke: true,
-    xAxis: {
-      label: 'Month'
-    },
-    yAxis: {
-      label: 'Visitors'
-    }
+    ];
+
+    const stackedSeriesData = [
+      {
+        id: 'series1',
+        name: 'Product A',
+        color: 'primary' as const,
+        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.6 }))
+      },
+      {
+        id: 'series2',
+        name: 'Product B',
+        color: 'secondary' as const,
+        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.8 }))
+      },
+      {
+        id: 'series3',
+        name: 'Product C',
+        color: 'success' as const,
+        data: sampleData.map(d => ({ x: d.x, y: d.y * 0.5 }))
+      }
+    ];
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <div>
+          <h3>Stacked Series</h3>
+          <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+            Cumulative values stacked on top of each other, useful for showing part-to-whole relationships over time
+          </p>
+          <AreaChart
+            series={stackedSeriesData}
+            stacked={true}
+            width={700}
+            height={300}
+            title="Stacked Revenue by Product"
+            xAxis={{ label: 'Month' }}
+            yAxis={{ label: 'Total Revenue ($)' }}
+          />
+        </div>
+        
+        <div>
+          <h3>Overlapping Series</h3>
+          <p style={{ color: '#5F7281', fontSize: '14px', marginBottom: '16px' }}>
+            Multiple independent series with overlapping areas, useful for comparing independent metrics
+          </p>
+          <AreaChart
+            series={multiSeriesData}
+            stacked={false}
+            width={700}
+            height={300}
+            title="Traffic by Device Type"
+            fillOpacity={0.2}
+            showStroke={true}
+            xAxis={{ label: 'Month' }}
+            yAxis={{ label: 'Visitors' }}
+          />
+        </div>
+      </div>
+    );
   },
   parameters: {
     docs: {
       description: {
-        story: 'Multiple overlapping area series without stacking. Each series maintains its own baseline, useful for comparing independent metrics.'
+        story: 'Multi-series area charts support both stacked and overlapping layouts. Use stacked for part-to-whole relationships and overlapping for comparing independent trends.'
       }
     }
   }
