@@ -56,7 +56,6 @@ Welcome to the comprehensive documentation for DesignBricks - the Databricks Des
 - **Select** - Dropdown select
 - **SearchInput** - Search with autocomplete
 - **Toggle** - Toggle switch
-- **Combobox** - Autocomplete select
 - **PillControl** - Multi-select pills
 
 #### Navigation Components

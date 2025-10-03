@@ -15,7 +15,6 @@ export * from './components/SearchInput';
 export * from './components/Select';
 export * from './components/Toggle';
 export * from './components/PillControl';
-export * from './components/Combobox';
 
 // Navigation
 export * from './components/Tabs';
