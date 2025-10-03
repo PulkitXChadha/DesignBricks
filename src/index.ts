@@ -39,11 +39,9 @@ export * from './components/PieChart';
 export * from './components/List';
 
 // Overlays
-export * from './components/Modal';
 export * from './components/Dropdown';
 export * from './components/Tooltip';
 export * from './components/Notification';
-export * from './components/Popover';
 
 // Design Tokens
 export * from './tokens';
