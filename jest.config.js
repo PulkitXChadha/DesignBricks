@@ -24,12 +24,8 @@ module.exports = {
   },
   preset: 'ts-jest',
   transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', {
-      isolatedModules: true
-    }],
-    '^.+\\.js$': ['ts-jest', {
-      isolatedModules: true
-    }]
+    '^.+\\.(ts|tsx)$': ['ts-jest'],
+    '^.+\\.js$': ['ts-jest']
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   collectCoverage: true,
