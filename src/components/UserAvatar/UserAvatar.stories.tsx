@@ -284,7 +284,6 @@ export const ImageFallback: Story = {
     name: 'Broken Image',
     src: 'https://invalid-image-url.jpg',
     size: 'lg',
-    onError: () => console.log('Image failed to load'),
   },
   parameters: {
     docs: {

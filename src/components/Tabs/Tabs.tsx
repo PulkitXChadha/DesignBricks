@@ -16,7 +16,7 @@ export interface TabsProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChang
   /** Currently active tab */
   activeTab?: string;
   /** Tab change handler */
-  onChange?: (tabId: string) => void;
+  onChange?: (_tabId: string) => void;
   /** Tab variant */
   variant?: 'default' | 'pills' | 'underlined';
   /** Size */

@@ -164,12 +164,11 @@ export const WithCustomRender: Story = {
   },
 };
 
-export const Sortable: Story = {
-  render: () => {
-    const [data, setData] = useState(sampleData);
-    const [sortBy, setSortBy] = useState<{ key: string; direction: 'asc' | 'desc' } | undefined>();
+const SortableComponent = () => {
+  const [data, setData] = useState(sampleData);
+  const [sortBy, setSortBy] = useState<{ key: string; direction: 'asc' | 'desc' } | undefined>();
 
-    const handleSort = (key: string, direction: 'asc' | 'desc') => {
+  const handleSort = (key: string, direction: 'asc' | 'desc') => {
       setSortBy({ key, direction });
 
       const sorted = [...data].sort((a, b) => {
@@ -200,15 +199,17 @@ export const Sortable: Story = {
         onSort={handleSort}
         sortBy={sortBy}
       />
-    );
-  },
+  );
 };
 
-export const Clickable: Story = {
-  render: () => {
-    const [selected, setSelected] = useState<User | null>(null);
+export const Sortable: Story = {
+  render: () => <SortableComponent />,
+};
 
-    return (
+const ClickableComponent = () => {
+  const [selected, setSelected] = useState<User | null>(null);
+
+  return (
       <>
         <Table
           columns={columns}
@@ -221,9 +222,12 @@ export const Clickable: Story = {
             <strong>Selected User:</strong> {selected.name} ({selected.email})
           </div>
         )}
-      </>
-    );
-  },
+    </>
+  );
+};
+
+export const Clickable: Story = {
+  render: () => <ClickableComponent />,
 };
 
 export const StickyHeader: Story = {
@@ -257,7 +261,7 @@ export const WithActions: Story = {
       header: 'Actions',
       width: 150,
       align: 'center',
-      render: (_, row) => (
+      render: () => (
         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
           <Button size="small" variant="tertiary">Edit</Button>
           <Button size="small" variant="tertiary">Delete</Button>

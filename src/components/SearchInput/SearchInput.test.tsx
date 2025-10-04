@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { SearchInput, SearchInputProps } from './SearchInput';
@@ -110,13 +110,12 @@ describe('SearchInput', () => {
       expect(input).toBeDisabled();
     });
 
-    it('does not show clear button when disabled', async () => {
-      const user = userEvent.setup();
-      render(<SearchInput disabled value="test" />);
-      
-      const clearButton = screen.queryByLabelText('Clear search');
-      expect(clearButton).not.toBeInTheDocument();
-    });
+  it('does not show clear button when disabled', async () => {
+    render(<SearchInput disabled value="test" />);
+    
+    const clearButton = screen.queryByLabelText('Clear search');
+    expect(clearButton).not.toBeInTheDocument();
+  });
   });
 
   // Input interaction tests

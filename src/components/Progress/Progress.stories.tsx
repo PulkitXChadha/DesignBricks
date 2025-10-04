@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Progress, Spinner } from './Progress';
 import { Button } from '../Button/Button';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const meta = {
   title: 'Feedback/Progress',
@@ -151,49 +151,51 @@ export const Indeterminate: Story = {
   ),
 };
 
-export const Interactive: Story = {
-  render: () => {
-    const [value, setValue] = useState(0);
-    const [loading, setLoading] = useState(false);
+const InteractiveComponent = () => {
+  const [value, setValue] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-    const handleStart = () => {
-      setValue(0);
-      setLoading(true);
+  const handleStart = () => {
+    setValue(0);
+    setLoading(true);
 
-      const interval = setInterval(() => {
-        setValue((prev) => {
-          if (prev >= 100) {
-            clearInterval(interval);
-            setLoading(false);
-            return 100;
-          }
-          return prev + 10;
-        });
-      }, 500);
-    };
+    const interval = setInterval(() => {
+      setValue((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setLoading(false);
+          return 100;
+        }
+        return prev + 10;
+      });
+    }, 500);
+  };
 
-    const handleReset = () => {
-      setValue(0);
-      setLoading(false);
-    };
+  const handleReset = () => {
+    setValue(0);
+    setLoading(false);
+  };
 
-    return (
-      <div style={{ width: '400px' }}>
-        <Progress value={value} showLabel color={value === 100 ? 'success' : 'primary'} />
-        <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-          <Button onClick={handleStart} disabled={loading}>
-            {loading ? 'Processing...' : 'Start'}
-          </Button>
-          <Button variant="secondary" onClick={handleReset}>
-            Reset
-          </Button>
-        </div>
-        {value === 100 && (
-          <p style={{ marginTop: '16px', color: '#00AF4B' }}>✓ Process completed successfully!</p>
-        )}
+  return (
+    <div style={{ width: '400px' }}>
+      <Progress value={value} showLabel color={value === 100 ? 'success' : 'primary'} />
+      <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+        <Button onClick={handleStart} disabled={loading}>
+          {loading ? 'Processing...' : 'Start'}
+        </Button>
+        <Button variant="secondary" onClick={handleReset}>
+          Reset
+        </Button>
       </div>
-    );
-  },
+      {value === 100 && (
+        <p style={{ marginTop: '16px', color: '#00AF4B' }}>✓ Process completed successfully!</p>
+      )}
+    </div>
+  );
+};
+
+export const Interactive: Story = {
+  render: () => <InteractiveComponent />,
 };
 
 export const SpinnerVariants: Story = {
@@ -229,17 +231,16 @@ export const SpinnerColors: Story = {
   ),
 };
 
-export const LoadingStates: Story = {
-  render: () => {
-    const [loading1, setLoading1] = useState(false);
-    const [loading2, setLoading2] = useState(false);
+const LoadingStatesComponent = () => {
+  const [loading1, setLoading1] = useState(false);
+  const [loading2, setLoading2] = useState(false);
 
-    const simulateLoad = (setLoading: (value: boolean) => void) => {
-      setLoading(true);
-      setTimeout(() => setLoading(false), 3000);
-    };
+  const simulateLoad = (setLoading: (_value: boolean) => void) => {
+    setLoading(true);
+    setTimeout(() => setLoading(false), 3000);
+  };
 
-    return (
+  return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '400px' }}>
         <div style={{
           padding: '16px',
@@ -285,21 +286,23 @@ export const LoadingStates: Story = {
           </Button>
         </div>
       </div>
-    );
-  },
+  );
 };
 
-export const RealWorldExample: Story = {
-  render: () => {
-    const [uploading, setUploading] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState(0);
-    const [files] = useState([
-      { name: 'data-analysis.ipynb', size: '2.4 MB' },
-      { name: 'model-training.py', size: '156 KB' },
-      { name: 'dataset.csv', size: '45.8 MB' },
-    ]);
+export const LoadingStates: Story = {
+  render: () => <LoadingStatesComponent />,
+};
 
-    const handleUpload = () => {
+const RealWorldExampleComponent = () => {
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [files] = useState([
+    { name: 'data-analysis.ipynb', size: '2.4 MB' },
+    { name: 'model-training.py', size: '156 KB' },
+    { name: 'dataset.csv', size: '45.8 MB' },
+  ]);
+
+  const handleUpload = () => {
       setUploading(true);
       setUploadProgress(0);
 
@@ -380,6 +383,9 @@ export const RealWorldExample: Story = {
           </Button>
         </div>
       </div>
-    );
-  },
+  );
+};
+
+export const RealWorldExample: Story = {
+  render: () => <RealWorldExampleComponent />,
 };

@@ -6,7 +6,7 @@ import {
   TooltipConfig, 
   ChartTooltip, 
   DefaultTooltipContent, 
-  CustomTooltipProps,
+  // CustomTooltipProps,
   TooltipPosition 
 } from '../shared/ChartTooltip';
 
@@ -53,7 +53,7 @@ export interface LineChartAxis {
   /** Tick count */
   tickCount?: number;
   /** Custom tick formatter */
-  tickFormatter?: (value: any) => string;
+  tickFormatter?: (_value: any) => string;
   /** Axis style variant */
   variant?: 'default' | 'minimal' | 'detailed';
 }
@@ -128,11 +128,11 @@ export interface LineChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'da
   /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
   /** @deprecated Use tooltip.content instead */
-  formatTooltip?: (dataPoint: LineChartDataPoint, index?: number) => string;
+  formatTooltip?: (_dataPoint: LineChartDataPoint, _index?: number) => string;
   /** Show percentage change in tooltip */
   showPercentageChange?: boolean;
   /** Function to calculate percentage change */
-  calculatePercentageChange?: (current: LineChartDataPoint, previous: LineChartDataPoint) => number;
+  calculatePercentageChange?: (_current: LineChartDataPoint, _previous: LineChartDataPoint) => number;
   
   /** Enable keyboard navigation */
   keyboard?: boolean;
@@ -160,8 +160,8 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       yAxis,
       grid,
       theme,
-      animation,
-      responsive,
+      animation: _animation,
+      responsive: _responsive,
       showPoints = true,
       tooltip,
       showTooltip = true,
@@ -172,7 +172,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       ariaLabel,
       themeClass,
       optimized = false,
-      hoverDebounce = 0,
+      hoverDebounce: _hoverDebounce = 0,
       className,
       ...props
     },
@@ -222,12 +222,13 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       ...theme,
     };
 
-    const mergedAnimation: LineChartAnimation = {
-      enabled: variant === 'detailed',
-      duration: variant === 'detailed' ? 300 : 150,
-      easing: 'ease-out',
-      ...animation,
-    };
+    // Animation config (currently unused, kept for future enhancements)
+    // const mergedAnimation: LineChartAnimation = {
+    //   enabled: variant === 'detailed',
+    //   duration: variant === 'detailed' ? 300 : 150,
+    //   easing: 'ease-out',
+    //   ...animation,
+    // };
 
     // Merge tooltip configuration with backward compatibility
     const mergedTooltip: TooltipConfig<LineChartDataPoint> = useMemo(() => ({
@@ -243,12 +244,12 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       ...tooltip,
     }), [tooltip, showTooltip, formatTooltip]);
 
-    const defaultMargin = {
+    const defaultMargin = useMemo(() => ({
       top: title ? 40 : 20,
       right: 20,
       bottom: mergedXAxis.label ? 60 : 40,
       left: mergedYAxis.label ? 80 : 60,
-    };
+    }), [title, mergedXAxis.label, mergedYAxis.label]);
 
     const innerWidth = width - defaultMargin.left - defaultMargin.right;
     const innerHeight = height - defaultMargin.top - defaultMargin.bottom;
@@ -325,7 +326,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
 
     const defaultFormatY = mergedYAxis.tickFormatter || d3.format('.2f');
 
-    const defaultFormatTooltip = formatTooltip || ((dataPoint: LineChartDataPoint, index?: number) => {
+    const defaultFormatTooltip = useMemo(() => formatTooltip || ((dataPoint: LineChartDataPoint, index?: number) => {
       const xFormatted = defaultFormatX(dataPoint.x);
       const yFormatted = defaultFormatY(dataPoint.y);
       
@@ -355,7 +356,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       
       tooltipHtml += `</div>`;
       return tooltipHtml;
-    });
+    }), [formatTooltip, defaultFormatX, defaultFormatY, showPercentageChange, calculatePercentageChange, data]);
 
     useEffect(() => {
       if (!svgRef.current || !data.length || !xScale || !yScale || !lineGenerator) {
@@ -403,9 +404,9 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
         const xAxisCall = d3.axisBottom(xScale);
         if (mergedXAxis.tickCount) xAxisCall.ticks(mergedXAxis.tickCount);
         if (mergedXAxis.tickFormatter) {
-          xAxisCall.tickFormat((d, i) => mergedXAxis.tickFormatter!(d));
+          xAxisCall.tickFormat((d, _i) => mergedXAxis.tickFormatter!(d));
         } else {
-          xAxisCall.tickFormat((d, i) => defaultFormatX(d));
+          xAxisCall.tickFormat((d, _i) => defaultFormatX(d));
         }
         
         xAxisGroup.call(xAxisCall);
@@ -419,9 +420,9 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
         const yAxisCall = d3.axisLeft(yScale);
         if (mergedYAxis.tickCount) yAxisCall.ticks(mergedYAxis.tickCount);
         if (mergedYAxis.tickFormatter) {
-          yAxisCall.tickFormat((d, i) => mergedYAxis.tickFormatter!(d as number));
+          yAxisCall.tickFormat((d, _i) => mergedYAxis.tickFormatter!(d as number));
         } else {
-          yAxisCall.tickFormat((d, i) => defaultFormatY(d as number));
+          yAxisCall.tickFormat((d, _i) => defaultFormatY(d as number));
         }
         
         yAxisGroup.call(yAxisCall);
@@ -605,7 +606,9 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
 
     }, [data, width, height, xScale, yScale, lineGenerator, mergedGrid.show, showPoints, mergedTooltip, 
         color, mergedXAxis.label, mergedYAxis.label, title, defaultMargin, innerWidth, innerHeight, 
-        defaultFormatX, defaultFormatY, defaultFormatTooltip, showPercentageChange, calculatePercentageChange]);
+        defaultFormatX, defaultFormatY, defaultFormatTooltip, showPercentageChange, calculatePercentageChange, keyboard,
+        mergedGrid.opacity, mergedGrid.strokeDasharray, mergedXAxis.show, mergedXAxis.tickCount, mergedXAxis.tickFormatter, mergedXAxis.variant,
+        mergedYAxis.show, mergedYAxis.tickCount, mergedYAxis.tickFormatter, mergedYAxis.variant, variant]);
 
     if (!data.length) {
       return (

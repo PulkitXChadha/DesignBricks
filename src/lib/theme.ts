@@ -13,7 +13,7 @@ export type Theme = 'light' | 'dark' | 'auto';
 export class ThemeManager {
   private static instance: ThemeManager;
   private currentTheme: Theme = 'auto';
-  private listeners: Set<(theme: Theme) => void> = new Set();
+  private listeners: Set<(_theme: Theme) => void> = new Set();
 
   static getInstance(): ThemeManager {
     if (!ThemeManager.instance) {
@@ -164,14 +164,14 @@ export class ThemeManager {
   /**
    * Add theme change listener
    */
-  addListener(listener: (theme: Theme) => void): void {
+  addListener(listener: (_theme: Theme) => void): void {
     this.listeners.add(listener);
   }
 
   /**
    * Remove theme change listener
    */
-  removeListener(listener: (theme: Theme) => void): void {
+  removeListener(listener: (_theme: Theme) => void): void {
     this.listeners.delete(listener);
   }
 
@@ -213,9 +213,7 @@ export const themeManager = ThemeManager.getInstance();
  * React hook for theme management (if using React)
  */
 export function useTheme() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [theme, setTheme] = React.useState<Theme>(themeManager.getTheme());
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [effectiveTheme, setEffectiveTheme] = React.useState<'light' | 'dark'>(
     themeManager.getEffectiveTheme()
   );
@@ -241,21 +239,9 @@ export function useTheme() {
 }
 
 // Helper functions for direct usage
-export const setTheme = (theme: Theme) => themeManager.setTheme(theme);
+export const setTheme = (_theme: Theme) => themeManager.setTheme(_theme);
 export const getTheme = () => themeManager.getTheme();
 export const getEffectiveTheme = () => themeManager.getEffectiveTheme();
 export const toggleTheme = () => themeManager.toggleTheme();
 export const isDarkMode = () => themeManager.isDarkMode();
 export const isLightMode = () => themeManager.isLightMode();
-
-// Import React hooks only if React is available
-let useState: any;
-let useEffect: any;
-
-try {
-  const React = require('react');
-  useState = React.useState;
-  useEffect = React.useEffect;
-} catch {
-  // React not available, skip hook definition
-}

@@ -60,13 +60,13 @@ describe('List', () => {
       expect(ref.current?.tagName).toBe('UL');
     });
 
-    it('forwards additional props', () => {
-      const { container } = render(
-        <List data-testid="list" id="test-list">
-          <ListItem>Item</ListItem>
-        </List>
-      );
-      
+  it('forwards additional props', () => {
+    render(
+      <List data-testid="list" id="test-list">
+        <ListItem>Item</ListItem>
+      </List>
+    );
+    
       const list = screen.getByTestId('list');
       expect(list).toHaveAttribute('id', 'test-list');
     });

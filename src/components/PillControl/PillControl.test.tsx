@@ -171,17 +171,17 @@ describe('PillControl', () => {
 
   // AllowDeselect tests
   describe('AllowDeselect', () => {
-    it('supports deselection in controlled mode', () => {
-      const { container } = render(
-        <PillControl
-          options={mockOptions}
-          value="1"
-          onChange={() => {}}
-          allowDeselect
-        />
-      );
-      
-      // Component should render with option 1 selected
+  it('supports deselection in controlled mode', () => {
+    render(
+      <PillControl
+        options={mockOptions}
+        value="1"
+        onChange={() => {}}
+        allowDeselect
+      />
+    );
+    
+    // Component should render with option 1 selected
       const radio = screen.getByLabelText('Option 1') as HTMLInputElement;
       expect(radio.checked).toBe(true);
     });
@@ -189,7 +189,7 @@ describe('PillControl', () => {
     it('starts with no selection when allowDeselect is true and no default', () => {
       const { container } = render(<PillControl options={mockOptions} allowDeselect />);
       
-      const inputs = container.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
+      const inputs = container.querySelectorAll<HTMLInputElement>('input[type="radio"]');
       inputs.forEach(input => {
         expect(input.checked).toBe(false);
       });
@@ -226,7 +226,7 @@ describe('PillControl', () => {
     it('disables all radio inputs when disabled', () => {
       const { container } = render(<PillControl options={mockOptions} disabled />);
       
-      const inputs = container.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
+      const inputs = container.querySelectorAll<HTMLInputElement>('input[type="radio"]');
       inputs.forEach(input => {
         expect(input.disabled).toBe(true);
       });
@@ -481,7 +481,7 @@ describe('PillControl', () => {
     it('uses custom name for radio group', () => {
       const { container } = render(<PillControl options={mockOptions} name="custom-group" />);
       
-      const inputs = container.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
+      const inputs = container.querySelectorAll<HTMLInputElement>('input[type="radio"]');
       inputs.forEach(input => {
         expect(input.name).toBe('custom-group');
       });
@@ -490,7 +490,7 @@ describe('PillControl', () => {
     it('generates unique name when not provided', () => {
       const { container } = render(<PillControl options={mockOptions} />);
       
-      const radios = container.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
+      const radios = container.querySelectorAll<HTMLInputElement>('input[type="radio"]');
       const firstName = radios[0].name;
       
       expect(firstName).toContain('pill-control-');
@@ -561,18 +561,18 @@ describe('PillControl', () => {
         { value: '3', label: 'Active', icon: <span>✓</span>, badge: 'NEW' },
       ];
       
-      const { container } = render(
-        <PillControl
-          options={options}
-          value="1"
-          onChange={handleChange}
-          size="large"
-          fullWidth
-          name="test-group"
-          className="custom"
-          data-testid="control"
-        />
-      );
+    render(
+      <PillControl
+        options={options}
+        value="1"
+        onChange={handleChange}
+        size="large"
+        fullWidth
+        name="test-group"
+        className="custom"
+        data-testid="control"
+      />
+    );
       
       const control = screen.getByTestId('control');
       expect(control).toHaveClass('db-pill-control--large', 'db-pill-control--full-width', 'custom');

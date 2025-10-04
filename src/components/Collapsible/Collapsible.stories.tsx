@@ -44,22 +44,22 @@ const UserIcon = () => (
 const sampleContent = (
   <div style={{ padding: '8px 0' }}>
     <div style={{ marginBottom: '8px' }}>
-      <a href="#" style={{ display: 'block', padding: '4px 0', color: '#2272B4', textDecoration: 'none' }}>
+      <a href="/sql-editor" style={{ display: 'block', padding: '4px 0', color: '#2272B4', textDecoration: 'none' }}>
         SQL Editor
       </a>
     </div>
     <div style={{ marginBottom: '8px' }}>
-      <a href="#" style={{ display: 'block', padding: '4px 0', color: '#2272B4', textDecoration: 'none' }}>
+      <a href="/queries" style={{ display: 'block', padding: '4px 0', color: '#2272B4', textDecoration: 'none' }}>
         Queries
       </a>
     </div>
     <div style={{ marginBottom: '8px' }}>
-      <a href="#" style={{ display: 'block', padding: '4px 0', color: '#2272B4', textDecoration: 'none' }}>
+      <a href="/dashboards" style={{ display: 'block', padding: '4px 0', color: '#2272B4', textDecoration: 'none' }}>
         Dashboards
       </a>
     </div>
     <div>
-      <a href="#" style={{ display: 'block', padding: '4px 0', color: '#2272B4', textDecoration: 'none' }}>
+      <a href="/alerts" style={{ display: 'block', padding: '4px 0', color: '#2272B4', textDecoration: 'none' }}>
         Alerts
       </a>
     </div>
@@ -156,35 +156,37 @@ export const Variants: Story = {
   ),
 };
 
-export const ControlledState: Story = {
-  render: () => {
-    const [isOpen, setIsOpen] = useState(false);
-    
-    return (
-      <div style={{ width: '300px' }}>
-        <div style={{ marginBottom: '16px' }}>
-          <button onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? 'Close' : 'Open'} Collapsible
-          </button>
-          <span style={{ marginLeft: '12px', fontSize: '14px', color: '#6B7280' }}>
-            State: {isOpen ? 'Open' : 'Closed'}
-          </span>
-        </div>
-        
-        <Collapsible
-          trigger="Controlled Collapsible"
-          open={isOpen}
-          onOpenChange={setIsOpen}
-        >
-          <div style={{ padding: '12px 0' }}>
-            This collapsible is controlled by external state.
-            <br />
-            The button above controls its open/closed state.
-          </div>
-        </Collapsible>
+const ControlledStateComponent = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  return (
+    <div style={{ width: '300px' }}>
+      <div style={{ marginBottom: '16px' }}>
+        <button onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? 'Close' : 'Open'} Collapsible
+        </button>
+        <span style={{ marginLeft: '12px', fontSize: '14px', color: '#6B7280' }}>
+          State: {isOpen ? 'Open' : 'Closed'}
+        </span>
       </div>
-    );
-  },
+      
+      <Collapsible
+        trigger="Controlled Collapsible"
+        open={isOpen}
+        onOpenChange={setIsOpen}
+      >
+        <div style={{ padding: '12px 0' }}>
+          This collapsible is controlled by external state.
+          <br />
+          The button above controls its open/closed state.
+        </div>
+      </Collapsible>
+    </div>
+  );
+};
+
+export const ControlledState: Story = {
+  render: () => <ControlledStateComponent />,
 };
 
 export const WithoutChevron: Story = {
@@ -193,7 +195,7 @@ export const WithoutChevron: Story = {
     showChevron: false,
     children: (
       <div style={{ padding: '12px 0' }}>
-        This collapsible doesn't show a chevron icon.
+        This collapsible doesn&apos;t show a chevron icon.
       </div>
     ),
   },

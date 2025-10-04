@@ -5,8 +5,7 @@ import './PieChart.css';
 import { 
   TooltipConfig, 
   ChartTooltip, 
-  DefaultTooltipContent, 
-  CustomTooltipProps,
+  DefaultTooltipContent,
   TooltipPosition 
 } from '../shared/ChartTooltip';
 
@@ -98,7 +97,7 @@ export interface PieChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'dat
   /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
   /** @deprecated Use tooltip.content instead */
-  formatTooltip?: (dataPoint: PieChartDataPoint, percentage?: number) => string;
+  formatTooltip?: (_dataPoint: PieChartDataPoint, _percentage?: number) => string;
   /** Show percentage labels on slices */
   showLabels?: boolean;
   /** Show value labels instead of percentages */
@@ -159,7 +158,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
       ariaLabel,
       themeClass,
       optimized = false,
-      hoverDebounce = 0,
+      hoverDebounce: _hoverDebounce = 0,
       colorPalette = DEFAULT_PIE_COLORS,
       className,
       ...props
@@ -216,12 +215,12 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
       ...tooltip,
     };
 
-    const defaultMargin = {
+    const defaultMargin = useMemo(() => ({
       top: title ? 40 : 20,
       right: 20,
       bottom: (mergedLegend.show && mergedLegend.position === 'bottom' ? 60 : 20),
       left: 20,
-    };
+    }), [title, mergedLegend.show, mergedLegend.position]);
 
     const innerWidth = width - defaultMargin.left - defaultMargin.right;
     const innerHeight = height - defaultMargin.top - defaultMargin.bottom;
@@ -268,7 +267,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
       return { pieData, arc, labelArc, totalValue, colorScale };
     }, [data, radius, innerRadius, cornerRadius, padAngle, labelPosition, colorPalette]);
 
-    const defaultFormatTooltip = formatTooltip || ((dataPoint: PieChartDataPoint, percentage?: number) => {
+    const defaultFormatTooltip = useMemo(() => formatTooltip || ((dataPoint: PieChartDataPoint, percentage?: number) => {
       let tooltipHtml = `<div class="db-piechart__tooltip-content">`;
       tooltipHtml += `<div class="db-piechart__tooltip-label">${dataPoint.label}</div>`;
       tooltipHtml += `<div class="db-piechart__tooltip-value">${d3.format(',')(dataPoint.value)}</div>`;
@@ -277,7 +276,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
       }
       tooltipHtml += `</div>`;
       return tooltipHtml;
-    });
+    }), [formatTooltip]);
 
     useEffect(() => {
       if (!svgRef.current || !data.length || !arc || !colorScale) {
@@ -325,7 +324,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
 
       // Labels
       if (showLabels && labelArc) {
-        const labels = slices.append('text')
+        slices.append('text')
           .attr('class', 'db-piechart__label')
           .attr('transform', d => `translate(${labelArc.centroid(d as any)})`)
           .attr('dy', '0.35em')
@@ -373,7 +372,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
         paths
           .attr('tabindex', 0)
           .attr('role', 'button')
-          .attr('aria-label', (d, i) => {
+          .attr('aria-label', (d) => {
             const percentage = (d.value / totalValue) * 100;
             return `${d.data.label}: ${d3.format(',')(d.data.value)} (${percentage.toFixed(1)}%)`;
           })
@@ -529,7 +528,8 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
 
     }, [data, width, height, radius, innerRadius, arc, labelArc, colorScale, totalValue,
         showLabels, showValues, labelPosition, showTooltip, mergedLegend.show, title,
-        defaultMargin, centerX, centerY, defaultFormatTooltip, mergedAnimation.enabled, mergedAnimation.duration]);
+        defaultMargin, centerX, centerY, defaultFormatTooltip, mergedAnimation.enabled, mergedAnimation.duration, keyboard, 
+        mergedLegend.orientation, mergedTooltip.enabled, mergedTooltip.showDelay, mergedTooltip.hideDelay, pieData, innerWidth, innerHeight]);
 
     if (!data.length) {
       return (

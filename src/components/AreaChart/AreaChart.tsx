@@ -66,7 +66,7 @@ export interface AreaChartAxis {
   /** Tick count */
   tickCount?: number;
   /** Custom tick formatter */
-  tickFormatter?: (value: any) => string;
+  tickFormatter?: (_value: any) => string;
   /** Axis style variant */
   variant?: 'default' | 'minimal' | 'detailed';
 }
@@ -185,7 +185,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       yAxis,
       grid,
       theme,
-      animation,
+      animation: _animation,
       responsive: _responsive,
       showPoints = false,
       tooltip,
@@ -197,7 +197,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       ariaLabel,
       themeClass,
       optimized = false,
-      hoverDebounce = 0,
+      hoverDebounce: _hoverDebounce = 0,
       className,
       ...props
     },
@@ -265,12 +265,13 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       ...theme,
     };
 
-    const mergedAnimation: AreaChartAnimation = {
-      enabled: variant === 'detailed',
-      duration: variant === 'detailed' ? 300 : 150,
-      easing: 'ease-out',
-      ...animation,
-    };
+    // Animation config (currently unused, kept for future enhancements)
+    // const mergedAnimation: AreaChartAnimation = {
+    //   enabled: variant === 'detailed',
+    //   duration: variant === 'detailed' ? 300 : 150,
+    //   easing: 'ease-out',
+    //   ...animation,
+    // };
 
     // Merge tooltip configuration with backward compatibility
     const mergedTooltip: TooltipConfig<AreaChartDataPoint> = useMemo(() => ({
@@ -286,12 +287,12 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       ...tooltip,
     }), [tooltip, showTooltip, formatTooltip]);
 
-    const defaultMargin = {
+    const defaultMargin = useMemo(() => ({
       top: title ? 40 : 20,
       right: 20,
       bottom: mergedXAxis.label ? 60 : 40,
       left: mergedYAxis.label ? 80 : 60,
-    };
+    }), [title, mergedXAxis.label, mergedYAxis.label]);
 
     const innerWidth = width - defaultMargin.left - defaultMargin.right;
     const innerHeight = height - defaultMargin.top - defaultMargin.bottom;
@@ -312,7 +313,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       // Create a data structure for d3.stack
       const stackData = allXValues.map(x => {
         const point: any = { x };
-        normalizedSeries.forEach((s, idx) => {
+        normalizedSeries.forEach((s, _idx) => {
           const dataPoint = s.data.find(d => d.x === x);
           point[s.id] = dataPoint ? dataPoint.y : 0;
         });
@@ -379,7 +380,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
                        d3.curveLinear;
 
       // Create area and line generators for each series
-      const areaGenerators = normalizedSeries.map((series, idx) => {
+      const areaGenerators = normalizedSeries.map((_series, _idx) => {
         if (stacked && stackedData) {
           // For stacked areas, use the stacked data
           return d3.area<any>()
@@ -398,7 +399,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       });
 
       // Line generators for stroke
-      const lineGenerators = showStroke ? normalizedSeries.map((series, idx) => {
+      const lineGenerators = showStroke ? normalizedSeries.map((_series, _idx) => {
         if (stacked && stackedData) {
           return d3.line<any>()
             .x((d: any) => xScale(d.data.x) || 0)
@@ -445,11 +446,11 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
         };
       }
       return (value: any) => String(value);
-    }, [data, mergedXAxis.tickFormatter]);
+    }, [mergedXAxis.tickFormatter, normalizedSeries]);
 
     const defaultFormatY = mergedYAxis.tickFormatter || d3.format('.2f');
 
-    const defaultFormatTooltip = formatTooltip || ((dataPoint: AreaChartDataPoint, index?: number) => {
+    const defaultFormatTooltip = useMemo(() => formatTooltip || ((dataPoint: AreaChartDataPoint, index?: number) => {
       const xFormatted = defaultFormatX(dataPoint.x);
       const yFormatted = defaultFormatY(dataPoint.y);
       
@@ -479,7 +480,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       
       tooltipHtml += `</div>`;
       return tooltipHtml;
-    });
+    }), [formatTooltip, defaultFormatX, defaultFormatY, showPercentageChange, calculatePercentageChange, data]);
 
     useEffect(() => {
       if (!svgRef.current || normalizedSeries.length === 0 || !xScale || !yScale || areaGenerators.length === 0) {
@@ -527,9 +528,9 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
         const xAxisCall = d3.axisBottom(xScale);
         if (mergedXAxis.tickCount) xAxisCall.ticks(mergedXAxis.tickCount);
         if (mergedXAxis.tickFormatter) {
-          xAxisCall.tickFormat((d, i) => mergedXAxis.tickFormatter!(d));
+          xAxisCall.tickFormat((d, _i) => mergedXAxis.tickFormatter!(d));
         } else {
-          xAxisCall.tickFormat((d, i) => defaultFormatX(d));
+          xAxisCall.tickFormat((d, _i) => defaultFormatX(d));
         }
         
         xAxisGroup.call(xAxisCall);
@@ -543,9 +544,9 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
         const yAxisCall = d3.axisLeft(yScale);
         if (mergedYAxis.tickCount) yAxisCall.ticks(mergedYAxis.tickCount);
         if (mergedYAxis.tickFormatter) {
-          yAxisCall.tickFormat((d, i) => mergedYAxis.tickFormatter!(d as number));
+          yAxisCall.tickFormat((d, _i) => mergedYAxis.tickFormatter!(d as number));
         } else {
-          yAxisCall.tickFormat((d, i) => defaultFormatY(d as number));
+          yAxisCall.tickFormat((d, _i) => defaultFormatY(d as number));
         }
         
         yAxisGroup.call(yAxisCall);
@@ -559,20 +560,26 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
         const seriesData = stacked && stackedData ? stackedData[idx] : series.data;
 
         // Area path
-        g.append('path')
+        const areaPath = g.append('path')
           .datum(seriesData)
           .attr('class', `db-areachart__area db-areachart__area--${seriesColor}`)
           .attr('d', areaGen as any)
-          .style('opacity', fillOpacity)
-          .style('fill', series.customColor || undefined);
+          .style('opacity', fillOpacity);
+        
+        if (series.customColor) {
+          areaPath.style('fill', series.customColor);
+        }
 
         // Stroke line
         if (showStroke && lineGen) {
-          g.append('path')
+          const strokePath = g.append('path')
             .datum(seriesData)
             .attr('class', `db-areachart__stroke db-areachart__stroke--${seriesColor}`)
-            .attr('d', lineGen as any)
-            .style('stroke', series.customColor || undefined);
+            .attr('d', lineGen as any);
+          
+          if (series.customColor) {
+            strokePath.style('stroke', series.customColor);
+          }
         }
 
         // Data points for non-stacked charts
@@ -584,8 +591,11 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             .attr('class', `db-areachart__point db-areachart__point--${seriesColor} db-areachart__point--series-${idx}`)
             .attr('cx', d => xScale(d.x) || 0)
             .attr('cy', d => yScale(d.y) || 0)
-            .attr('r', variant === 'detailed' ? 5 : 4)
-            .style('fill', series.customColor || undefined);
+            .attr('r', variant === 'detailed' ? 5 : 4);
+          
+          if (series.customColor) {
+            points.style('fill', series.customColor);
+          }
 
           // Add keyboard navigation attributes conditionally
           if (keyboard) {
@@ -625,13 +635,18 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
           .style('opacity', 0);
 
         // Hover circles for each series
-        const hoverCircles = normalizedSeries.map((series, idx) => {
+        const hoverCircles = normalizedSeries.map((series, _idx) => {
           const seriesColor = getSeriesColor(series);
-          return g.append('circle')
+          const circle = g.append('circle')
             .attr('class', `db-areachart__hover-circle db-areachart__hover-circle--${seriesColor}`)
             .attr('r', 6)
-            .style('opacity', 0)
-            .style('fill', series.customColor || undefined);
+            .style('opacity', 0);
+          
+          if (series.customColor) {
+            circle.style('fill', series.customColor);
+          }
+          
+          return circle;
         });
 
         // Invisible overlay for mouse events
@@ -665,7 +680,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             const pointX = xScale(closestPoint.x) || 0;
 
             // Collect all series values at this x position
-            const allSeriesData = normalizedSeries.map((series, idx) => {
+            const allSeriesData = normalizedSeries.map((series, _idx) => {
               const dataPoint = series.data.find(d => d.x === closestPoint.x) || 
                                series.data[closestIndex];
               const yValue = dataPoint ? dataPoint.y : 0;
@@ -787,7 +802,9 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
 
     }, [normalizedSeries, width, height, xScale, yScale, areaGenerators, lineGenerators, mergedGrid.show, showPoints, mergedTooltip, showStroke,
         color, mergedXAxis.label, mergedYAxis.label, title, defaultMargin, innerWidth, innerHeight, fillOpacity,
-        defaultFormatX, defaultFormatY, defaultFormatTooltip, showPercentageChange, calculatePercentageChange, stacked, stackedData, getSeriesColor]);
+        defaultFormatX, defaultFormatY, defaultFormatTooltip, showPercentageChange, calculatePercentageChange, stacked, stackedData, getSeriesColor, keyboard, 
+        mergedGrid.opacity, mergedGrid.strokeDasharray, mergedXAxis.show, mergedXAxis.tickCount, mergedXAxis.tickFormatter, mergedXAxis.variant,
+        mergedYAxis.show, mergedYAxis.tickCount, mergedYAxis.tickFormatter, mergedYAxis.variant, variant]);
 
     if (normalizedSeries.length === 0) {
       return (

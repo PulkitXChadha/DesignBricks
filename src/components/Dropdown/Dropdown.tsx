@@ -2,7 +2,8 @@ import React, {
   ReactNode, 
   useState, 
   useRef, 
-  useEffect, 
+  useEffect,
+  useCallback, 
   forwardRef,
   HTMLAttributes,
   KeyboardEvent,
@@ -26,7 +27,7 @@ export interface DropdownItem {
   /** Whether to show a divider after this item */
   divider?: boolean;
   /** Click handler */
-  onClick?: (item: DropdownItem) => void;
+  onClick?: (_item: DropdownItem) => void;
   /** Item variant */
   variant?: 'default' | 'danger' | 'success';
 }
@@ -41,9 +42,9 @@ export interface DropdownProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onS
   /** Whether dropdown is open (controlled) */
   open?: boolean;
   /** Open state change handler */
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (_open: boolean) => void;
   /** Item selection handler */
-  onSelect?: (item: DropdownItem) => void;
+  onSelect?: (_item: DropdownItem) => void;
   /** Dropdown placement */
   placement?: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'left' | 'right';
   /** Dropdown trigger */
@@ -92,7 +93,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
     const isManual = trigger === 'manual';
 
-    const updatePosition = () => {
+    const updatePosition = useCallback(() => {
       if (!triggerRef.current || !dropdownRef.current || !isOpen) return;
 
       const triggerRect = triggerRef.current.getBoundingClientRect();
@@ -137,7 +138,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       top = Math.max(8, Math.min(top, viewport.height - dropdownRect.height - 8));
 
       setPosition({ top, left });
-    };
+    }, [isOpen, placement, offset]);
 
     const openDropdown = () => {
       if (disabled || isManual) return;
@@ -150,7 +151,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       setFocusedIndex(-1);
     };
 
-    const closeDropdown = () => {
+    const closeDropdown = useCallback(() => {
       if (disabled || isManual) return;
       
       const newOpen = false;
@@ -159,7 +160,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       }
       onOpenChange?.(newOpen);
       setFocusedIndex(-1);
-    };
+    }, [disabled, isManual, controlledOpen, onOpenChange]);
 
     const toggleDropdown = () => {
       if (isOpen) {
@@ -246,7 +247,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [isOpen]);
+    }, [isOpen, closeDropdown]);
 
     // Position update
     useEffect(() => {
@@ -263,7 +264,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         };
       }
       return undefined;
-    }, [isOpen, placement]);
+    }, [isOpen, placement, updatePosition]);
 
     const triggerProps = {
       ...(trigger === 'click' && {
@@ -279,6 +280,8 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       createPortal(
         <div
           ref={dropdownRef}
+          role="menu"
+          tabIndex={-1}
           className={clsx(
             'db-dropdown',
             `db-dropdown--${placement}`,
@@ -292,7 +295,6 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
             maxHeight,
             zIndex: 1500,
           }}
-          role="menu"
           onKeyDown={handleKeyDown}
         >
           <div className="db-dropdown__content">

@@ -71,7 +71,7 @@ export interface TooltipConfig<TData = any> {
   /** Custom tooltip component */
   component?: React.ComponentType<CustomTooltipProps<TData>>;
   /** HTML content function (legacy support) */
-  content?: (data: TData, index?: number, additionalData?: any) => string;
+  content?: (_data: TData, _index?: number, _additionalData?: any) => string;
   /** Custom styling */
   style?: TooltipStyle;
   /** Positioning configuration */

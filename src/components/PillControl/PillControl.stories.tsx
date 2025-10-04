@@ -116,51 +116,55 @@ export const WithBadges: Story = {
   },
 };
 
-export const Controlled: Story = {
-  render: () => {
-    const [value, setValue] = useState('favorites');
-    
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div>
-          <strong>Selected: {value}</strong>
-        </div>
-        <PillControl
-          options={basicOptions}
-          value={value}
-          onChange={setValue}
-        />
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button onClick={() => setValue('suggested')}>Select Suggested</button>
-          <button onClick={() => setValue('favorites')}>Select Favorites</button>
-          <button onClick={() => setValue('popular')}>Select Popular</button>
-        </div>
+const ControlledComponent = () => {
+  const [value, setValue] = useState('favorites');
+  
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div>
+        <strong>Selected: {value}</strong>
       </div>
-    );
-  },
+      <PillControl
+        options={basicOptions}
+        value={value}
+        onChange={setValue}
+      />
+      <div style={{ display: 'flex', gap: '8px' }}>
+        <button onClick={() => setValue('suggested')}>Select Suggested</button>
+        <button onClick={() => setValue('favorites')}>Select Favorites</button>
+        <button onClick={() => setValue('popular')}>Select Popular</button>
+      </div>
+    </div>
+  );
+};
+
+export const Controlled: Story = {
+  render: () => <ControlledComponent />,
+};
+
+const WithDeselectionComponent = () => {
+  const [value, setValue] = useState('favorites');
+  
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div>
+        <strong>Selected: {value || 'None'}</strong>
+      </div>
+      <PillControl
+        options={basicOptions}
+        value={value}
+        onChange={setValue}
+        allowDeselect={true}
+      />
+      <p style={{ fontSize: '14px', color: '#6B7280' }}>
+        Click the same option twice to deselect it
+      </p>
+    </div>
+  );
 };
 
 export const WithDeselection: Story = {
-  render: () => {
-    const [value, setValue] = useState('favorites');
-    
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div>
-          <strong>Selected: {value || 'None'}</strong>
-        </div>
-        <PillControl
-          options={basicOptions}
-          value={value}
-          onChange={setValue}
-          allowDeselect={true}
-        />
-        <p style={{ fontSize: '14px', color: '#6B7280' }}>
-          Click the same option twice to deselect it
-        </p>
-      </div>
-    );
-  },
+  render: () => <WithDeselectionComponent />,
 };
 
 export const DisabledOptions: Story = {

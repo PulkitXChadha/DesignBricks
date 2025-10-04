@@ -239,267 +239,278 @@ const basicItems: SidebarItem[] = [
   },
 ];
 
-export const Basic: Story = {
-  render: () => {
-    const [activeItem, setActiveItem] = useState('home');
+const BasicComponent = () => {
+  const [activeItem, setActiveItem] = useState('home');
 
-    return (
-      <div style={{ display: 'flex', height: '100vh' }}>
-        <Sidebar
-          items={basicItems}
-          activeItem={activeItem}
-          onItemClick={(item) => setActiveItem(item.id)}
-        />
-        <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
-          <h2>Main Content Area</h2>
-          <p>Selected item: {activeItem}</p>
-        </div>
+  return (
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <Sidebar
+        items={basicItems}
+        activeItem={activeItem}
+        onItemClick={(item) => setActiveItem(item.id)}
+      />
+      <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
+        <h2>Main Content Area</h2>
+        <p>Selected item: {activeItem}</p>
       </div>
-    );
-  },
+    </div>
+  );
+};
+
+export const Basic: Story = {
+  render: () => <BasicComponent />,
+};
+
+const DarkComponent = () => {
+  const [activeItem, setActiveItem] = useState('home');
+
+  return (
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <Sidebar
+        items={basicItems}
+        activeItem={activeItem}
+        onItemClick={(item) => setActiveItem(item.id)}
+        variant="dark"
+      />
+      <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
+        <h2>Main Content Area</h2>
+        <p>Selected item: {activeItem}</p>
+      </div>
+    </div>
+  );
 };
 
 export const Dark: Story = {
-  render: () => {
-    const [activeItem, setActiveItem] = useState('home');
+  render: () => <DarkComponent />,
+};
 
-    return (
-      <div style={{ display: 'flex', height: '100vh' }}>
-        <Sidebar
-          items={basicItems}
-          activeItem={activeItem}
-          onItemClick={(item) => setActiveItem(item.id)}
-          variant="dark"
-        />
-        <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
-          <h2>Main Content Area</h2>
-          <p>Selected item: {activeItem}</p>
-        </div>
+const WithNestedItemsComponent = () => {
+  const [activeItem, setActiveItem] = useState('overview');
+
+  const nestedItems: SidebarItem[] = [
+    {
+      id: 'home',
+      label: 'Home',
+      icon: <HomeIcon />,
+    },
+    {
+      id: 'catalog',
+      label: 'Catalog',
+      icon: <CatalogIcon />,
+      children: [
+        { id: 'databases', label: 'Databases' },
+        { id: 'schemas', label: 'Schemas' },
+        { id: 'tables', label: 'Tables', badge: '12' },
+      ],
+    },
+    {
+      id: 'workflows',
+      label: 'Workflows',
+      icon: <WorkflowIcon />,
+      children: [
+        { id: 'pipelines', label: 'Pipelines' },
+        { id: 'schedules', label: 'Schedules' },
+        { id: 'runs', label: 'Runs', badge: 'NEW' },
+      ],
+    },
+    {
+      id: 'models',
+      label: 'Models',
+      icon: <ModelsIcon />,
+      children: [
+        { id: 'registered', label: 'Registered Models' },
+        { id: 'experiments', label: 'Experiments' },
+      ],
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: <SettingsIcon />,
+    },
+  ];
+
+  return (
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <Sidebar
+        items={nestedItems}
+        activeItem={activeItem}
+        onItemClick={(item) => setActiveItem(item.id)}
+      />
+      <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
+        <h2>Main Content Area</h2>
+        <p>Selected item: {activeItem}</p>
       </div>
-    );
-  },
+    </div>
+  );
 };
 
 export const WithNestedItems: Story = {
-  render: () => {
-    const [activeItem, setActiveItem] = useState('overview');
+  render: () => <WithNestedItemsComponent />,
+};
 
-    const nestedItems: SidebarItem[] = [
-      {
-        id: 'home',
-        label: 'Home',
-        icon: <HomeIcon />,
-      },
-      {
-        id: 'catalog',
-        label: 'Catalog',
-        icon: <CatalogIcon />,
-        children: [
-          { id: 'databases', label: 'Databases' },
-          { id: 'schemas', label: 'Schemas' },
-          { id: 'tables', label: 'Tables', badge: '12' },
-        ],
-      },
-      {
-        id: 'workflows',
-        label: 'Workflows',
-        icon: <WorkflowIcon />,
-        children: [
-          { id: 'pipelines', label: 'Pipelines' },
-          { id: 'schedules', label: 'Schedules' },
-          { id: 'runs', label: 'Runs', badge: 'NEW' },
-        ],
-      },
-      {
-        id: 'models',
-        label: 'Models',
-        icon: <ModelsIcon />,
-        children: [
-          { id: 'registered', label: 'Registered Models' },
-          { id: 'experiments', label: 'Experiments' },
-        ],
-      },
-      {
-        id: 'settings',
-        label: 'Settings',
-        icon: <SettingsIcon />,
-      },
-    ];
+const CollapsibleComponent = () => {
+  const [activeItem, setActiveItem] = useState('home');
+  const [collapsed, setCollapsed] = useState(false);
 
-    return (
-      <div style={{ display: 'flex', height: '100vh' }}>
-        <Sidebar
-          items={nestedItems}
-          activeItem={activeItem}
-          onItemClick={(item) => setActiveItem(item.id)}
-        />
-        <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
-          <h2>Main Content Area</h2>
-          <p>Selected item: {activeItem}</p>
-        </div>
+  return (
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <Sidebar
+        items={basicItems}
+        activeItem={activeItem}
+        onItemClick={(item) => setActiveItem(item.id)}
+        collapsed={collapsed}
+        onCollapsedChange={setCollapsed}
+        collapsible
+      />
+      <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
+        <h2>Collapsible Sidebar</h2>
+        <p>Click the toggle button to collapse/expand the sidebar.</p>
+        <p>Selected item: {activeItem}</p>
       </div>
-    );
-  },
+    </div>
+  );
 };
 
 export const Collapsible: Story = {
-  render: () => {
-    const [activeItem, setActiveItem] = useState('home');
-    const [collapsed, setCollapsed] = useState(false);
+  render: () => <CollapsibleComponent />,
+};
 
-    return (
-      <div style={{ display: 'flex', height: '100vh' }}>
-        <Sidebar
-          items={basicItems}
-          activeItem={activeItem}
-          onItemClick={(item) => setActiveItem(item.id)}
-          collapsed={collapsed}
-          onCollapsedChange={setCollapsed}
-          collapsible
-        />
-        <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
-          <h2>Collapsible Sidebar</h2>
-          <p>Click the toggle button to collapse/expand the sidebar.</p>
-          <p>Selected item: {activeItem}</p>
-        </div>
+const WithHeaderAndFooterComponent = () => {
+  const [activeItem, setActiveItem] = useState('home');
+
+  const header = (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div style={{
+        width: '32px',
+        height: '32px',
+        borderRadius: '4px',
+        backgroundColor: '#2272B4',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontSize: '14px',
+        fontWeight: 'bold',
+      }}>
+        DB
       </div>
-    );
-  },
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        <div style={{ fontSize: '14px', fontWeight: '500' }}>Databricks</div>
+        <div style={{ fontSize: '11px', color: '#6B7280' }}>Workspace</div>
+      </div>
+    </div>
+  );
+
+  const footer = (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div style={{
+        width: '32px',
+        height: '32px',
+        borderRadius: '50%',
+        backgroundColor: '#EDEFF2',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+        <span style={{ fontSize: '12px' }}>JD</span>
+      </div>
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        <div style={{ fontSize: '13px', fontWeight: '500' }}>John Doe</div>
+        <div style={{ fontSize: '11px', color: '#6B7280' }}>john@example.com</div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <Sidebar
+        items={basicItems}
+        activeItem={activeItem}
+        onItemClick={(item) => setActiveItem(item.id)}
+        header={header}
+        footer={footer}
+      />
+      <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
+        <h2>Main Content Area</h2>
+        <p>Selected item: {activeItem}</p>
+      </div>
+    </div>
+  );
 };
 
 export const WithHeaderAndFooter: Story = {
-  render: () => {
-    const [activeItem, setActiveItem] = useState('home');
+  render: () => <WithHeaderAndFooterComponent />,
+};
 
-    const header = (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '4px',
-          backgroundColor: '#2272B4',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: '14px',
-          fontWeight: 'bold',
-        }}>
-          DB
-        </div>
-        <div style={{ flex: 1, overflow: 'hidden' }}>
-          <div style={{ fontSize: '14px', fontWeight: '500' }}>Databricks</div>
-          <div style={{ fontSize: '11px', color: '#6B7280' }}>Workspace</div>
-        </div>
-      </div>
-    );
+const DisabledItemsComponent = () => {
+  const [activeItem, setActiveItem] = useState('home');
 
-    const footer = (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '50%',
-          backgroundColor: '#EDEFF2',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-          <span style={{ fontSize: '12px' }}>JD</span>
-        </div>
-        <div style={{ flex: 1, overflow: 'hidden' }}>
-          <div style={{ fontSize: '13px', fontWeight: '500' }}>John Doe</div>
-          <div style={{ fontSize: '11px', color: '#6B7280' }}>john@example.com</div>
-        </div>
-      </div>
-    );
+  const itemsWithDisabled: SidebarItem[] = [
+    {
+      id: 'home',
+      label: 'Home',
+      icon: <HomeIcon />,
+    },
+    {
+      id: 'catalog',
+      label: 'Catalog',
+      icon: <CatalogIcon />,
+    },
+    {
+      id: 'workflows',
+      label: 'Workflows (Coming Soon)',
+      icon: <WorkflowIcon />,
+      disabled: true,
+    },
+    {
+      id: 'jobs',
+      label: 'Jobs',
+      icon: <JobsIcon />,
+    },
+    {
+      id: 'models',
+      label: 'Models (Beta)',
+      icon: <ModelsIcon />,
+      badge: 'BETA',
+      disabled: true,
+    },
+    {
+      id: 'compute',
+      label: 'Compute',
+      icon: <ComputeIcon />,
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      icon: <SettingsIcon />,
+    },
+  ];
 
-    return (
-      <div style={{ display: 'flex', height: '100vh' }}>
-        <Sidebar
-          items={basicItems}
-          activeItem={activeItem}
-          onItemClick={(item) => setActiveItem(item.id)}
-          header={header}
-          footer={footer}
-        />
-        <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
-          <h2>Main Content Area</h2>
-          <p>Selected item: {activeItem}</p>
-        </div>
+  return (
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <Sidebar
+        items={itemsWithDisabled}
+        activeItem={activeItem}
+        onItemClick={(item) => setActiveItem(item.id)}
+      />
+      <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
+        <h2>Sidebar with Disabled Items</h2>
+        <p>Some items are disabled and cannot be selected.</p>
+        <p>Selected item: {activeItem}</p>
       </div>
-    );
-  },
+    </div>
+  );
 };
 
 export const DisabledItems: Story = {
-  render: () => {
-    const [activeItem, setActiveItem] = useState('home');
-
-    const itemsWithDisabled: SidebarItem[] = [
-      {
-        id: 'home',
-        label: 'Home',
-        icon: <HomeIcon />,
-      },
-      {
-        id: 'catalog',
-        label: 'Catalog',
-        icon: <CatalogIcon />,
-      },
-      {
-        id: 'workflows',
-        label: 'Workflows (Coming Soon)',
-        icon: <WorkflowIcon />,
-        disabled: true,
-      },
-      {
-        id: 'jobs',
-        label: 'Jobs',
-        icon: <JobsIcon />,
-      },
-      {
-        id: 'models',
-        label: 'Models (Beta)',
-        icon: <ModelsIcon />,
-        badge: 'BETA',
-        disabled: true,
-      },
-      {
-        id: 'compute',
-        label: 'Compute',
-        icon: <ComputeIcon />,
-      },
-      {
-        id: 'settings',
-        label: 'Settings',
-        icon: <SettingsIcon />,
-      },
-    ];
-
-    return (
-      <div style={{ display: 'flex', height: '100vh' }}>
-        <Sidebar
-          items={itemsWithDisabled}
-          activeItem={activeItem}
-          onItemClick={(item) => setActiveItem(item.id)}
-        />
-        <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
-          <h2>Sidebar with Disabled Items</h2>
-          <p>Some items are disabled and cannot be selected.</p>
-          <p>Selected item: {activeItem}</p>
-        </div>
-      </div>
-    );
-  },
+  render: () => <DisabledItemsComponent />,
 };
 
-export const DatabricksStyle: Story = {
-  render: () => {
-    const [activeItem, setActiveItem] = useState('workspace');
-    const [collapsed, setCollapsed] = useState(false);
+const DatabricksStyleComponent = () => {
+  const [activeItem, setActiveItem] = useState('workspace');
+  const [collapsed, setCollapsed] = useState(false);
 
-    const databricksItems: SidebarItem[] = [
+  const databricksItems: SidebarItem[] = [
       {
         id: 'new',
         label: 'New',
@@ -636,77 +647,80 @@ export const DatabricksStyle: Story = {
       },
     ];
 
-    const header = (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '4px',
-          background: 'linear-gradient(135deg, #FF6B35, #FF8E3C)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: '12px',
-          fontWeight: 'bold',
-        }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-          </svg>
-        </div>
-        <div style={{ flex: 1, overflow: 'hidden' }}>
-          <div style={{ fontSize: '14px', fontWeight: '600' }}>databricks</div>
-        </div>
+  const header = (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <div style={{
+        width: '32px',
+        height: '32px',
+        borderRadius: '4px',
+        background: 'linear-gradient(135deg, #FF6B35, #FF8E3C)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontSize: '12px',
+        fontWeight: 'bold',
+      }}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
       </div>
-    );
+      <div style={{ flex: 1, overflow: 'hidden' }}>
+        <div style={{ fontSize: '14px', fontWeight: '600' }}>databricks</div>
+      </div>
+    </div>
+  );
 
-    return (
-      <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f8fafc' }}>
-        <Sidebar
-          items={databricksItems}
-          activeItem={activeItem}
-          onItemClick={(item) => setActiveItem(item.id)}
-          collapsed={collapsed}
-          onCollapsedChange={setCollapsed}
-          collapsible
-          header={header}
-          variant="light"
-          width={280}
-        />
-        <div style={{ flex: 1, padding: '24px', backgroundColor: '#f8fafc' }}>
-          <div style={{ 
-            backgroundColor: 'white', 
-            borderRadius: '8px', 
-            padding: '24px',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+  return (
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f8fafc' }}>
+      <Sidebar
+        items={databricksItems}
+        activeItem={activeItem}
+        onItemClick={(item) => setActiveItem(item.id)}
+        collapsed={collapsed}
+        onCollapsedChange={setCollapsed}
+        collapsible
+        header={header}
+        variant="light"
+        width={280}
+      />
+      <div style={{ flex: 1, padding: '24px', backgroundColor: '#f8fafc' }}>
+        <div style={{ 
+          backgroundColor: 'white', 
+          borderRadius: '8px', 
+          padding: '24px',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+        }}>
+          <h1 style={{ 
+            fontSize: '24px', 
+            fontWeight: '600', 
+            margin: '0 0 8px 0',
+            color: '#1f2937'
           }}>
-            <h1 style={{ 
-              fontSize: '24px', 
-              fontWeight: '600', 
-              margin: '0 0 8px 0',
-              color: '#1f2937'
-            }}>
-              Databricks Workspace
-            </h1>
-            <p style={{ 
-              color: '#6b7280', 
-              margin: '0 0 24px 0'
-            }}>
-              A complete analytics platform for data teams
+            Databricks Workspace
+          </h1>
+          <p style={{ 
+            color: '#6b7280', 
+            margin: '0 0 24px 0'
+          }}>
+            A complete analytics platform for data teams
+          </p>
+          <div style={{
+            padding: '16px',
+            backgroundColor: '#f8fafc',
+            borderRadius: '6px',
+            border: '1px solid #e5e7eb'
+          }}>
+            <p style={{ margin: 0, fontSize: '14px', color: '#374151' }}>
+              <strong>Selected:</strong> {activeItem}
             </p>
-            <div style={{
-              padding: '16px',
-              backgroundColor: '#f8fafc',
-              borderRadius: '6px',
-              border: '1px solid #e5e7eb'
-            }}>
-              <p style={{ margin: 0, fontSize: '14px', color: '#374151' }}>
-                <strong>Selected:</strong> {activeItem}
-              </p>
-            </div>
           </div>
         </div>
       </div>
-    );
-  },
+    </div>
+  );
+};
+
+export const DatabricksStyle: Story = {
+  render: () => <DatabricksStyleComponent />,
 };

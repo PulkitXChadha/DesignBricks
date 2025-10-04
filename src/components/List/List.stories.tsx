@@ -54,7 +54,7 @@ const basicItems = (
       secondary="/Users/cody.davis@databricks.com"
       tertiary="Dashboard"
       clickable
-      onClick={() => console.log('Dashboard clicked')}
+      onClick={() => alert('Dashboard clicked')}
     />
     <ListItem
       startContent={<TableIcon />}
@@ -62,7 +62,7 @@ const basicItems = (
       secondary="system.billing"
       tertiary="Table"
       clickable
-      onClick={() => console.log('Table clicked')}
+      onClick={() => alert('Table clicked')}
     />
     <ListItem
       startContent={<NotebookIcon />}
@@ -70,7 +70,7 @@ const basicItems = (
       secondary="/Users/luke.barnes@databricks.com/vibe-coding"
       tertiary="Notebook"
       clickable
-      onClick={() => console.log('Notebook clicked')}
+      onClick={() => alert('Notebook clicked')}
     />
   </>
 );
@@ -192,38 +192,40 @@ export const DenseList: Story = {
   ),
 };
 
-export const WithSelection: Story = {
-  render: () => {
-    const [selectedId, setSelectedId] = useState('item2');
-    
-    const items = [
-      { id: 'item1', title: 'First Item', description: 'Description for first item' },
-      { id: 'item2', title: 'Second Item', description: 'Description for second item' },
-      { id: 'item3', title: 'Third Item', description: 'Description for third item' },
-      { id: 'item4', title: 'Fourth Item', description: 'This item is disabled', disabled: true },
-    ];
-    
-    return (
-      <div style={{ width: '400px' }}>
-        <List variant="bordered">
-          {items.map((item) => (
-            <ListItem
-              key={item.id}
-              primary={item.title}
-              secondary={item.description}
-              selected={selectedId === item.id}
-              disabled={item.disabled}
-              clickable={!item.disabled}
-              onClick={() => !item.disabled && setSelectedId(item.id)}
-            />
-          ))}
-        </List>
-        <div style={{ marginTop: '12px', fontSize: '14px', color: '#6B7280' }}>
-          Selected: {selectedId}
-        </div>
+const WithSelectionComponent = () => {
+  const [selectedId, setSelectedId] = useState('item2');
+  
+  const items = [
+    { id: 'item1', title: 'First Item', description: 'Description for first item' },
+    { id: 'item2', title: 'Second Item', description: 'Description for second item' },
+    { id: 'item3', title: 'Third Item', description: 'Description for third item' },
+    { id: 'item4', title: 'Fourth Item', description: 'This item is disabled', disabled: true },
+  ];
+  
+  return (
+    <div style={{ width: '400px' }}>
+      <List variant="bordered">
+        {items.map((item) => (
+          <ListItem
+            key={item.id}
+            primary={item.title}
+            secondary={item.description}
+            selected={selectedId === item.id}
+            disabled={item.disabled}
+            clickable={!item.disabled}
+            onClick={() => !item.disabled && setSelectedId(item.id)}
+          />
+        ))}
+      </List>
+      <div style={{ marginTop: '12px', fontSize: '14px', color: '#6B7280' }}>
+        Selected: {selectedId}
       </div>
-    );
-  },
+    </div>
+  );
+};
+
+export const WithSelection: Story = {
+  render: () => <WithSelectionComponent />,
 };
 
 export const WithEndContent: Story = {
@@ -253,7 +255,7 @@ export const WithEndContent: Story = {
             </button>
           }
           clickable
-          onClick={() => console.log('Item clicked')}
+          onClick={() => alert('Item clicked')}
         />
         <ListItem
           startContent={<TableIcon />}

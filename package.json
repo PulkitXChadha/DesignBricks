@@ -36,7 +36,12 @@
     "docs:serve": "npx http-server ./docs/api -p 8080",
     "docs:build": "npm run build && npm run docs:generate",
     "generate:component": "node scripts/generate-component.js",
-    "validate:tokens": "node scripts/validate-tokens.js"
+    "validate:tokens": "node scripts/validate-tokens.js",
+    "check-ci": "node scripts/check-ci.js",
+    "check-ci:fix": "node scripts/check-ci.js",
+    "check-ci:quick": "node scripts/check-ci.js --skip-tests --skip-security",
+    "check-ci:no-fix": "node scripts/check-ci.js --no-fix",
+    "precommit": "node scripts/check-ci.js --skip-security"
   },
   "dependencies": {
     "@types/d3": "^7.4.3",

@@ -16,9 +16,9 @@ export interface SidebarItem {
 export interface SidebarProps {
   items: SidebarItem[];
   activeItem?: string;
-  onItemClick?: (item: SidebarItem) => void;
+  onItemClick?: (_item: SidebarItem) => void;
   collapsed?: boolean;
-  onCollapsedChange?: (collapsed: boolean) => void;
+  onCollapsedChange?: (_collapsed: boolean) => void;
   header?: React.ReactNode;
   footer?: React.ReactNode;
   width?: number;

@@ -19,7 +19,7 @@ export interface ChartAggregatesProps extends HTMLAttributes<HTMLDivElement> {
   /** Auto-calculate metrics from data */
   data?: LineChartDataPoint[];
   /** Format function for values */
-  formatValue?: (value: number) => string;
+  formatValue?: (_value: number) => string;
   /** Layout variant */
   layout?: 'horizontal' | 'vertical' | 'grid';
   /** Show change percentages */

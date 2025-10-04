@@ -380,7 +380,7 @@ describe('Notification', () => {
 
     it('handles special characters in content', () => {
       render(
-        <Notification>Special chars: &lt;&gt;&amp;"'</Notification>
+        <Notification>Special chars: &lt;&gt;&amp;&quot;&apos;</Notification>
       );
       
       expect(screen.getByText(/Special chars:/)).toBeInTheDocument();

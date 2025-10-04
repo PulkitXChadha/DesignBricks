@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { ScatterChart, ScatterChartProps, ScatterChartDataPoint } from './ScatterChart';
 
@@ -411,7 +410,7 @@ describe('ScatterChart', () => {
     });
 
     it('handles large datasets efficiently', () => {
-      const largeData: ScatterChartDataPoint[] = Array.from({ length: 500 }, (_, i) => ({
+      const largeData: ScatterChartDataPoint[] = Array.from({ length: 500 }, () => ({
         x: Math.random() * 100,
         y: Math.random() * 100,
       }));

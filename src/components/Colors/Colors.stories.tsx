@@ -283,7 +283,7 @@ export const ColorUsageExamples: Story = {
             borderRadius: '4px',
             color: '#0E538B'
           }}>
-            Info: Here's some helpful information
+            Info: Here&apos;s some helpful information
           </div>
         </div>
       </div>

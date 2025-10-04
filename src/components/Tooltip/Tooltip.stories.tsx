@@ -156,25 +156,27 @@ export const TriggerMethods: Story = {
   },
 };
 
+const ManualControlComponent = () => {
+  const [open, setOpen] = useState(false);
+  
+  return (
+    <div style={{ padding: '40px' }}>
+      <Tooltip 
+        content="This tooltip is manually controlled" 
+        trigger="manual" 
+        open={open}
+        onOpenChange={setOpen}
+      >
+        <Button onClick={() => setOpen(!open)}>
+          {open ? 'Hide' : 'Show'} Tooltip
+        </Button>
+      </Tooltip>
+    </div>
+  );
+};
+
 export const ManualControl: Story = {
-  render: () => {
-    const [open, setOpen] = useState(false);
-    
-    return (
-      <div style={{ padding: '40px' }}>
-        <Tooltip 
-          content="This tooltip is manually controlled" 
-          trigger="manual" 
-          open={open}
-          onOpenChange={setOpen}
-        >
-          <Button onClick={() => setOpen(!open)}>
-            {open ? 'Hide' : 'Show'} Tooltip
-          </Button>
-        </Tooltip>
-      </div>
-    );
-  },
+  render: () => <ManualControlComponent />,
   parameters: {
     docs: {
       description: {

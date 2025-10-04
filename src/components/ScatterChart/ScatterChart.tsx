@@ -6,7 +6,7 @@ import {
   TooltipConfig, 
   ChartTooltip, 
   DefaultTooltipContent, 
-  CustomTooltipProps,
+  // CustomTooltipProps,
   TooltipPosition 
 } from '../shared/ChartTooltip';
 
@@ -57,7 +57,7 @@ export interface ScatterChartAxis {
   /** Tick count */
   tickCount?: number;
   /** Custom tick formatter */
-  tickFormatter?: (value: any) => string;
+  tickFormatter?: (_value: any) => string;
   /** Axis style variant */
   variant?: 'default' | 'minimal' | 'detailed';
   /** Axis domain override */
@@ -142,7 +142,7 @@ export interface ScatterChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
   /** @deprecated Use tooltip.content instead */
-  formatTooltip?: (dataPoint: ScatterChartDataPoint, index?: number) => string;
+  formatTooltip?: (_dataPoint: ScatterChartDataPoint, _index?: number) => string;
   
   /** Enable keyboard navigation */
   keyboard?: boolean;
@@ -176,7 +176,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
       grid,
       theme,
       animation,
-      responsive,
+      responsive: _responsive,
       tooltip,
       showTooltip = true,
       formatTooltip,
@@ -184,7 +184,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
       ariaLabel,
       themeClass,
       optimized = false,
-      hoverDebounce = 0,
+      hoverDebounce: _hoverDebounce = 0,
       className,
       ...props
     },
@@ -255,12 +255,12 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
       ...tooltip,
     };
 
-    const defaultMargin = {
+    const defaultMargin = useMemo(() => ({
       top: title ? 40 : 20,
       right: 20,
       bottom: mergedXAxis.label ? 60 : 40,
       left: mergedYAxis.label ? 80 : 60,
-    };
+    }), [title, mergedXAxis.label, mergedYAxis.label]);
 
     const innerWidth = width - defaultMargin.left - defaultMargin.right;
     const innerHeight = height - defaultMargin.top - defaultMargin.bottom;
@@ -322,7 +322,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
     const defaultFormatX = mergedXAxis.tickFormatter || d3.format('.2f');
     const defaultFormatY = mergedYAxis.tickFormatter || d3.format('.2f');
 
-    const defaultFormatTooltip = formatTooltip || ((dataPoint: ScatterChartDataPoint, index?: number) => {
+    const defaultFormatTooltip = useMemo(() => formatTooltip || ((dataPoint: ScatterChartDataPoint) => {
       const xFormatted = defaultFormatX(dataPoint.x);
       const yFormatted = defaultFormatY(dataPoint.y);
       
@@ -342,7 +342,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
       }
       tooltipHtml += `</div>`;
       return tooltipHtml;
-    });
+    }), [formatTooltip, defaultFormatX, defaultFormatY, enableBubbles]);
 
     useEffect(() => {
       if (!svgRef.current || !data.length || !xScale || !yScale) {
@@ -389,7 +389,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
 
         const xAxisCall = d3.axisBottom(xScale);
         if (mergedXAxis.tickCount) xAxisCall.ticks(mergedXAxis.tickCount);
-        xAxisCall.tickFormat((d, i) => defaultFormatX(d as number));
+        xAxisCall.tickFormat((d) => defaultFormatX(d as number));
         
         xAxisGroup.call(xAxisCall);
       }
@@ -401,7 +401,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
 
         const yAxisCall = d3.axisLeft(yScale);
         if (mergedYAxis.tickCount) yAxisCall.ticks(mergedYAxis.tickCount);
-        yAxisCall.tickFormat((d, i) => defaultFormatY(d as number));
+        yAxisCall.tickFormat((d) => defaultFormatY(d as number));
         
         yAxisGroup.call(yAxisCall);
       }
@@ -599,7 +599,9 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
     }, [data, width, height, xScale, yScale, sizeScale, trendLineData, mergedGrid.show, showTrendLine,
         enableBubbles, pointRadius, pointOpacity, showTooltip, color, mergedXAxis.label, mergedYAxis.label,
         title, defaultMargin, innerWidth, innerHeight, defaultFormatX, defaultFormatY, defaultFormatTooltip,
-        mergedAnimation.enabled, mergedAnimation.duration, trendLineColor]);
+        mergedAnimation.enabled, mergedAnimation.duration, trendLineColor, keyboard,
+        mergedGrid.opacity, mergedGrid.strokeDasharray, mergedXAxis.show, mergedXAxis.tickCount, mergedXAxis.variant,
+        mergedYAxis.show, mergedYAxis.tickCount, mergedYAxis.variant, mergedTooltip.enabled, mergedTooltip.showDelay, mergedTooltip.hideDelay]);
 
     if (!data.length) {
       return (

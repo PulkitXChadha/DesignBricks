@@ -1,8 +1,8 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import { TopBar, TopBarProps, UserProfile } from './TopBar';
+import { TopBar, UserProfile } from './TopBar';
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);
@@ -552,12 +552,12 @@ describe('TopBar', () => {
       expect(screen.getByText('JP')).toBeInTheDocument();
     });
 
-    it('handles empty search value', () => {
-      const { container } = render(<TopBar searchValue="" />);
-      
-      const input = screen.getByPlaceholderText('Search...') as HTMLInputElement;
-      expect(input.value).toBe('');
-    });
+  it('handles empty search value', () => {
+    render(<TopBar searchValue="" />);
+    
+    const input = screen.getByPlaceholderText('Search...') as HTMLInputElement;
+    expect(input.value).toBe('');
+  });
 
     it('handles rapid clicks on menu button', async () => {
       const handleMenuClick = jest.fn();

@@ -97,7 +97,7 @@ export const TextVariants: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       <Typography.Text>Regular text</Typography.Text>
       <Typography.Text bold>Bold text (600 weight)</Typography.Text>
-      <Typography.Text code>const code = "inline code";</Typography.Text>
+      <Typography.Text code>const code = &quot;inline code&quot;;</Typography.Text>
       <Typography.Text disabled>Disabled text</Typography.Text>
     </div>
   ),
@@ -163,7 +163,7 @@ export const Hints: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div>
         <Typography.Text>Email Address</Typography.Text>
-        <Typography.Hint>We'll never share your email with anyone else.</Typography.Hint>
+        <Typography.Hint>We&apos;ll never share your email with anyone else.</Typography.Hint>
       </div>
       <div>
         <Typography.Text>Password</Typography.Text>

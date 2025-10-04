@@ -55,20 +55,20 @@ const basicItems = [
     id: '1',
     label: 'Profile',
     icon: <UserIcon />,
-    onClick: (item) => console.log('Clicked:', item.label),
+    onClick: (item) => alert(`Clicked: ${item.label}`),
   },
   {
     id: '2',
     label: 'Settings',
     icon: <SettingsIcon />,
-    onClick: (item) => console.log('Clicked:', item.label),
+    onClick: (item) => alert(`Clicked: ${item.label}`),
   },
   {
     id: '3',
     label: 'Logout',
     icon: <LogoutIcon />,
     variant: 'danger' as const,
-    onClick: (item) => console.log('Clicked:', item.label),
+    onClick: (item) => alert(`Clicked: ${item.label}`),
   },
 ];
 
@@ -162,29 +162,31 @@ export const ItemVariants: Story = {
   },
 };
 
-export const ManualControl: Story = {
-  render: () => {
-    const [open, setOpen] = useState(false);
-    
-    return (
-      <div style={{ padding: '40px' }}>
-        <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-          <Button onClick={() => setOpen(!open)}>
-            {open ? 'Close' : 'Open'} Dropdown
-          </Button>
-        </div>
-        
-        <Dropdown
-          items={basicItems}
-          trigger="manual"
-          open={open}
-          onOpenChange={setOpen}
-        >
-          <Button>Manually Controlled</Button>
-        </Dropdown>
+const ManualControlComponent = () => {
+  const [open, setOpen] = useState(false);
+  
+  return (
+    <div style={{ padding: '40px' }}>
+      <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
+        <Button onClick={() => setOpen(!open)}>
+          {open ? 'Close' : 'Open'} Dropdown
+        </Button>
       </div>
-    );
-  },
+      
+      <Dropdown
+        items={basicItems}
+        trigger="manual"
+        open={open}
+        onOpenChange={setOpen}
+      >
+        <Button>Manually Controlled</Button>
+      </Dropdown>
+    </div>
+  );
+};
+
+export const ManualControl: Story = {
+  render: () => <ManualControlComponent />,
 };
 
 export const CustomContent: Story = {

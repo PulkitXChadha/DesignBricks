@@ -474,8 +474,8 @@ describe('Card', () => {
 
     it('preserves event handler context', () => {
       const context = { value: 'test' };
-      const handleClick = jest.fn(function(this: typeof context) {
-        return this.value;
+      const handleClick = jest.fn(function(_this: typeof context) {
+        return _this.value;
       });
       
       render(<Card onClick={handleClick.bind(context)}>Context Card</Card>);

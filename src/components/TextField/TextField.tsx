@@ -30,7 +30,7 @@ export interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   /** Callback when clear button is clicked */
   onClear?: () => void;
   /** Callback when Enter key is pressed */
-  onPressEnter?: (event: KeyboardEvent<HTMLInputElement>) => void;
+  onPressEnter?: (_event: KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(

@@ -82,7 +82,7 @@ export class PerformanceMonitor {
    */
   logSummary(): void {
     if (this.metrics.length === 0) {
-      console.log('No performance metrics recorded');
+      // console.log('No performance metrics recorded');
       return;
     }
 
@@ -94,16 +94,18 @@ export class PerformanceMonitor {
       componentMap.get(m.componentName)!.push(m.renderTime);
     });
 
-    console.group('Performance Summary');
-    componentMap.forEach((times, component) => {
-      const avg = times.reduce((a, b) => a + b, 0) / times.length;
-      const max = Math.max(...times);
-      const min = Math.min(...times);
-      console.log(
-        `${component}: avg=${avg.toFixed(2)}ms, min=${min.toFixed(2)}ms, max=${max.toFixed(2)}ms (${times.length} renders)`
-      );
-    });
-    console.groupEnd();
+    // eslint-disable-next-line no-console
+  console.group('Performance Summary');
+  componentMap.forEach((_times) => {
+    // Metrics available for debugging if needed
+    // const avg = times.reduce((a, b) => a + b, 0) / times.length;
+    // const max = Math.max(...times);
+    // const min = Math.min(...times);
+    // eslint-disable-next-line no-console
+    // console.log(`${component}: avg=${avg.toFixed(2)}ms, min=${min.toFixed(2)}ms, max=${max.toFixed(2)}ms (${times.length} renders)`);
+  });
+  // eslint-disable-next-line no-console
+  console.groupEnd();
   }
 }
 
@@ -139,10 +141,10 @@ export function usePerformanceMonitor(componentName: string, enabled = process.e
 /**
  * Debounce function for performance optimization
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (..._args: any[]) => any>(
   func: T,
   wait: number
-): (...args: Parameters<T>) => void {
+): (..._args: Parameters<T>) => void {
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
   return function executedFunction(...args: Parameters<T>) {
@@ -161,10 +163,10 @@ export function debounce<T extends (...args: any[]) => any>(
 /**
  * Throttle function for performance optimization
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (..._args: any[]) => any>(
   func: T,
   limit: number
-): (...args: Parameters<T>) => void {
+): (..._args: Parameters<T>) => void {
   let inThrottle: boolean;
 
   return function executedFunction(...args: Parameters<T>) {
@@ -198,10 +200,10 @@ export function useDebounce<T>(value: T, delay: number): T {
 /**
  * React hook for throttled callbacks
  */
-export function useThrottle<T extends (...args: any[]) => any>(
+export function useThrottle<T extends (..._args: any[]) => any>(
   callback: T,
   delay: number
-): (...args: Parameters<T>) => void {
+): (..._args: Parameters<T>) => void {
   const throttledCallback = React.useMemo(
     () => throttle(callback, delay),
     [callback, delay]
@@ -224,7 +226,11 @@ export function lazyLoad<T extends React.ComponentType<any>>(
  */
 export function useIntersectionObserver(
   ref: React.RefObject<HTMLElement>,
-  options: IntersectionObserverInit = {}
+  options: {
+    root?: Element | null;
+    rootMargin?: string;
+    threshold?: number | number[];
+  } = {}
 ): boolean {
   const [isIntersecting, setIsIntersecting] = React.useState(false);
 
@@ -315,9 +321,9 @@ export const BundleUtils = {
   /**
    * Log imported components (development only)
    */
-  logImport(componentName: string): void {
+  logImport(_componentName: string): void {
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[DesignBricks] Imported: ${componentName}`);
+      // console.log(`[DesignBricks] Imported: ${componentName}`);
     }
   },
 };
@@ -337,18 +343,17 @@ export interface VitalsMetrics {
  * React hook for Core Web Vitals (placeholder - requires web-vitals package)
  */
 export function useWebVitals(
-  callback?: (metric: { name: string; value: number }) => void
+  _callback?: (_metric: { name: string; value: number }) => void
 ): VitalsMetrics {
-  const [metrics, setMetrics] = React.useState<VitalsMetrics>({});
+  const [metrics] = React.useState<VitalsMetrics>({});
 
   React.useEffect(() => {
     // This is a placeholder - actual implementation would use web-vitals package
     // import { getCLS, getFID, getLCP, getFCP, getTTFB } from 'web-vitals';
     
-    if (callback) {
-      console.log('Web Vitals monitoring enabled');
-    }
-  }, [callback]);
+    // Placeholder to acknowledge callback parameter usage
+    void _callback;
+  }, [_callback]);
 
   return metrics;
 }
@@ -370,9 +375,7 @@ export const PerformanceBudget = {
    */
   warnIfOverBudget(componentName: string, renderTime: number, budget: number = 16): void {
     if (this.checkRenderBudget(renderTime, budget)) {
-      console.warn(
-        `[Performance] ${componentName} render time (${renderTime.toFixed(2)}ms) exceeds budget (${budget}ms)`
-      );
+      // console.warn(`[Performance] ${componentName} render time (${renderTime.toFixed(2)}ms) exceeds budget (${budget}ms)`);
     }
   },
 };

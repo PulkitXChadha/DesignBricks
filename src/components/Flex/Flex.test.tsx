@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import { Flex, FlexProps } from './Flex';
+import { Flex } from './Flex';
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);
@@ -484,7 +484,7 @@ describe('Flex', () => {
     });
 
     it('works with all props combined', () => {
-      const { container } = render(
+      render(
         <Flex
           direction="column"
           wrap="wrap"
@@ -621,7 +621,7 @@ describe('Flex', () => {
     });
 
     it('maintains independent styling for nested Flex', () => {
-      const { container } = render(
+      render(
         <Flex direction="column" data-testid="outer">
           <Flex direction="row" data-testid="inner">
             Content

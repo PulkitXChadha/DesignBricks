@@ -462,7 +462,7 @@ describe('UserAvatar', () => {
       const handleClick = jest.fn();
       const handleError = jest.fn();
       
-      const { container } = render(
+      render(
         <UserAvatar
           name="John Doe"
           src={mockImageSrc}

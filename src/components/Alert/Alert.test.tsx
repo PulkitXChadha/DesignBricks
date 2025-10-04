@@ -592,8 +592,8 @@ describe('Alert', () => {
 
     it('preserves event handler context', () => {
       const context = { value: 'test-context' };
-      const handleClose = jest.fn(function(this: typeof context, _event: any) {
-        return this.value;
+      const handleClose = jest.fn(function(_this: typeof context, _event: any) {
+        return _this.value;
       });
       
       render(<Alert onClose={handleClose.bind(context)}>Context test</Alert>);

@@ -124,32 +124,32 @@ export const WithShortcut: Story = {
   },
 };
 
+const LoadingStateComponent = () => {
+  const [loading, setLoading] = useState(false);
+  const [value, setValue] = useState('');
+
+  const handleSearch = (_searchValue: string) => {
+    setLoading(true);
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+  };
+
+  return (
+    <SearchInput
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+      onSearch={handleSearch}
+      loading={loading}
+      placeholder="Press Enter to search..."
+      style={{ width: '300px' }}
+    />
+  );
+};
+
 export const LoadingState: Story = {
-  render: () => {
-    const [loading, setLoading] = useState(false);
-    const [value, setValue] = useState('');
-
-    const handleSearch = (searchValue: string) => {
-      setLoading(true);
-      console.log('Searching for:', searchValue);
-
-      // Simulate API call
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
-    };
-
-    return (
-      <SearchInput
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onSearch={handleSearch}
-        loading={loading}
-        placeholder="Press Enter to search..."
-        style={{ width: '300px' }}
-      />
-    );
-  },
+  render: () => <LoadingStateComponent />,
   parameters: {
     docs: {
       description: {
@@ -185,98 +185,100 @@ export const NonClearable: Story = {
   },
 };
 
-export const Interactive: Story = {
-  render: () => {
-    const [value, setValue] = useState('');
-    const [results, setResults] = useState<string[]>([]);
-    const [loading, setLoading] = useState(false);
+const InteractiveComponent = () => {
+  const [value, setValue] = useState('');
+  const [results, setResults] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
-    const mockData = [
-      'Dashboard Analytics',
-      'User Reports',
-      'Sales Dashboard',
-      'Product Metrics',
-      'Customer Insights',
-      'Revenue Analysis',
-      'Performance Metrics',
-      'Data Pipeline Status',
-    ];
+  const mockData = [
+    'Dashboard Analytics',
+    'User Reports',
+    'Sales Dashboard',
+    'Product Metrics',
+    'Customer Insights',
+    'Revenue Analysis',
+    'Performance Metrics',
+    'Data Pipeline Status',
+  ];
 
-    const handleSearch = (searchValue: string) => {
-      setLoading(true);
+  const handleSearch = (searchValue: string) => {
+    setLoading(true);
 
-      setTimeout(() => {
-        if (searchValue) {
-          const filtered = mockData.filter(item =>
-            item.toLowerCase().includes(searchValue.toLowerCase())
-          );
-          setResults(filtered);
-        } else {
+    setTimeout(() => {
+      if (searchValue) {
+        const filtered = mockData.filter(item =>
+          item.toLowerCase().includes(searchValue.toLowerCase())
+        );
+        setResults(filtered);
+      } else {
+        setResults([]);
+      }
+      setLoading(false);
+    }, 500);
+  };
+
+  return (
+    <div style={{ width: '400px' }}>
+      <SearchInput
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onSearch={handleSearch}
+        onClear={() => {
+          setValue('');
           setResults([]);
-        }
-        setLoading(false);
-      }, 500);
-    };
+        }}
+        loading={loading}
+        placeholder="Search for dashboards..."
+        shortcut="⌘ P"
+        fullWidth
+      />
 
-    return (
-      <div style={{ width: '400px' }}>
-        <SearchInput
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onSearch={handleSearch}
-          onClear={() => {
-            setValue('');
-            setResults([]);
-          }}
-          loading={loading}
-          placeholder="Search for dashboards..."
-          shortcut="⌘ P"
-          fullWidth
-        />
+      {results.length > 0 && (
+        <div style={{
+          marginTop: '8px',
+          border: '1px solid #DDE0E5',
+          borderRadius: '4px',
+          backgroundColor: 'white',
+          padding: '8px 0',
+        }}>
+          {results.map((result, index) => (
+            <div
+              key={index}
+              style={{
+                padding: '8px 16px',
+                cursor: 'pointer',
+                fontSize: '13px',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#F6F7F9';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+            >
+              {result}
+            </div>
+          ))}
+        </div>
+      )}
 
-        {results.length > 0 && (
-          <div style={{
-            marginTop: '8px',
-            border: '1px solid #DDE0E5',
-            borderRadius: '4px',
-            backgroundColor: 'white',
-            padding: '8px 0',
-          }}>
-            {results.map((result, index) => (
-              <div
-                key={index}
-                style={{
-                  padding: '8px 16px',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#F6F7F9';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }}
-              >
-                {result}
-              </div>
-            ))}
-          </div>
-        )}
+      {value && results.length === 0 && !loading && (
+        <div style={{
+          marginTop: '8px',
+          padding: '16px',
+          textAlign: 'center',
+          color: '#6B7280',
+          fontSize: '13px',
+        }}>
+          No results found for &quot;{value}&quot;
+        </div>
+      )}
+    </div>
+  );
+};
 
-        {value && results.length === 0 && !loading && (
-          <div style={{
-            marginTop: '8px',
-            padding: '16px',
-            textAlign: 'center',
-            color: '#6B7280',
-            fontSize: '13px',
-          }}>
-            No results found for "{value}"
-          </div>
-        )}
-      </div>
-    );
-  },
+export const Interactive: Story = {
+  render: () => <InteractiveComponent />,
   parameters: {
     docs: {
       description: {
@@ -286,12 +288,11 @@ export const Interactive: Story = {
   },
 };
 
-export const RealWorldExample: Story = {
-  render: () => {
-    const [value, setValue] = useState('');
-    const [results, setResults] = useState<Array<{ title: string; type: string; path: string }>>([]);
-    const [loading, setLoading] = useState(false);
-    const [showSuggestions, setShowSuggestions] = useState(true);
+const RealWorldExampleComponent = () => {
+  const [value, setValue] = useState('');
+  const [results, setResults] = useState<Array<{ title: string; type: string; path: string }>>([]);
+  const [loading, setLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true);
 
     const mockData = [
       { title: 'Customer data analysis', type: 'Notebook', path: '/Workspace/Analytics' },
@@ -384,19 +385,23 @@ export const RealWorldExample: Story = {
               }}>
                 Recent Searches
               </h5>
-              <ul style={{ 
+              <div style={{ 
                 margin: 0, 
                 padding: 0,
-                listStyle: 'none',
               }}>
                 {recentSearches.map((item, index) => (
-                  <li 
+                  <button 
                     key={index}
+                    type="button"
                     style={{
+                      width: '100%',
                       padding: '8px 0',
                       fontSize: '13px',
                       color: '#6B7280',
                       cursor: 'pointer',
+                      border: 'none',
+                      background: 'none',
+                      textAlign: 'left',
                       borderBottom: index < recentSearches.length - 1 ? '1px solid #F3F4F6' : 'none',
                     }}
                     onClick={() => {
@@ -405,9 +410,9 @@ export const RealWorldExample: Story = {
                     }}
                   >
                     🔍 {item}
-                  </li>
+                  </button>
                 ))}
-              </ul>
+              </div>
             </div>
 
             <div style={{
@@ -425,19 +430,23 @@ export const RealWorldExample: Story = {
               }}>
                 Popular
               </h5>
-              <ul style={{ 
+              <div style={{ 
                 margin: 0, 
                 padding: 0,
-                listStyle: 'none',
               }}>
                 {popularItems.map((item, index) => (
-                  <li 
+                  <button 
                     key={index}
+                    type="button"
                     style={{
+                      width: '100%',
                       padding: '8px 0',
                       fontSize: '13px',
                       color: '#6B7280',
                       cursor: 'pointer',
+                      border: 'none',
+                      background: 'none',
+                      textAlign: 'left',
                       borderBottom: index < popularItems.length - 1 ? '1px solid #F3F4F6' : 'none',
                     }}
                     onClick={() => {
@@ -446,9 +455,9 @@ export const RealWorldExample: Story = {
                     }}
                   >
                     ⭐ {item}
-                  </li>
+                  </button>
                 ))}
-              </ul>
+              </div>
             </div>
 
             <div style={{
@@ -593,7 +602,10 @@ export const RealWorldExample: Story = {
         )}
       </div>
     );
-  },
+};
+
+export const RealWorldExample: Story = {
+  render: () => <RealWorldExampleComponent />,
   parameters: {
     docs: {
       description: {

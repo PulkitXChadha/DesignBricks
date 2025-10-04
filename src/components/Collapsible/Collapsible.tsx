@@ -12,7 +12,7 @@ export interface CollapsibleProps extends Omit<HTMLAttributes<HTMLDivElement>, '
   /** Controlled open state */
   open?: boolean;
   /** Open state change handler */
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (_open: boolean) => void;
   /** Whether disabled */
   disabled?: boolean;
   /** Custom chevron icon */

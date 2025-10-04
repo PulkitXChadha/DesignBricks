@@ -773,13 +773,12 @@ describe('Select', () => {
       expect(combobox).toBeInTheDocument();
     });
 
-    it('handles rapid state changes', async () => {
-      const user = userEvent.setup();
-      const { rerender } = render(<Select options={sampleOptions} value="1" />);
-      
-      expect(screen.getByText('Option 1')).toBeInTheDocument();
-      
-      rerender(<Select options={sampleOptions} value="2" />);
+  it('handles rapid state changes', async () => {
+    const { rerender } = render(<Select options={sampleOptions} value="1" />);
+    
+    expect(screen.getByText('Option 1')).toBeInTheDocument();
+    
+    rerender(<Select options={sampleOptions} value="2" />);
       expect(screen.getByText('Option 2')).toBeInTheDocument();
       
       rerender(<Select options={sampleOptions} value="3" />);

@@ -1,6 +1,5 @@
-import React, { forwardRef, HTMLAttributes, useContext } from 'react';
+import React, { forwardRef, HTMLAttributes } from 'react';
 import clsx from 'clsx';
-import { LineChartContext } from './LineChart';
 
 // Compound components inspired by shadcn/ui patterns
 
@@ -80,8 +79,8 @@ export interface LineChartAxisProps extends HTMLAttributes<HTMLDivElement> {
 
 export const LineChartAxis = forwardRef<HTMLDivElement, LineChartAxisProps>(
   ({ type, className, children, ...props }, ref) => {
-    // Context is optional for styling purposes
-    const chartContext = React.useContext(LineChartContext);
+    // Context is optional for styling purposes (currently unused)
+    // const _chartContext = React.useContext(LineChartContext);
     
     return (
       <div
@@ -103,13 +102,13 @@ LineChartAxis.displayName = 'LineChartAxis';
 
 export interface LineChartTooltipProps extends HTMLAttributes<HTMLDivElement> {
   /** Custom tooltip formatter */
-  formatter?: (dataPoint: any, index?: number) => React.ReactNode;
+  formatter?: (_dataPoint: any, _index?: number) => React.ReactNode;
   /** Tooltip variant */
   variant?: 'default' | 'compact' | 'detailed';
 }
 
 export const LineChartTooltip = forwardRef<HTMLDivElement, LineChartTooltipProps>(
-  ({ formatter, variant = 'default', className, ...props }, ref) => {
+  ({ formatter: _formatter, variant = 'default', className, ...props }, ref) => {
     return (
       <div
         ref={ref}
@@ -137,8 +136,8 @@ export interface LineChartGridProps extends HTMLAttributes<HTMLDivElement> {
 
 export const LineChartGrid = forwardRef<HTMLDivElement, LineChartGridProps>(
   ({ type = 'both', strokeDasharray, opacity, className, ...props }, ref) => {
-    // Context is optional for styling purposes
-    const chartContext = useContext(LineChartContext);
+    // Context is optional for styling purposes (currently unused)
+    // const _chartContext = useContext(LineChartContext);
     
     return (
       <div
@@ -167,8 +166,8 @@ export interface LineChartContentProps extends HTMLAttributes<HTMLDivElement> {
 
 export const LineChartContent = forwardRef<HTMLDivElement, LineChartContentProps>(
   ({ className, children, ...props }, ref) => {
-    // Context is optional for styling purposes
-    const chartContext = useContext(LineChartContext);
+    // Context is optional for styling purposes (currently unused)
+    // const _chartContext = useContext(LineChartContext);
     
     return (
       <div

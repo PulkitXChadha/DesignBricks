@@ -93,9 +93,14 @@ npm run validate:tokens
 
 # Generate API documentation
 npm run docs:generate
+
+# Check CI locally (validates all GitHub Actions steps)
+npm run check-ci          # Full check with auto-fix
+npm run check-ci:quick    # Fast check (no tests/security)
+npm run precommit         # Pre-commit validation
 ```
 
-[Learn more about Developer Tools →](./docs/DEVELOPER-TOOLS.md)
+[Learn more about Developer Tools →](./docs/DEVELOPER-TOOLS.md) | [CI Check Guide →](./docs/CI-CHECK.md)
 
 ### Project Structure
 

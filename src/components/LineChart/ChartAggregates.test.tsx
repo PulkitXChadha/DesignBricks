@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import { ChartAggregates, ChartAggregatesProps, AggregateMetric } from './ChartAggregates';
+import { ChartAggregates, AggregateMetric } from './ChartAggregates';
 import { LineChartDataPoint } from './LineChart';
 
 expect.extend(toHaveNoViolations);

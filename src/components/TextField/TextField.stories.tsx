@@ -283,23 +283,25 @@ export const WithPrefixAndSuffix: Story = {
   },
 };
 
+const WithClearButtonComponent = () => {
+  const [value, setValue] = React.useState('You can clear this text');
+  
+  return (
+    <div style={{ width: '300px' }}>
+      <TextField
+        label="Clearable Input"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onClear={() => setValue('')}
+        showClear
+        placeholder="Type something..."
+      />
+    </div>
+  );
+};
+
 export const WithClearButton: Story = {
-  render: () => {
-    const [value, setValue] = React.useState('You can clear this text');
-    
-    return (
-      <div style={{ width: '300px' }}>
-        <TextField
-          label="Clearable Input"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onClear={() => setValue('')}
-          showClear
-          placeholder="Type something..."
-        />
-      </div>
-    );
-  },
+  render: () => <WithClearButtonComponent />,
   parameters: {
     docs: {
       description: {
@@ -358,34 +360,36 @@ export const InputTypes: Story = {
   },
 };
 
+const OnPressEnterComponent = () => {
+  const [log, setLog] = React.useState<string[]>([]);
+  
+  return (
+    <div style={{ width: '300px' }}>
+      <TextField
+        label="Press Enter to Submit"
+        placeholder="Type and press Enter..."
+        onPressEnter={(e) => {
+          const value = e.currentTarget.value;
+          setLog([...log, value]);
+          e.currentTarget.value = '';
+        }}
+      />
+      {log.length > 0 && (
+        <div style={{ marginTop: '16px', fontSize: '13px' }}>
+          <strong>Submitted values:</strong>
+          <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
+            {log.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export const OnPressEnter: Story = {
-  render: () => {
-    const [log, setLog] = React.useState<string[]>([]);
-    
-    return (
-      <div style={{ width: '300px' }}>
-        <TextField
-          label="Press Enter to Submit"
-          placeholder="Type and press Enter..."
-          onPressEnter={(e) => {
-            const value = e.currentTarget.value;
-            setLog([...log, value]);
-            e.currentTarget.value = '';
-          }}
-        />
-        {log.length > 0 && (
-          <div style={{ marginTop: '16px', fontSize: '13px' }}>
-            <strong>Submitted values:</strong>
-            <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
-              {log.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    );
-  },
+  render: () => <OnPressEnterComponent />,
   parameters: {
     docs: {
       description: {
@@ -395,21 +399,20 @@ export const OnPressEnter: Story = {
   },
 };
 
-export const FormExample: Story = {
-  render: () => {
-    const [values, setValues] = React.useState({
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-    });
+const FormExampleComponent = () => {
+  const [values, setValues] = React.useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+  });
 
-    const [validationStates, setValidationStates] = React.useState<Record<string, {
-      state?: 'error' | 'warning' | 'success';
-      message?: string;
-    }>>({});
+  const [validationStates, setValidationStates] = React.useState<Record<string, {
+    state?: 'error' | 'warning' | 'success';
+    message?: string;
+  }>>({});
 
-    const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setValues({ ...values, [field]: e.target.value });
       setValidationStates({ ...validationStates, [field]: {} });
     };
@@ -494,8 +497,11 @@ export const FormExample: Story = {
           Submit
         </button>
       </form>
-    );
-  },
+  );
+};
+
+export const FormExample: Story = {
+  render: () => <FormExampleComponent />,
   parameters: {
     docs: {
       description: {
