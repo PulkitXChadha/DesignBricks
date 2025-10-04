@@ -4,35 +4,35 @@
     "path": "dist/index.js",
     "limit": "150 KB",
     "gzip": true,
-    "ignore": ["**/*.css"]
+    "ignore": ["*.css"]
   },
   {
     "name": "Button Component",
     "path": "dist/components/Button/index.js",
     "limit": "5 KB",
     "gzip": true,
-    "ignore": ["**/*.css"]
+    "ignore": ["*.css"]
   },
   {
     "name": "TextField Component",
     "path": "dist/components/TextField/index.js",
     "limit": "8 KB",
     "gzip": true,
-    "ignore": ["**/*.css"]
+    "ignore": ["*.css"]
   },
   {
     "name": "Table Component",
     "path": "dist/components/Table/index.js",
     "limit": "15 KB",
     "gzip": true,
-    "ignore": ["**/*.css"]
+    "ignore": ["*.css"]
   },
   {
     "name": "LineChart Component (with D3)",
     "path": "dist/components/LineChart/index.js",
     "limit": "50 KB",
     "gzip": true,
-    "ignore": ["**/*.css"]
+    "ignore": ["*.css"]
   },
   {
     "name": "Design Tokens",
