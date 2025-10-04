@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Flex } from './Flex';
+import { Colors } from '../Colors';
+import { colors } from '../../tokens/colors';
 
 const meta: Meta<typeof Flex> = {
   title: 'Layout/Flex',
@@ -45,14 +47,15 @@ const meta: Meta<typeof Flex> = {
 export default meta;
 type Story = StoryObj<typeof Flex>;
 
-// Simple demo box component for stories
-const DemoBox = ({ children, ...props }: { children?: React.ReactNode; color?: string }) => (
+// Simple demo box component for stories using design system colors
+const DemoBox = ({ children, ...props }: { children?: React.ReactNode; color?: string; height?: string }) => (
   <div
     style={{
       padding: '16px',
-      backgroundColor: props.color || '#e3f2fd',
+      backgroundColor: props.color || colors.info[100],
       borderRadius: '4px',
       minHeight: '60px',
+      height: props.height,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -84,9 +87,9 @@ export const ColumnLayout: Story = {
     style: { width: '200px' },
     children: (
       <>
-        <DemoBox color="#e8f5e8">Item 1</DemoBox>
-        <DemoBox color="#e3f2fd">Item 2</DemoBox>
-        <DemoBox color="#fce4ec">Item 3</DemoBox>
+        <DemoBox color={colors.success[100]}>Item 1</DemoBox>
+        <DemoBox color={colors.info[100]}>Item 2</DemoBox>
+        <DemoBox color={colors.pink[100]}>Item 3</DemoBox>
       </>
     ),
   },
@@ -96,7 +99,7 @@ export const CenteredContent: Story = {
   args: {
     justifyContent: 'center',
     alignItems: 'center',
-    style: { height: '200px', width: '300px', border: '2px dashed #ccc' },
+    style: { height: '200px', width: '300px', border: `2px dashed ${colors.neutral[300]}` },
     children: <DemoBox>Centered Item</DemoBox>,
   },
 };
@@ -105,12 +108,12 @@ export const SpaceBetween: Story = {
   args: {
     justifyContent: 'space-between',
     alignItems: 'center',
-    style: { width: '300px', padding: '16px', border: '2px dashed #ccc' },
+    style: { width: '300px', padding: '16px', border: `2px dashed ${colors.neutral[300]}` },
     children: (
       <>
-        <DemoBox color="#e8f5e8">Start</DemoBox>
-        <DemoBox color="#e3f2fd">Middle</DemoBox>
-        <DemoBox color="#fce4ec">End</DemoBox>
+        <DemoBox color={colors.success[100]}>Start</DemoBox>
+        <DemoBox color={colors.info[100]}>Middle</DemoBox>
+        <DemoBox color={colors.pink[100]}>End</DemoBox>
       </>
     ),
   },
@@ -141,7 +144,7 @@ export const FlexGrowExample: Story = {
       <>
         <DemoBox>Fixed</DemoBox>
         <Flex grow={1}>
-          <DemoBox color="#e8f5e8">Grows to fill space</DemoBox>
+          <DemoBox color={colors.success[100]}>Grows to fill space</DemoBox>
         </Flex>
         <DemoBox>Fixed</DemoBox>
       </>
@@ -157,17 +160,17 @@ export const ResponsiveLayout: Story = {
     children: (
       <>
         <Flex justifyContent="space-between" alignItems="center" gap="3">
-          <DemoBox color="#e8f5e8">Header Left</DemoBox>
-          <DemoBox color="#fce4ec">Header Right</DemoBox>
+          <DemoBox color={colors.success[100]}>Header Left</DemoBox>
+          <DemoBox color={colors.pink[100]}>Header Right</DemoBox>
         </Flex>
         <Flex gap="4">
           <Flex direction="column" gap="2" style={{ flex: 1 }}>
-            <DemoBox color="#e3f2fd">Content 1</DemoBox>
-            <DemoBox color="#e3f2fd">Content 2</DemoBox>
+            <DemoBox color={colors.info[100]}>Content 1</DemoBox>
+            <DemoBox color={colors.info[100]}>Content 2</DemoBox>
           </Flex>
           <Flex direction="column" gap="2" style={{ width: '200px' }}>
-            <DemoBox color="#fff3e0">Sidebar 1</DemoBox>
-            <DemoBox color="#fff3e0">Sidebar 2</DemoBox>
+            <DemoBox color={colors.lemon[100]}>Sidebar 1</DemoBox>
+            <DemoBox color={colors.lemon[100]}>Sidebar 2</DemoBox>
           </Flex>
         </Flex>
       </>
@@ -182,9 +185,9 @@ export const VerticalStack: Story = {
     gap: '3',
     children: (
       <>
-        <DemoBox color="#4ade80" height="80px">Item 1 (Green)</DemoBox>
-        <DemoBox color="#3b82f6" height="80px">Item 2 (Blue)</DemoBox>
-        <DemoBox color="#f59e0b" height="80px">Item 3 (Orange)</DemoBox>
+        <DemoBox color={colors.success[400]} height="80px">Item 1 (Green)</DemoBox>
+        <DemoBox color={colors.primary[400]} height="80px">Item 2 (Blue)</DemoBox>
+        <DemoBox color={colors.warning[400]} height="80px">Item 3 (Orange)</DemoBox>
       </>
     ),
   },
@@ -204,9 +207,9 @@ export const ResponsiveDirection: Story = {
     style: { width: '100%', maxWidth: '800px' },
     children: (
       <>
-        <DemoBox color="#e8f5e8">Item 1</DemoBox>
-        <DemoBox color="#e3f2fd">Item 2</DemoBox>
-        <DemoBox color="#fce4ec">Item 3</DemoBox>
+        <DemoBox color={colors.success[100]}>Item 1</DemoBox>
+        <DemoBox color={colors.info[100]}>Item 2</DemoBox>
+        <DemoBox color={colors.pink[100]}>Item 3</DemoBox>
       </>
     ),
   },
@@ -226,26 +229,26 @@ export const NestedFlexLayouts: Story = {
     style: { width: '100%', maxWidth: '800px' },
     children: (
       <>
-        <Flex justifyContent="space-between" alignItems="center" style={{ padding: '16px', backgroundColor: '#f3f4f6', borderRadius: '8px' }}>
-          <DemoBox color="#10b981" style={{ width: '120px', height: '40px' }}>Logo</DemoBox>
+        <Flex justifyContent="space-between" alignItems="center" style={{ padding: '16px', backgroundColor: colors.neutral[100], borderRadius: '8px' }}>
+          <DemoBox color={colors.success[500]} style={{ width: '120px', height: '40px' }}>Logo</DemoBox>
           <Flex gap="3">
-            <DemoBox color="#6366f1" style={{ width: '80px', height: '40px' }}>Nav 1</DemoBox>
-            <DemoBox color="#8b5cf6" style={{ width: '80px', height: '40px' }}>Nav 2</DemoBox>
-            <DemoBox color="#f59e0b" style={{ width: '80px', height: '40px' }}>Nav 3</DemoBox>
+            <DemoBox color={colors.indigo[400]} style={{ width: '80px', height: '40px' }}>Nav 1</DemoBox>
+            <DemoBox color={colors.purple[400]} style={{ width: '80px', height: '40px' }}>Nav 2</DemoBox>
+            <DemoBox color={colors.warning[400]} style={{ width: '80px', height: '40px' }}>Nav 3</DemoBox>
           </Flex>
         </Flex>
         <Flex gap="4">
           <Flex direction="column" gap="3" grow={1}>
-            <DemoBox color="#ef4444" height="120px">Main Content</DemoBox>
+            <DemoBox color={colors.error[400]} height="120px">Main Content</DemoBox>
             <Flex gap="2">
-              <DemoBox color="#f97316" height="80px" style={{ flex: 1 }}>Sub Item 1</DemoBox>
-              <DemoBox color="#eab308" height="80px" style={{ flex: 1 }}>Sub Item 2</DemoBox>
+              <DemoBox color={colors.coral[400]} height="80px" style={{ flex: 1 }}>Sub Item 1</DemoBox>
+              <DemoBox color={colors.lemon[400]} height="80px" style={{ flex: 1 }}>Sub Item 2</DemoBox>
             </Flex>
           </Flex>
           <Flex direction="column" gap="2" style={{ width: '200px' }}>
-            <DemoBox color="#06b6d4" height="60px">Sidebar 1</DemoBox>
-            <DemoBox color="#0891b2" height="60px">Sidebar 2</DemoBox>
-            <DemoBox color="#0e7490" height="60px">Sidebar 3</DemoBox>
+            <DemoBox color={colors.turquoise[400]} height="60px">Sidebar 1</DemoBox>
+            <DemoBox color={colors.turquoise[500]} height="60px">Sidebar 2</DemoBox>
+            <DemoBox color={colors.turquoise[600]} height="60px">Sidebar 3</DemoBox>
           </Flex>
         </Flex>
       </>
@@ -267,10 +270,10 @@ export const ResponsiveGaps: Story = {
     style: { width: '100%', maxWidth: '600px' },
     children: (
       <>
-        <DemoBox color="#f87171">Gap scales with screen size</DemoBox>
-        <DemoBox color="#fbbf24">Small gap on mobile</DemoBox>
-        <DemoBox color="#34d399">Medium gap on tablet</DemoBox>
-        <DemoBox color="#60a5fa">Large gap on desktop</DemoBox>
+        <DemoBox color={colors.error[400]}>Gap scales with screen size</DemoBox>
+        <DemoBox color={colors.lemon[400]}>Small gap on mobile</DemoBox>
+        <DemoBox color={colors.success[400]}>Medium gap on tablet</DemoBox>
+        <DemoBox color={colors.primary[400]}>Large gap on desktop</DemoBox>
       </>
     ),
   },
@@ -278,6 +281,149 @@ export const ResponsiveGaps: Story = {
     docs: {
       description: {
         story: 'Responsive gaps that adapt to different screen sizes - resize the browser to see the effect.',
+      },
+    },
+  },
+};
+
+export const WithColorPalette: Story = {
+  args: {
+    direction: 'column',
+    gap: '6',
+    style: { width: '100%', maxWidth: '800px' },
+    children: (
+      <>
+        <Colors category="primary" showHex={true} />
+        <Colors category="success" showHex={true} />
+        <Colors category="warning" showHex={true} />
+      </>
+    ),
+  },
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        story: 'Demonstrates using the Colors component within Flex layouts to display multiple color palettes vertically.',
+      },
+    },
+  },
+};
+
+export const ColorPaletteGrid: Story = {
+  render: () => (
+    <Flex direction="column" gap="4" style={{ width: '100%', maxWidth: '1200px' }}>
+      <Flex gap="4" wrap="wrap">
+        <Flex direction="column" style={{ flex: '1 1 300px' }}>
+          <Colors category="primary" showHex={false} />
+        </Flex>
+        <Flex direction="column" style={{ flex: '1 1 300px' }}>
+          <Colors category="secondary" showHex={false} />
+        </Flex>
+      </Flex>
+      <Flex gap="4" wrap="wrap">
+        <Flex direction="column" style={{ flex: '1 1 300px' }}>
+          <Colors category="success" showHex={false} />
+        </Flex>
+        <Flex direction="column" style={{ flex: '1 1 300px' }}>
+          <Colors category="error" showHex={false} />
+        </Flex>
+      </Flex>
+    </Flex>
+  ),
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        story: 'A responsive grid layout using Flex to display color palettes in a 2-column layout that wraps on smaller screens.',
+      },
+    },
+  },
+};
+
+export const DesignSystemShowcase: Story = {
+  render: () => (
+    <Flex direction="column" gap="8" style={{ width: '100%' }}>
+      <Flex 
+        direction="column" 
+        gap="4" 
+        style={{ 
+          padding: '24px', 
+          backgroundColor: colors.neutral[50], 
+          borderRadius: '8px' 
+        }}
+      >
+        <h2 style={{ margin: 0, color: colors.neutral[700] }}>Primary Colors</h2>
+        <Colors category="primary" showHex={true} />
+      </Flex>
+      
+      <Flex gap="4" wrap="wrap">
+        <Flex 
+          direction="column" 
+          gap="3" 
+          style={{ 
+            flex: '1 1 350px',
+            padding: '20px', 
+            backgroundColor: colors.success[100], 
+            borderRadius: '8px' 
+          }}
+        >
+          <h3 style={{ margin: 0, color: colors.success[700] }}>Success</h3>
+          <Colors category="success" showHex={true} />
+        </Flex>
+        
+        <Flex 
+          direction="column" 
+          gap="3" 
+          style={{ 
+            flex: '1 1 350px',
+            padding: '20px', 
+            backgroundColor: colors.warning[100], 
+            borderRadius: '8px' 
+          }}
+        >
+          <h3 style={{ margin: 0, color: colors.warning[700] }}>Warning</h3>
+          <Colors category="warning" showHex={true} />
+        </Flex>
+        
+        <Flex 
+          direction="column" 
+          gap="3" 
+          style={{ 
+            flex: '1 1 350px',
+            padding: '20px', 
+            backgroundColor: colors.error[100], 
+            borderRadius: '8px' 
+          }}
+        >
+          <h3 style={{ margin: 0, color: colors.error[700] }}>Error</h3>
+          <Colors category="error" showHex={true} />
+        </Flex>
+      </Flex>
+      
+      <Flex 
+        direction="column" 
+        gap="4" 
+        style={{ 
+          padding: '24px', 
+          backgroundColor: colors.neutral[700], 
+          borderRadius: '8px' 
+        }}
+      >
+        <h2 style={{ margin: 0, color: colors.neutral[0] }}>Secondary Accent Colors</h2>
+        <Flex gap="4" wrap="wrap">
+          <Colors category="purple" showHex={false} />
+          <Colors category="pink" showHex={false} />
+          <Colors category="teal" showHex={false} />
+          <Colors category="turquoise" showHex={false} />
+        </Flex>
+      </Flex>
+    </Flex>
+  ),
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        story: 'A comprehensive showcase of the design system using Flex for complex layouts with multiple color palettes organized in different sections.',
       },
     },
   },

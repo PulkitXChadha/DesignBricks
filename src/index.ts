@@ -1,7 +1,7 @@
 // Foundation
 export * from './components/Button';
 export { Typography, type TypographyProps } from './components/Typography';
-export { ColorPalette, type ColorPaletteProps } from './components/Colors';
+export { Colors, type ColorsProps } from './components/Colors';
 export * from './components/UserAvatar';
 
 // Layout
