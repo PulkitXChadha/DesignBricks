@@ -4,41 +4,47 @@
     "path": "dist/index.js",
     "limit": "150 KB",
     "gzip": true,
-    "ignore": ["*.css"]
+    "ignore": ["*.css"],
+    "config": ".size-limit.js"
   },
   {
     "name": "Button Component",
     "path": "dist/components/Button/index.js",
     "limit": "5 KB",
     "gzip": true,
-    "ignore": ["*.css"]
+    "ignore": ["*.css"],
+    "config": ".size-limit.js"
   },
   {
     "name": "TextField Component",
     "path": "dist/components/TextField/index.js",
     "limit": "8 KB",
     "gzip": true,
-    "ignore": ["*.css"]
+    "ignore": ["*.css"],
+    "config": ".size-limit.js"
   },
   {
     "name": "Table Component",
     "path": "dist/components/Table/index.js",
     "limit": "15 KB",
     "gzip": true,
-    "ignore": ["*.css"]
+    "ignore": ["*.css"],
+    "config": ".size-limit.js"
   },
   {
     "name": "LineChart Component (with D3)",
     "path": "dist/components/LineChart/index.js",
     "limit": "50 KB",
     "gzip": true,
-    "ignore": ["*.css"]
+    "ignore": ["*.css"],
+    "config": ".size-limit.js"
   },
   {
     "name": "Design Tokens",
     "path": "dist/tokens/index.js",
     "limit": "3 KB",
-    "gzip": true
+    "gzip": true,
+    "config": ".size-limit.js"
   }
 ]
 
