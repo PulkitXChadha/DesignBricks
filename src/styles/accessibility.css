@@ -1,0 +1,338 @@
+/**
+ * Accessibility Styles
+ * Supports WCAG 2.1 AA compliance, high contrast mode, and reduced motion
+ */
+
+/* Screen reader only class */
+.sr-only,
+.db-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Skip to content link for keyboard navigation */
+.db-skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--db-primary-color, #2e7d32);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 10000;
+}
+
+.db-skip-link:focus {
+  top: 0;
+}
+
+/* Focus visible styles for better keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--db-focus-color, #1976d2);
+  outline-offset: 2px;
+}
+
+/* Remove default focus outline when using mouse */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --db-focus-width: 3px;
+    --db-border-width: 2px;
+  }
+
+  /* Increase border thickness */
+  .db-button,
+  .db-textfield,
+  .db-select,
+  .db-card,
+  .db-modal,
+  .db-alert {
+    border-width: var(--db-border-width, 2px) !important;
+  }
+
+  /* Enhance focus indicators */
+  :focus-visible {
+    outline-width: var(--db-focus-width, 3px);
+    outline-offset: 3px;
+  }
+
+  /* Remove subtle shadows and backgrounds */
+  .db-card,
+  .db-modal,
+  .db-dropdown,
+  .db-popover {
+    box-shadow: none !important;
+  }
+
+  /* Increase text contrast */
+  * {
+    text-shadow: none !important;
+  }
+
+  /* Ensure sufficient contrast for disabled states */
+  *:disabled,
+  *.db-disabled {
+    opacity: 0.6 !important;
+  }
+}
+
+/* Windows High Contrast Mode (Legacy IE/Edge) */
+@media (-ms-high-contrast: active) {
+  /* Ensure focus is visible */
+  :focus {
+    outline: 2px solid windowText;
+    outline-offset: 2px;
+  }
+
+  /* Icon visibility */
+  .db-icon {
+    forced-color-adjust: auto;
+  }
+
+  /* Border visibility */
+  .db-button,
+  .db-textfield,
+  .db-select {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Keep essential loading indicators */
+  .db-spinner,
+  .db-progress {
+    animation-duration: 1s !important;
+  }
+}
+
+/* Improved focus management */
+.db-focus-trap-active {
+  /* Trap is active, no additional styles needed by default */
+}
+
+/* Keyboard navigation helpers */
+[data-keyboard-nav="true"] {
+  /* Enhanced focus indicators when keyboard navigation is detected */
+}
+
+[data-keyboard-nav="true"] :focus-visible {
+  outline-width: 3px;
+  outline-offset: 3px;
+}
+
+/* Announcement region for screen readers */
+[role="status"],
+[role="alert"],
+[aria-live] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Roving tabindex support */
+[role="tablist"] [role="tab"],
+[role="menu"] [role="menuitem"],
+[role="listbox"] [role="option"],
+[role="radiogroup"] [role="radio"] {
+  /* Will be controlled programmatically */
+}
+
+[role="tablist"] [role="tab"][tabindex="0"],
+[role="menu"] [role="menuitem"][tabindex="0"],
+[role="listbox"] [role="option"][tabindex="0"],
+[role="radiogroup"] [role="radio"][tabindex="0"] {
+  /* Active item in roving tabindex */
+}
+
+/* Color contrast utilities */
+.db-high-contrast {
+  /* Force high contrast on specific components */
+  filter: contrast(1.2);
+}
+
+/* Text size adjustment support */
+@media (min-width: 320px) {
+  :root {
+    font-size: 16px; /* Base font size */
+  }
+}
+
+/* Support for text spacing adjustments (WCAG 1.4.12) */
+* {
+  line-height: inherit !important;
+  letter-spacing: inherit !important;
+  word-spacing: inherit !important;
+}
+
+/* Minimum target size for touch/click (WCAG 2.5.5) */
+.db-button,
+.db-checkbox,
+.db-radio,
+.db-toggle,
+[role="button"],
+[role="checkbox"],
+[role="radio"],
+[role="switch"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.db-button--small,
+.db-icon-button {
+  min-height: 32px;
+  min-width: 32px;
+}
+
+/* Focus trapping container */
+[data-focus-trap="true"] {
+  isolation: isolate;
+}
+
+/* Accessible tooltips */
+[role="tooltip"] {
+  /* Ensure tooltips are accessible */
+  z-index: 9999;
+}
+
+/* Error and validation states */
+[aria-invalid="true"] {
+  border-color: var(--db-error-color, #d32f2f) !important;
+}
+
+[aria-invalid="true"]:focus {
+  outline-color: var(--db-error-color, #d32f2f);
+}
+
+/* Required field indicator */
+[aria-required="true"]::after {
+  content: " *";
+  color: var(--db-error-color, #d32f2f);
+}
+
+/* Disabled state */
+[aria-disabled="true"],
+[disabled] {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Loading state */
+[aria-busy="true"] {
+  cursor: wait;
+  pointer-events: none;
+}
+
+/* Hidden elements */
+[aria-hidden="true"] {
+  display: none !important;
+}
+
+/* Expanded/collapsed states */
+[aria-expanded="false"] + * {
+  display: none;
+}
+
+/* Selected states */
+[aria-selected="true"] {
+  background-color: var(--db-selected-bg, rgba(25, 118, 210, 0.12));
+}
+
+/* Pressed states */
+[aria-pressed="true"] {
+  background-color: var(--db-pressed-bg, rgba(0, 0, 0, 0.12));
+}
+
+/* Live region politeness */
+[aria-live="polite"] {
+  /* Screen reader will wait for current announcement */
+}
+
+[aria-live="assertive"] {
+  /* Screen reader will interrupt current announcement */
+}
+
+/* Modal and dialog accessibility */
+[role="dialog"],
+[role="alertdialog"] {
+  /* Ensure modals are centered and accessible */
+  position: fixed;
+  z-index: 1000;
+}
+
+/* Prevent background scroll when modal is open */
+body.db-modal-open,
+body.db-dialog-open {
+  overflow: hidden;
+}
+
+/* Print accessibility */
+@media print {
+  .sr-only,
+  .db-sr-only {
+    position: static;
+    width: auto;
+    height: auto;
+    clip: auto;
+    white-space: normal;
+  }
+
+  /* Show skip links in print */
+  .db-skip-link {
+    position: static;
+  }
+
+  /* Hide decorative elements */
+  [aria-hidden="true"] {
+    display: none !important;
+  }
+}
+
+/* Dark mode accessibility adjustments */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --db-focus-color: #90caf9;
+  }
+}
+
+/* Hover states only for devices that support hover */
+@media (hover: hover) and (pointer: fine) {
+  .db-button:hover,
+  .db-link:hover {
+    /* Apply hover styles only on devices with precise pointing */
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch targets on touch devices */
+  .db-button,
+  [role="button"] {
+    min-height: 48px;
+    min-width: 48px;
+  }
+}
+

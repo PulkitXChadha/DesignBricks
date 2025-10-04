@@ -12,21 +12,33 @@ The [src/index.ts](mdc:src/index.ts) organizes exports by functional categories:
 ```typescript
 // Foundation
 export * from './components/Button';
+export { Typography, type TypographyProps } from './components/Typography';
+
+// Layout
+export * from './components/Flex';
+export * from './components/Grid';
 
 // Inputs  
 export * from './components/TextField';
+export * from './components/Checkbox';
+export * from './components/Toggle';
 
 // Navigation
 export * from './components/Tabs';
+export * from './components/Sidebar';
 
 // Feedback
 export * from './components/Alert';
+export * from './components/Badge';
 
 // Data Display
 export * from './components/Card';
+export * from './components/Table';
+export * from './components/LineChart';
 
 // Overlays
 export * from './components/Modal';
+export * from './components/Tooltip';
 
 // Design Tokens
 export * from './tokens';
@@ -47,12 +59,13 @@ export type { ComponentNameProps } from './ComponentName';
 
 ### 4. Category Guidelines
 When adding new components, classify them appropriately:
-- **Foundation**: Core building blocks (Button, Typography)
-- **Inputs**: Form and input controls  
-- **Navigation**: Routing and navigation components
-- **Feedback**: Status and feedback indicators
-- **Data Display**: Tables, lists, cards for showing data
-- **Overlays**: Modals, tooltips, popovers
+- **Foundation**: Core building blocks (Button, Typography, UserAvatar)
+- **Layout**: Layout and container components (Flex, Grid)
+- **Inputs**: Form and input controls (TextField, Checkbox, Toggle, Select)
+- **Navigation**: Routing and navigation components (Tabs, Sidebar, TopBar, Breadcrumbs)
+- **Feedback**: Status and feedback indicators (Alert, Badge, Progress, Notification)
+- **Data Display**: Tables, lists, cards, charts for showing data (Card, Table, LineChart, AreaChart, BarChart)
+- **Overlays**: Modals, tooltips, popovers (Modal, Tooltip, Dropdown, Popover)
 
 ### 5. Import Organization
 - Organize imports by external → internal → relative

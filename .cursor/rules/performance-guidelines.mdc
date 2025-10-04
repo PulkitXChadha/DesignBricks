@@ -1,0 +1,214 @@
+---
+globs: *.tsx,*.ts
+description: Performance optimization guidelines for components handling large datasets
+---
+
+# Performance Guidelines
+
+## Core Performance Principles
+Optimize for smooth user experiences, especially with large datasets and complex interactions.
+
+### 1. React Performance Patterns
+```typescript
+// Use React.memo for expensive components
+export const ExpensiveComponent = React.memo<ComponentProps>(
+  ({ data, onSelect }) => {
+    // Memoize expensive calculations
+    const processedData = useMemo(() => {
+      return data.map(item => expensiveTransformation(item));
+    }, [data]);
+
+    // Memoize callbacks to prevent unnecessary re-renders
+    const handleSelect = useCallback((id: string) => {
+      onSelect(id);
+    }, [onSelect]);
+
+    return (
+      <div>
+        {processedData.map(item => (
+          <Item key={item.id} data={item} onSelect={handleSelect} />
+        ))}
+      </div>
+    );
+  }
+);
+```
+
+### 2. Large Dataset Handling
+```typescript
+// Virtualization for large lists
+import { FixedSizeList as List } from 'react-window';
+
+export const VirtualizedTable = ({ data }: { data: any[] }) => {
+  const Row = useCallback(({ index, style }: any) => (
+    <div style={style}>
+      <TableRow data={data[index]} />
+    </div>
+  ), [data]);
+
+  return (
+    <List
+      height={400}
+      itemCount={data.length}
+      itemSize={50}
+      overscanCount={5}
+    >
+      {Row}
+    </List>
+  );
+};
+```
+
+### 3. Debouncing and Throttling
+```typescript
+// Debounce expensive operations
+import { useMemo } from 'react';
+import { debounce } from 'lodash-es';
+
+export const SearchableComponent = ({ onSearch }: Props) => {
+  const debouncedSearch = useMemo(
+    () => debounce(onSearch, 300),
+    [onSearch]
+  );
+
+  return (
+    <input
+      onChange={(e) => debouncedSearch(e.target.value)}
+      placeholder="Search..."
+    />
+  );
+};
+```
+
+### 4. Bundle Optimization
+```typescript
+// Dynamic imports for heavy dependencies
+const HeavyChartComponent = lazy(() => import('./HeavyChartComponent'));
+
+// Conditional loading
+const ChartComponent = ({ showChart }: Props) => {
+  if (!showChart) return null;
+  
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <HeavyChartComponent />
+    </Suspense>
+  );
+};
+```
+
+### 5. Memory Management
+```typescript
+// Cleanup effects and subscriptions
+useEffect(() => {
+  const subscription = dataStream.subscribe(handleData);
+  
+  return () => {
+    subscription.unsubscribe();
+  };
+}, []);
+
+// Cleanup intervals and timeouts
+useEffect(() => {
+  const timer = setInterval(updateData, 1000);
+  
+  return () => {
+    clearInterval(timer);
+  };
+}, []);
+```
+
+### 6. CSS Performance
+```css
+/* Use transform for animations (GPU acceleration) */
+.db-component--animated {
+  transform: translateX(0);
+  transition: transform 0.2s ease;
+  will-change: transform;
+}
+
+.db-component--moved {
+  transform: translateX(100px);
+}
+
+/* Avoid expensive properties */
+.db-component {
+  /* Good: transform, opacity */
+  transform: scale(1.1);
+  opacity: 0.8;
+  
+  /* Avoid: width, height, top, left for animations */
+}
+
+/* Use containment for independent subtrees */
+.db-chart-container {
+  contain: layout style paint;
+}
+```
+
+### 7. Image and Asset Optimization
+```typescript
+// Lazy loading images
+const OptimizedImage = ({ src, alt }: ImageProps) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      onLoad={() => setIsLoaded(true)}
+      style={{ opacity: isLoaded ? 1 : 0 }}
+    />
+  );
+};
+```
+
+### 8. Data Fetching Patterns
+```typescript
+// Pagination for large datasets
+export const usePaginatedData = (pageSize = 50) => {
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadMore = useCallback(async () => {
+    const newData = await fetchData(page, pageSize);
+    setData(prev => [...prev, ...newData]);
+    setHasMore(newData.length === pageSize);
+    setPage(prev => prev + 1);
+  }, [page, pageSize]);
+
+  return { data, loadMore, hasMore };
+};
+```
+
+### 9. Performance Monitoring
+```typescript
+// Performance measurement hooks
+export const usePerformanceMonitor = (componentName: string) => {
+  useEffect(() => {
+    const start = performance.now();
+    
+    return () => {
+      const end = performance.now();
+      console.log(`${componentName} render time: ${end - start}ms`);
+    };
+  });
+};
+
+// Component profiling
+if (process.env.NODE_ENV === 'development') {
+  // Use React DevTools Profiler
+}
+```
+
+### 10. Best Practices Checklist
+- **Minimize re-renders**: Use React.memo, useMemo, useCallback appropriately
+- **Virtualize large lists**: Implement windowing for >100 items
+- **Debounce user input**: Especially for search and filtering
+- **Lazy load heavy components**: Use dynamic imports
+- **Optimize bundle size**: Tree shake unused code
+- **Profile regularly**: Use browser dev tools and React Profiler
+- **Monitor Core Web Vitals**: LCP, FID, CLS metrics
+- **Cache expensive calculations**: Use memoization strategies

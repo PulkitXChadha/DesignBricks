@@ -1,0 +1,251 @@
+---
+globs: *.test.tsx,*.spec.tsx
+description: Testing standards and patterns for component validation
+---
+
+# Testing Guidelines
+
+## Testing Philosophy
+Ensure components work correctly, are accessible, and maintain backwards compatibility.
+
+### 1. Testing Structure
+```typescript
+// Standard test file structure
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import userEvent from '@testing-library/user-event';
+import { ComponentName } from './ComponentName';
+
+expect.extend(toHaveNoViolations);
+
+describe('ComponentName', () => {
+  // Test groups by functionality
+  describe('rendering', () => {});
+  describe('interactions', () => {});
+  describe('accessibility', () => {});
+  describe('edge cases', () => {});
+});
+```
+
+### 2. Required Test Categories
+
+#### **Rendering Tests**
+```typescript
+describe('rendering', () => {
+  it('renders with default props', () => {
+    render(<ComponentName>Content</ComponentName>);
+    expect(screen.getByText('Content')).toBeInTheDocument();
+  });
+
+  it('applies custom className', () => {
+    const { container } = render(
+      <ComponentName className="custom-class">Content</ComponentName>
+    );
+    expect(container.firstChild).toHaveClass('custom-class');
+  });
+
+  it('forwards ref correctly', () => {
+    const ref = React.createRef<HTMLDivElement>();
+    render(<ComponentName ref={ref}>Content</ComponentName>);
+    expect(ref.current).toBeInstanceOf(HTMLDivElement);
+  });
+});
+```
+
+#### **Interaction Tests**
+```typescript
+describe('interactions', () => {
+  it('handles click events', async () => {
+    const handleClick = jest.fn();
+    render(<ComponentName onClick={handleClick}>Content</ComponentName>);
+    
+    await userEvent.click(screen.getByText('Content'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('supports keyboard navigation', async () => {
+    render(<ComponentName>Content</ComponentName>);
+    
+    await userEvent.tab();
+    expect(screen.getByText('Content')).toHaveFocus();
+  });
+});
+```
+
+#### **Accessibility Tests**
+```typescript
+describe('accessibility', () => {
+  it('has no accessibility violations', async () => {
+    const { container } = render(<ComponentName>Content</ComponentName>);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
+  it('supports screen readers', () => {
+    render(<ComponentName aria-label="Test label">Content</ComponentName>);
+    expect(screen.getByLabelText('Test label')).toBeInTheDocument();
+  });
+});
+```
+
+### 3. Chart Component Testing
+```typescript
+// Special considerations for chart components
+describe('ChartComponent', () => {
+  const mockData = [
+    { id: 1, label: 'Item 1', value: 10 },
+    { id: 2, label: 'Item 2', value: 20 },
+  ];
+
+  it('handles empty data gracefully', () => {
+    render(<ChartComponent data={[]} />);
+    expect(screen.getByText(/no data/i)).toBeInTheDocument();
+  });
+
+  it('renders data correctly', () => {
+    render(<ChartComponent data={mockData} />);
+    expect(screen.getByText('Item 1')).toBeInTheDocument();
+    expect(screen.getByText('Item 2')).toBeInTheDocument();
+  });
+
+  it('handles large datasets', () => {
+    const largeData = Array.from({ length: 1000 }, (_, i) => ({
+      id: i,
+      label: `Item ${i}`,
+      value: i * 10,
+    }));
+    
+    render(<ChartComponent data={largeData} />);
+    // Test virtualization or performance aspects
+  });
+});
+```
+
+### 4. Form Component Testing
+```typescript
+describe('FormComponent', () => {
+  it('validates input correctly', async () => {
+    render(<FormComponent required />);
+    
+    const input = screen.getByRole('textbox');
+    await userEvent.clear(input);
+    await userEvent.tab(); // Trigger validation
+    
+    expect(screen.getByRole('alert')).toBeInTheDocument();
+  });
+
+  it('submits form data', async () => {
+    const handleSubmit = jest.fn();
+    render(<FormComponent onSubmit={handleSubmit} />);
+    
+    await userEvent.type(screen.getByRole('textbox'), 'test input');
+    await userEvent.click(screen.getByRole('button', { name: /submit/i }));
+    
+    expect(handleSubmit).toHaveBeenCalledWith(
+      expect.objectContaining({ value: 'test input' })
+    );
+  });
+});
+```
+
+### 5. Async Testing Patterns
+```typescript
+describe('async behavior', () => {
+  it('handles loading states', async () => {
+    render(<AsyncComponent />);
+    
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    
+    await waitFor(() => {
+      expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
+    });
+  });
+
+  it('handles errors gracefully', async () => {
+    // Mock network failure
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    
+    render(<AsyncComponent />);
+    
+    await waitFor(() => {
+      expect(screen.getByText(/error/i)).toBeInTheDocument();
+    });
+  });
+});
+```
+
+### 6. Visual Regression Testing
+```typescript
+// For Storybook visual testing
+export default {
+  title: 'Tests/ComponentName',
+  component: ComponentName,
+  parameters: {
+    chromatic: { viewports: [320, 768, 1200] },
+  },
+};
+
+export const VisualTest = {
+  render: () => (
+    <div>
+      <ComponentName variant="primary">Primary</ComponentName>
+      <ComponentName variant="secondary">Secondary</ComponentName>
+      <ComponentName disabled>Disabled</ComponentName>
+    </div>
+  ),
+};
+```
+
+### 7. Performance Testing
+```typescript
+describe('performance', () => {
+  it('renders efficiently with large props', () => {
+    const start = performance.now();
+    
+    render(<ComponentName data={largeDataset} />);
+    
+    const end = performance.now();
+    expect(end - start).toBeLessThan(100); // 100ms threshold
+  });
+});
+```
+
+### 8. Mock Strategies
+```typescript
+// Mock external dependencies
+jest.mock('chart-library', () => ({
+  Chart: ({ children }: any) => <div data-testid="mock-chart">{children}</div>,
+}));
+
+// Mock design tokens
+jest.mock('../tokens', () => ({
+  tokens: {
+    colors: { primary: '#000' },
+    spacing: { md: '16px' },
+  },
+}));
+```
+
+### 9. Test Utilities
+```typescript
+// Custom render utility with providers
+const renderWithProviders = (ui: React.ReactElement, options = {}) => {
+  const Wrapper = ({ children }: { children: React.ReactNode }) => (
+    <ThemeProvider theme={defaultTheme}>
+      {children}
+    </ThemeProvider>
+  );
+
+  return render(ui, { wrapper: Wrapper, ...options });
+};
+```
+
+### 10. Testing Checklist
+- **Rendering**: Default props, custom props, edge cases
+- **Interactions**: User events, keyboard navigation
+- **Accessibility**: Axe violations, screen reader support
+- **Form Validation**: Required fields, error states
+- **Async Behavior**: Loading, success, error states
+- **Performance**: Large datasets, render times
+- **Visual**: Cross-browser, responsive design
+- **Integration**: Works with other components

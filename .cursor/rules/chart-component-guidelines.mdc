@@ -1,0 +1,81 @@
+---
+globs: **/LineChart/**,**/AreaChart/**,**/BarChart/**,**/ScatterChart/**,**/PieChart/**,**/MultiLineChart/**
+description: Guidelines for chart and data visualization components
+---
+
+# Chart Component Guidelines
+
+## Chart Component Structure
+Chart components follow the standard 4-file structure but with additional considerations for data visualization:
+
+### 1. Data Interface Design
+```typescript
+export interface ChartData {
+  /** Unique identifier for data point */
+  id: string | number;
+  /** Display label */
+  label: string;
+  /** Numeric value */
+  value: number;
+  /** Optional metadata for additional context */
+  [key: string]: any;
+}
+
+export interface ChartProps extends HTMLAttributes<HTMLDivElement> {
+  /** Chart data array */
+  data: ChartData[];
+  /** Chart dimensions */
+  width?: number;
+  height?: number;
+  /** Accessibility label */
+  ariaLabel?: string;
+}
+```
+
+### 2. Performance Considerations
+- **Virtualization**: For large datasets (>1000 points), implement virtualization
+- **Debounced Updates**: Debounce data updates to prevent excessive re-renders
+- **Memoization**: Use `React.memo` and `useMemo` for expensive calculations
+- **Lazy Loading**: Consider lazy loading for complex chart libraries
+
+### 3. Accessibility Requirements
+- **ARIA Labels**: Provide meaningful `aria-label` and `aria-describedby`
+- **Keyboard Navigation**: Support tab navigation for interactive elements
+- **Screen Reader Support**: Include data tables or text alternatives
+- **Color Accessibility**: Ensure sufficient contrast and don't rely solely on color
+
+### 4. Responsive Design
+```typescript
+// Use responsive dimensions
+const useChartDimensions = (containerRef: RefObject<HTMLElement>) => {
+  // Implementation for responsive sizing
+  return { width, height };
+};
+```
+
+### 5. Data Validation
+- Validate data structure and types
+- Handle empty states gracefully
+- Provide error boundaries for malformed data
+- Support loading states
+
+### 6. Chart-Specific Patterns
+```typescript
+// Common chart utilities
+import { formatters, scales, axes } from '../shared/chartUtils';
+
+// Standard color schemes from design tokens
+import { chartColors } from '../../tokens/colors';
+```
+
+### 7. Animation Standards
+- Use design token transition values
+- Provide `reduceMotion` respect
+- Keep animations purposeful and performant
+- Default to subtle animations that enhance UX
+
+### 8. Testing Considerations
+- Test with various data sizes and shapes
+- Verify responsive behavior at different breakpoints
+- Test accessibility features
+- Validate data transformation logic

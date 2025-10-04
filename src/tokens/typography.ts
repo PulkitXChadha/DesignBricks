@@ -1,7 +1,7 @@
 export const typography = {
   fontFamily: {
     base: '-apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif',
-    mono: '"SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Menlo, Consolas, "Courier New", monospace',
+    mono: '"Source Code Pro", "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Menlo, Consolas, "Courier New", monospace',
   },
   fontSize: {
     xs: '11px',
@@ -32,6 +32,10 @@ export const typography = {
     tight: '-0.02em',
     normal: '0',
     wide: '0.02em',
+  },
+  fontFeatureSettings: {
+    normal: 'normal',
+    tabular: '"tnum"', // Tabular numbers for data display
   },
 } as const;
 

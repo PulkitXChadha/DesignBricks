@@ -1,17 +1,4 @@
-/* Global styles for Storybook and components */
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Import all component styles */
+/* Import all component styles first */
 @import '../components/Button/Button.css';
 @import '../components/Typography/Typography.css';
 @import '../components/TextField/TextField.css';
@@ -21,3 +8,197 @@ body {
 @import '../components/Alert/Alert.css';
 @import '../components/Badge/Badge.css';
 @import '../components/Card/Card.css';
+@import '../components/Flex/Flex.css';
+@import '../components/Grid/Grid.css';
+
+/* CSS Custom Properties - Databricks Design System Variables */
+:root {
+  /* Primary Color System */
+  --db-color-primary-100: #F0F8FF;
+  --db-color-primary-200: #D7EDFE;
+  --db-color-primary-300: #BAE1FC;
+  --db-color-primary-400: #8ACAFF;
+  --db-color-primary-500: #4299E0;
+  --db-color-primary-600: #2272B4;
+  --db-color-primary-700: #0E538B;
+  --db-color-primary-800: #04355D;
+
+  /* Neutral Gray System */
+  --db-color-neutral-0: #FFFFFF;
+  --db-color-neutral-50: #FAFAFA; /* Updated to match Databricks */
+  --db-color-neutral-100: #E8ECF0;
+  --db-color-neutral-200: #D1D9E1;
+  --db-color-neutral-300: #C0CDD8;
+  --db-color-neutral-350: #92A4B3;
+  --db-color-neutral-400: #8396A5;
+  --db-color-neutral-500: #5F7281;
+  --db-color-neutral-600: #445461;
+  --db-color-neutral-650: #37444F;
+  --db-color-neutral-700: #20272E; /* Updated to match Databricks */
+  --db-color-neutral-800: #11171C;
+
+  /* Semantic Colors */
+  --db-color-success-100: #F3FCF6;
+  --db-color-success-500: #3BA65E;
+  --db-color-success-700: #115026;
+  
+  --db-color-warning-100: #FFF9EB;
+  --db-color-warning-500: #DE7921;
+  --db-color-warning-700: #93320B;
+  
+  --db-color-error-100: #FFF5F7;
+  --db-color-error-500: #E65B77;
+  --db-color-error-700: #9E102C;
+
+  /* Design Tokens */
+  --db-border-radius-sm: 2px;
+  --db-border-radius-base: 4px;
+  --db-border-radius-md: 6px;
+  --db-border-radius-lg: 8px;
+  --db-border-radius-xl: 12px;
+  
+  --db-spacing-xs: 4px;
+  --db-spacing-sm: 8px;
+  --db-spacing-base: 12px;
+  --db-spacing-md: 16px;
+  --db-spacing-lg: 24px;
+  --db-spacing-xl: 32px;
+  --db-spacing-2xl: 48px;
+  
+  --db-transition-fast: 150ms ease-in-out;
+  --db-transition-base: 250ms ease-in-out;
+  --db-transition-slow: 350ms ease-in-out;
+
+  /* Box Shadows */
+  --db-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --db-shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --db-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --db-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark Theme (Default/Primary) - Databricks-compatible variables */
+:root,
+[data-theme="dark"],
+.dark-mode {
+  --primary-background-color: var(--db-color-neutral-800);
+  --secondary-background-color: var(--db-color-neutral-700);
+  --primary-text-color: var(--db-color-neutral-50);
+  --secondary-text-color: var(--db-color-neutral-300);
+  --tertiary-text-color: var(--db-color-neutral-400);
+  --button-border-color: var(--db-color-neutral-600);
+  --text-hover-background-color: var(--db-color-neutral-650);
+  --icon-hover-color: var(--db-color-neutral-200);
+  --link-color: var(--db-color-primary-400);
+  --link-hover-color: var(--db-color-primary-300);
+}
+
+/* Light Theme - Databricks-compatible variables */
+[data-theme="light"],
+.light-mode {
+  --primary-background-color: var(--db-color-neutral-0);
+  --secondary-background-color: var(--db-color-neutral-50);
+  --primary-text-color: var(--db-color-neutral-800);
+  --secondary-text-color: var(--db-color-neutral-600);
+  --tertiary-text-color: var(--db-color-neutral-500);
+  --button-border-color: var(--db-color-neutral-300);
+  --text-hover-background-color: var(--db-color-neutral-100);
+  --icon-hover-color: var(--db-color-neutral-700);
+  --link-color: var(--db-color-primary-600);
+  --link-hover-color: var(--db-color-primary-700);
+}
+
+/* Global styles for Storybook and components */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  /* Dark mode first approach - matches Databricks */
+  background-color: var(--primary-background-color);
+  color: var(--primary-text-color);
+  transition: background-color var(--db-transition-base), color var(--db-transition-base);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--primary-background-color);
+  color: var(--primary-text-color);
+  transition: background-color var(--db-transition-base), color var(--db-transition-base);
+  font-feature-settings: "tnum"; /* Tabular numbers for data-focused UI */
+  font-size: 13px; /* Databricks standard base font size */
+  line-height: 1.5715; /* Matches Databricks line height */
+}
+
+/* Databricks-style theme support classes */
+.dark-mode-supported {
+  color-scheme: dark light;
+}
+
+.dark-mode-supported.dark-mode {
+  color-scheme: dark;
+}
+
+.dark-mode-supported.light-mode {
+  color-scheme: light;
+}
+
+/* System preference detection - override only for light mode users */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]):not(.dark-mode):not(.light-mode) {
+    --primary-background-color: var(--db-color-neutral-0);
+    --secondary-background-color: var(--db-color-neutral-50);
+    --primary-text-color: var(--db-color-neutral-800);
+    --secondary-text-color: var(--db-color-neutral-600);
+    --tertiary-text-color: var(--db-color-neutral-500);
+    --button-border-color: var(--db-color-neutral-300);
+    --text-hover-background-color: var(--db-color-neutral-100);
+    --icon-hover-color: var(--db-color-neutral-700);
+    --link-color: var(--db-color-primary-600);
+    --link-hover-color: var(--db-color-primary-700);
+  }
+}
+
+/* Enhanced contrast and accessibility */
+@media (prefers-contrast: high) {
+  :root {
+    --button-border-color: currentColor;
+  }
+  
+  .db-button--secondary {
+    border-width: 2px;
+  }
+}
+
+/* Databricks-specific styling patterns */
+.du-bois-context,
+.databricks-ui {
+  font-feature-settings: "tnum";
+  font-variant: tabular-nums;
+}
+
+/* Code and monospace styling */
+code, 
+pre,
+.monospace {
+  font-family: "Source Code Pro", "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Menlo, Consolas, "Courier New", monospace;
+  font-feature-settings: "tnum";
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --db-transition-fast: none;
+    --db-transition-base: none;
+    --db-transition-slow: none;
+  }
+  
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -4,7 +4,7 @@ import { Button } from '../Button/Button';
 import React from 'react';
 
 const meta = {
-  title: 'Components/Badge',
+  title: 'Feedback/Badge',
   component: Badge,
   parameters: {
     layout: 'centered',

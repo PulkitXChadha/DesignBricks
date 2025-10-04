@@ -3,118 +3,130 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   font-weight: 400;
-  border-radius: 4px;
+  font-feature-settings: "tnum";
+  border-radius: var(--db-border-radius-base);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: all 150ms ease-in-out;
+  transition: all var(--db-transition-fast);
   white-space: nowrap;
   position: relative;
   outline: none;
   text-decoration: none;
-  line-height: 1;
+  line-height: 1.5715; /* Databricks standard line height */
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 }
 
 /* Sizes */
 .db-button--small {
-  padding: 4px 8px;
+  padding: var(--db-spacing-xs) var(--db-spacing-sm);
   font-size: 12px;
   min-height: 24px;
 }
 
 .db-button--medium {
-  padding: 4px 12px;
+  padding: var(--db-spacing-xs) var(--db-spacing-base);
   font-size: 13px;
   min-height: 28px;
 }
 
 .db-button--large {
-  padding: 6px 16px;
+  padding: var(--db-spacing-sm) var(--db-spacing-md);
   font-size: 14px;
   min-height: 32px;
 }
 
-/* Primary variant */
+/* Primary variant - matches du-bois-*-btn-primary patterns */
 .db-button--primary {
-  background-color: #2272B4;
-  color: #FFFFFF;
-  border-color: #2272B4;
+  background-color: var(--db-color-primary-600);
+  color: var(--db-color-neutral-0);
+  border-color: var(--db-color-primary-600);
+  font-weight: 400;
 }
 
 .db-button--primary:hover:not(:disabled) {
-  background-color: #1A5A90;
-  border-color: #1A5A90;
+  background-color: var(--db-color-primary-700);
+  border-color: var(--db-color-primary-700);
 }
 
 .db-button--primary:active:not(:disabled) {
-  background-color: #14456C;
-  border-color: #14456C;
+  background-color: var(--db-color-primary-800);
+  border-color: var(--db-color-primary-800);
 }
 
-.db-button--primary:focus-visible {
-  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2272B4;
+.db-button--primary:focus:not(:disabled) {
+  box-shadow: 0 0 0 2px rgba(34, 115, 180, 0.2); /* #2273b533 from Databricks */
+  outline: 0;
+}
+
+.db-button--primary:focus:hover:not(:disabled) {
+  box-shadow: none;
 }
 
 /* Secondary variant */
 .db-button--secondary {
-  background-color: #FFFFFF;
-  color: #2272B4;
-  border-color: #DDE0E5;
+  background-color: var(--primary-background-color);
+  color: var(--db-color-primary-600);
+  border-color: var(--button-border-color);
 }
 
 .db-button--secondary:hover:not(:disabled) {
-  background-color: #F6F7F9;
-  border-color: #C4C8CF;
+  background-color: var(--text-hover-background-color);
+  border-color: var(--db-color-neutral-400);
 }
 
 .db-button--secondary:active:not(:disabled) {
-  background-color: #EDEFF2;
-  border-color: #9EA3AD;
+  background-color: var(--db-color-neutral-200);
+  border-color: var(--db-color-neutral-500);
 }
 
 .db-button--secondary:focus-visible {
-  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2272B4;
+  box-shadow: 0 0 0 2px var(--primary-background-color), 0 0 0 4px var(--db-color-primary-600);
 }
 
 /* Tertiary variant */
 .db-button--tertiary {
   background-color: transparent;
-  color: #2272B4;
+  color: var(--link-color);
   border-color: transparent;
 }
 
 .db-button--tertiary:hover:not(:disabled) {
-  background-color: #F6F7F9;
+  background-color: var(--text-hover-background-color);
+  color: var(--link-hover-color);
 }
 
 .db-button--tertiary:active:not(:disabled) {
-  background-color: #EDEFF2;
+  background-color: var(--db-color-neutral-200);
 }
 
 .db-button--tertiary:focus-visible {
-  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #2272B4;
+  box-shadow: 0 0 0 2px var(--primary-background-color), 0 0 0 4px var(--link-color);
 }
 
 /* Danger variant */
 .db-button--danger {
-  background-color: #F53737;
-  color: #FFFFFF;
-  border-color: #F53737;
+  background-color: var(--db-color-error-500);
+  color: var(--db-color-neutral-0);
+  border-color: var(--db-color-error-500);
 }
 
 .db-button--danger:hover:not(:disabled) {
-  background-color: #C42C2C;
-  border-color: #C42C2C;
+  background-color: var(--db-color-error-600);
+  border-color: var(--db-color-error-600);
 }
 
 .db-button--danger:active:not(:disabled) {
-  background-color: #932121;
-  border-color: #932121;
+  background-color: var(--db-color-error-700);
+  border-color: var(--db-color-error-700);
 }
 
 .db-button--danger:focus-visible {
-  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #F53737;
+  box-shadow: 0 0 0 2px var(--primary-background-color), 0 0 0 4px var(--db-color-error-500);
 }
 
 /* States */
@@ -124,7 +136,13 @@
 
 .db-button--disabled,
 .db-button:disabled {
-  opacity: 0.5;
+  opacity: 0.4; /* Matches Databricks disabled opacity */
+  cursor: not-allowed;
+}
+
+.db-button--disabled *,
+.db-button:disabled * {
+  box-shadow: none;
   cursor: not-allowed;
 }
 

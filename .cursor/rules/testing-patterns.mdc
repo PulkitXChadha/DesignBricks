@@ -1,0 +1,433 @@
+---
+globs: src/components/**/*.test.tsx,**/*.test.ts
+description: Testing standards, patterns, and best practices for component validation
+---
+
+# Testing Standards
+
+## Test File Organization
+
+Each component has a test file: `ComponentName.test.tsx`
+
+```
+ComponentName/
+├── ComponentName.tsx
+├── ComponentName.css
+├── ComponentName.stories.tsx
+├── ComponentName.test.tsx  ← Test file
+└── index.ts
+```
+
+## Test Template
+
+```typescript
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import { ComponentName } from './ComponentName';
+
+expect.extend(toHaveNoViolations);
+
+describe('ComponentName', () => {
+  describe('Rendering', () => {
+    it('renders without crashing', () => {
+      render(<ComponentName>Content</ComponentName>);
+      expect(screen.getByText('Content')).toBeInTheDocument();
+    });
+
+    it('renders children correctly', () => {
+      render(
+        <ComponentName>
+          <span data-testid="child">Child Content</span>
+        </ComponentName>
+      );
+      expect(screen.getByTestId('child')).toBeInTheDocument();
+    });
+
+    it('applies custom className', () => {
+      const { container } = render(
+        <ComponentName className="custom-class">Content</ComponentName>
+      );
+      const element = container.firstChild as HTMLElement;
+      expect(element).toHaveClass('custom-class');
+    });
+  });
+
+  describe('Variants', () => {
+    it('renders primary variant by default', () => {
+      const { container } = render(<ComponentName>Content</ComponentName>);
+      const element = container.firstChild as HTMLElement;
+      expect(element).toHaveClass('db-componentname--primary');
+    });
+
+    it('renders secondary variant', () => {
+      const { container } = render(
+        <ComponentName variant="secondary">Content</ComponentName>
+      );
+      const element = container.firstChild as HTMLElement;
+      expect(element).toHaveClass('db-componentname--secondary');
+    });
+  });
+
+  describe('Sizes', () => {
+    it('renders medium size by default', () => {
+      const { container } = render(<ComponentName>Content</ComponentName>);
+      const element = container.firstChild as HTMLElement;
+      expect(element).toHaveClass('db-componentname--medium');
+    });
+
+    it('renders small size', () => {
+      const { container } = render(
+        <ComponentName size="small">Content</ComponentName>
+      );
+      const element = container.firstChild as HTMLElement;
+      expect(element).toHaveClass('db-componentname--small');
+    });
+
+    it('renders large size', () => {
+      const { container } = render(
+        <ComponentName size="large">Content</ComponentName>
+      );
+      const element = container.firstChild as HTMLElement;
+      expect(element).toHaveClass('db-componentname--large');
+    });
+  });
+
+  describe('User Interactions', () => {
+    it('handles click events', async () => {
+      const handleClick = jest.fn();
+      render(
+        <ComponentName onClick={handleClick}>Click Me</ComponentName>
+      );
+      
+      await userEvent.click(screen.getByText('Click Me'));
+      expect(handleClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles keyboard events', async () => {
+      const handleKeyDown = jest.fn();
+      render(
+        <ComponentName onKeyDown={handleKeyDown}>Press Me</ComponentName>
+      );
+      
+      const element = screen.getByText('Press Me');
+      await userEvent.type(element, '{Enter}');
+      expect(handleKeyDown).toHaveBeenCalled();
+    });
+  });
+
+  describe('States', () => {
+    it('handles disabled state', () => {
+      const { container } = render(
+        <ComponentName disabled>Disabled</ComponentName>
+      );
+      const element = container.firstChild as HTMLElement;
+      expect(element).toBeDisabled();
+      expect(element).toHaveClass('db-componentname--disabled');
+    });
+
+    it('handles loading state', () => {
+      const { container } = render(
+        <ComponentName loading>Loading</ComponentName>
+      );
+      const element = container.firstChild as HTMLElement;
+      expect(element).toHaveClass('db-componentname--loading');
+    });
+  });
+
+  describe('Accessibility', () => {
+    it('has no accessibility violations', async () => {
+      const { container } = render(<ComponentName>Content</ComponentName>);
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+
+    it('has no violations with all props', async () => {
+      const { container } = render(
+        <ComponentName
+          variant="primary"
+          size="large"
+          aria-label="Accessible component"
+        >
+          Accessible Content
+        </ComponentName>
+      );
+      const results = await axe(container);
+      expect(results).toHaveNoViolations();
+    });
+
+    it('supports keyboard navigation', () => {
+      render(<ComponentName>Content</ComponentName>);
+      const element = screen.getByText('Content');
+      
+      element.focus();
+      expect(element).toHaveFocus();
+    });
+
+    it('has proper ARIA attributes', () => {
+      render(
+        <ComponentName
+          aria-label="Test label"
+          aria-describedby="description"
+        >
+          Content
+        </ComponentName>
+      );
+      
+      const element = screen.getByText('Content');
+      expect(element).toHaveAttribute('aria-label', 'Test label');
+      expect(element).toHaveAttribute('aria-describedby', 'description');
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('handles empty children', () => {
+      const { container } = render(<ComponentName />);
+      expect(container.firstChild).toBeInTheDocument();
+    });
+
+    it('handles complex children', () => {
+      render(
+        <ComponentName>
+          <div>
+            <span>Nested</span>
+            <strong>Content</strong>
+          </div>
+        </ComponentName>
+      );
+      
+      expect(screen.getByText('Nested')).toBeInTheDocument();
+      expect(screen.getByText('Content')).toBeInTheDocument();
+    });
+  });
+
+  describe('Ref Forwarding', () => {
+    it('forwards ref correctly', () => {
+      const ref = React.createRef<HTMLDivElement>();
+      render(<ComponentName ref={ref}>Content</ComponentName>);
+      
+      expect(ref.current).toBeInstanceOf(HTMLDivElement);
+      expect(ref.current).toHaveTextContent('Content');
+    });
+  });
+});
+```
+
+## Test Categories
+
+### 1. Rendering Tests
+- Component renders without crashing
+- Children render correctly
+- Custom className is applied
+- Props are passed through
+
+### 2. Variant Tests
+- All variants render with correct classes
+- Default variant is applied
+- Variant-specific styling is applied
+
+### 3. Size Tests
+- All sizes render with correct classes
+- Default size is applied
+- Size-specific styling is applied
+
+### 4. Interaction Tests
+- Click handlers work
+- Keyboard navigation works
+- Focus management works
+- Event handlers are called with correct arguments
+
+### 5. State Tests
+- Disabled state prevents interaction
+- Loading state displays correctly
+- Active/selected states work
+- Error states display correctly
+
+### 6. Accessibility Tests
+- No axe violations
+- ARIA attributes are correct
+- Keyboard navigation works
+- Screen reader support works
+- Focus indicators are visible
+
+### 7. Edge Cases
+- Empty/null children
+- Very long content
+- Missing required props
+- Invalid prop combinations
+
+### 8. Integration Tests
+- Works with other components
+- Form integration (for inputs)
+- Event bubbling/propagation
+
+## Testing Utilities
+
+### React Testing Library
+```typescript
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+
+// Queries
+screen.getByText('Text');
+screen.getByRole('button');
+screen.getByLabelText('Label');
+screen.getByTestId('test-id');
+
+// Async queries
+await screen.findByText('Text');
+await waitFor(() => expect(element).toBeInTheDocument());
+```
+
+### User Event (Preferred over fireEvent)
+```typescript
+import userEvent from '@testing-library/user-event';
+
+// More realistic interactions
+await userEvent.click(element);
+await userEvent.type(input, 'text');
+await userEvent.keyboard('{Enter}');
+await userEvent.hover(element);
+```
+
+### Jest Axe (Accessibility)
+```typescript
+import { axe, toHaveNoViolations } from 'jest-axe';
+
+expect.extend(toHaveNoViolations);
+
+const { container } = render(<Component />);
+const results = await axe(container);
+expect(results).toHaveNoViolations();
+```
+
+## Common Testing Patterns
+
+### Testing Form Components
+```typescript
+it('handles form submission', async () => {
+  const handleSubmit = jest.fn();
+  render(<Form onSubmit={handleSubmit} />);
+  
+  const input = screen.getByLabelText('Name');
+  await userEvent.type(input, 'John Doe');
+  
+  const submitButton = screen.getByRole('button', { name: /submit/i });
+  await userEvent.click(submitButton);
+  
+  expect(handleSubmit).toHaveBeenCalledWith(
+    expect.objectContaining({ name: 'John Doe' })
+  );
+});
+```
+
+### Testing Async Behavior
+```typescript
+it('loads data asynchronously', async () => {
+  render(<Component />);
+  
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  
+  const data = await screen.findByText('Data loaded');
+  expect(data).toBeInTheDocument();
+});
+```
+
+### Testing Conditional Rendering
+```typescript
+it('shows error message when invalid', () => {
+  const { rerender } = render(<Input error={null} />);
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  
+  rerender(<Input error="Required field" />);
+  expect(screen.getByRole('alert')).toHaveTextContent('Required field');
+});
+```
+
+### Testing Custom Hooks
+```typescript
+import { renderHook, act } from '@testing-library/react';
+
+it('increments counter', () => {
+  const { result } = renderHook(() => useCounter());
+  
+  expect(result.current.count).toBe(0);
+  
+  act(() => {
+    result.current.increment();
+  });
+  
+  expect(result.current.count).toBe(1);
+});
+```
+
+## Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run with coverage
+npm run test:coverage
+
+# Run specific test file
+npm test -- ComponentName
+
+# Run tests in debug mode
+npm run test:debug
+```
+
+## Coverage Goals
+
+- **Statements**: > 80%
+- **Branches**: > 80%
+- **Functions**: > 80%
+- **Lines**: > 80%
+
+Current project coverage: **77.93%**
+
+## Best Practices
+
+### ✅ Do
+- Test user behavior, not implementation
+- Use semantic queries (getByRole, getByLabelText)
+- Test accessibility with jest-axe
+- Use userEvent over fireEvent
+- Test edge cases and error states
+- Mock external dependencies
+- Keep tests focused and isolated
+
+### ❌ Don't
+- Test implementation details
+- Use container.querySelector (use screen queries)
+- Test styles directly (test behavior)
+- Write tests that depend on other tests
+- Mock React Testing Library utilities
+- Test third-party libraries
+
+## Debugging Tests
+
+```typescript
+// Print DOM
+screen.debug();
+
+// Print specific element
+screen.debug(screen.getByRole('button'));
+
+// Log all queries
+import { logRoles } from '@testing-library/react';
+const { container } = render(<Component />);
+logRoles(container);
+```
+
+## References
+
+- Jest config: [jest.config.js](mdc:jest.config.js)
+- Test setup: [src/test-setup.ts](mdc:src/test-setup.ts)
+- Example test: [src/components/Button/Button.test.tsx](mdc:src/components/Button/Button.test.tsx)
+- Testing Library: https://testing-library.com/react
+- Jest: https://jestjs.io/
+- jest-axe: https://github.com/nickcolley/jest-axe

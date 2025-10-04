@@ -1,5 +1,5 @@
 export const colors = {
-  /** Primary Blue - Official DuBois primary color scale */
+  /** Primary Blue - Official primary color scale */
   primary: {
     100: '#F0F8FF', // blue100 - Lightest blue
     200: '#D7EDFE', // blue200
@@ -10,22 +10,22 @@ export const colors = {
     700: '#0E538B', // blue700
     800: '#04355D', // blue800 - Darkest blue
   },
-  /** Secondary Teal - Official DuBois teal for secondary actions */
+  /** Secondary Teal - Official teal for secondary actions */
   secondary: {
     50: '#E6FFFA',  // Lighter teal variations
     100: '#B2F5EA',
     200: '#81E6D9',
     300: '#4FD1C7',
     400: '#38B2AC',
-    500: '#04867D', // Official DuBois teal
+    500: '#04867D', // Official teal
     600: '#037269',
     700: '#025D55',
     800: '#014B42',
   },
-  /** Neutral grays from DuBois design system */
+  /** Neutral grays from design system */
   neutral: {
     0: '#FFFFFF',   // white
-    50: '#F6F7F9',  // grey050
+    50: '#FAFAFA',  // Updated to match Databricks light background
     100: '#E8ECF0', // grey100
     200: '#D1D9E1', // grey200
     300: '#C0CDD8', // grey300
@@ -34,10 +34,10 @@ export const colors = {
     500: '#5F7281', // grey500
     600: '#445461', // grey600
     650: '#37444F', // grey650
-    700: '#1F272D', // grey700
-    800: '#11171C', // grey800
+    700: '#20272E', // Updated to match Databricks dark text color
+    800: '#11171C', // grey800 - matches Databricks exactly
   },
-  /** Success colors based on DuBois green scale */
+  /** Success colors based on green scale */
   success: {
     100: '#F3FCF6', // green100 - Lightest green
     200: '#D4F7DF', // green200
@@ -48,7 +48,7 @@ export const colors = {
     700: '#115026', // green700
     800: '#093919', // green800 - Darkest green
   },
-  /** Warning colors based on DuBois yellow scale */
+  /** Warning colors based on yellow scale */
   warning: {
     100: '#FFF9EB', // yellow100 - Lightest yellow
     200: '#FCEACA', // yellow200
@@ -59,7 +59,7 @@ export const colors = {
     700: '#93320B', // yellow700
     800: '#5F1B02', // yellow800 - Darkest yellow
   },
-  /** Error colors based on DuBois red scale */
+  /** Error colors based on red scale */
   error: {
     100: '#FFF5F7', // red100 - Lightest red
     200: '#FDE2E8', // red200
@@ -82,11 +82,11 @@ export const colors = {
     800: '#04355D', // blue800 - Darkest blue
   },
   
-  // DuBois Secondary Color Palette - Official brand accent colors
+  // Secondary Color Palette - Official brand accent colors
   
-  /** Brown - DuBois secondary color */
+  /** Brown - Secondary color */
   brown: {
-    500: '#A6630C', // Official DuBois brown
+    500: '#A6630C', // Official brown
     100: '#FDF6E3',
     200: '#F7E8B8',
     300: '#EFD18D',
@@ -97,9 +97,9 @@ export const colors = {
     900: '#3A2104',
   },
   
-  /** Coral - DuBois secondary color */
+  /** Coral - Secondary color */
   coral: {
-    500: '#C83243', // Official DuBois coral
+    500: '#C83243', // Official coral
     100: '#FFEEF0',
     200: '#FDD5DA',
     300: '#F9ACB6',
@@ -110,9 +110,9 @@ export const colors = {
     900: '#3C1118',
   },
   
-  /** Indigo - DuBois secondary color */
+  /** Indigo - Secondary color */
   indigo: {
-    500: '#434A93', // Official DuBois indigo
+    500: '#434A93', // Official indigo
     100: '#EDEFFA',
     200: '#D4D7F1',
     300: '#ABAFE6',
@@ -123,9 +123,9 @@ export const colors = {
     900: '#171833',
   },
   
-  /** Lemon - DuBois secondary color */
+  /** Lemon - Secondary color */
   lemon: {
-    500: '#FACB66', // Official DuBois lemon
+    500: '#FACB66', // Official lemon
     100: '#FEFBF2',
     200: '#FDF5D9',
     300: '#FBEAA6',
@@ -136,9 +136,9 @@ export const colors = {
     900: '#906A00',
   },
   
-  /** Lime - DuBois secondary color */
+  /** Lime - Secondary color */
   lime: {
-    500: '#308613', // Official DuBois lime
+    500: '#308613', // Official lime
     100: '#F0F8EC',
     200: '#D8EFD0',
     300: '#B4DD9F',
@@ -149,9 +149,9 @@ export const colors = {
     900: '#102B07',
   },
   
-  /** Pink - DuBois secondary color */
+  /** Pink - Secondary color */
   pink: {
-    500: '#B45091', // Official DuBois pink
+    500: '#B45091', // Official pink
     100: '#F9F2F7',
     200: '#F0DEE9',
     300: '#E3BCD4',
@@ -162,9 +162,9 @@ export const colors = {
     900: '#401C30',
   },
   
-  /** Purple - DuBois secondary color */
+  /** Purple - Secondary color */
   purple: {
-    500: '#8A63BF', // Official DuBois purple
+    500: '#8A63BF', // Official purple
     100: '#F5F1FB',
     200: '#E7DBF4',
     300: '#D1BFEB',
@@ -175,9 +175,9 @@ export const colors = {
     900: '#37224B',
   },
   
-  /** Teal - DuBois secondary color */
+  /** Teal - Secondary color */
   teal: {
-    500: '#04867D', // Official DuBois teal
+    500: '#04867D', // Official teal
     100: '#E6F7F6',
     200: '#B3E7E4',
     300: '#80D7D2',
@@ -188,9 +188,9 @@ export const colors = {
     900: '#01382F',
   },
   
-  /** Turquoise - DuBois secondary color */
+  /** Turquoise - Secondary color */
   turquoise: {
-    500: '#137DAE', // Official DuBois turquoise
+    500: '#137DAE', // Official turquoise
     100: '#ECF6FB',
     200: '#CAE7F4',
     300: '#8CCFE8',

@@ -3,7 +3,7 @@ import { Tabs, TabPanel } from './Tabs';
 import React, { useState } from 'react';
 
 const meta = {
-  title: 'Components/Tabs',
+  title: 'Navigation/Tabs',
   component: Tabs,
   parameters: {
     docs: {

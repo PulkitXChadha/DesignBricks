@@ -1,0 +1,578 @@
+/* ===== CSS Custom Properties for Theming ===== */
+:root {
+  --chart-background: hsl(0 0% 100%);
+  --chart-foreground: hsl(222 47% 11%);
+  --chart-muted: hsl(210 40% 95%);
+  --chart-muted-foreground: hsl(215 13% 65%);
+  --chart-border: hsl(214 32% 91%);
+  --chart-input: hsl(214 32% 91%);
+  --chart-grid: hsl(220 13% 91%);
+  --chart-tooltip-bg: hsl(224 71% 4%);
+  --chart-tooltip-fg: hsl(213 31% 91%);
+  --chart-primary: hsl(221 83% 53%);
+  --chart-primary-hover: hsl(221 83% 45%);
+  --chart-secondary: hsl(187 85% 26%);
+  --chart-secondary-hover: hsl(187 85% 18%);
+  --chart-success: hsl(142 76% 36%);
+  --chart-success-hover: hsl(142 76% 28%);
+  --chart-warning: hsl(32 95% 44%);
+  --chart-warning-hover: hsl(32 95% 36%);
+  --chart-error: hsl(346 87% 43%);
+  --chart-error-hover: hsl(346 87% 35%);
+  --chart-radius: 6px;
+  --chart-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --chart-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --chart-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --chart-background: hsl(224 71% 4%);
+  --chart-foreground: hsl(213 31% 91%);
+  --chart-muted: hsl(223 47% 11%);
+  --chart-muted-foreground: hsl(215 13% 65%);
+  --chart-border: hsl(216 34% 17%);
+  --chart-input: hsl(216 34% 17%);
+  --chart-grid: hsl(215 27% 32%);
+  --chart-tooltip-bg: hsl(224 71% 4%);
+  --chart-tooltip-fg: hsl(213 31% 91%);
+}
+
+.db-areachart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+  background-color: var(--chart-background);
+  color: var(--chart-foreground);
+  border-radius: var(--chart-radius);
+}
+
+.db-areachart__svg {
+  display: block;
+  overflow: visible;
+}
+
+/* Empty state */
+.db-areachart--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border: 2px dashed var(--chart-border);
+  border-radius: var(--chart-radius);
+  background-color: var(--chart-muted);
+  transition: var(--chart-transition);
+}
+
+.db-areachart--empty:hover {
+  border-color: var(--chart-primary);
+  background-color: hsl(var(--chart-primary) / 0.02);
+}
+
+.db-areachart__empty-state {
+  text-align: center;
+  color: var(--chart-muted-foreground);
+}
+
+.db-areachart__empty-state p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Chart title */
+.db-areachart__title {
+  font-size: 16px;
+  font-weight: 600;
+  fill: var(--chart-foreground);
+  dominant-baseline: middle;
+}
+
+/* Axes */
+.db-areachart__axis {
+  font-size: 12px;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__axis text {
+  fill: var(--chart-muted-foreground);
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.db-areachart__axis path,
+.db-areachart__axis line {
+  stroke: var(--chart-border);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+  transition: var(--chart-transition);
+}
+
+/* Axis labels */
+.db-areachart__axis-label {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--chart-foreground);
+  dominant-baseline: middle;
+}
+
+/* Grid lines */
+.db-areachart__grid line {
+  stroke: var(--chart-grid);
+  stroke-width: 1;
+  stroke-dasharray: 2,2;
+  shape-rendering: crispEdges;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__grid path {
+  stroke: none;
+}
+
+/* Area styles - Primary */
+.db-areachart__area--primary {
+  fill: var(--chart-primary);
+  fill-opacity: 0.2;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__stroke--primary {
+  fill: none;
+  stroke: var(--chart-primary);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__point--primary {
+  fill: var(--chart-primary);
+  stroke: var(--chart-background);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-areachart__point--primary:hover {
+  fill: var(--chart-primary-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
+}
+
+/* Area styles - Secondary */
+.db-areachart__area--secondary {
+  fill: var(--chart-secondary);
+  fill-opacity: 0.2;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__stroke--secondary {
+  fill: none;
+  stroke: var(--chart-secondary);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__point--secondary {
+  fill: var(--chart-secondary);
+  stroke: var(--chart-background);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-areachart__point--secondary:hover {
+  fill: var(--chart-secondary-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
+}
+
+/* Area styles - Success */
+.db-areachart__area--success {
+  fill: var(--chart-success);
+  fill-opacity: 0.2;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__stroke--success {
+  fill: none;
+  stroke: var(--chart-success);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__point--success {
+  fill: var(--chart-success);
+  stroke: var(--chart-background);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-areachart__point--success:hover {
+  fill: var(--chart-success-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
+}
+
+/* Area styles - Warning */
+.db-areachart__area--warning {
+  fill: var(--chart-warning);
+  fill-opacity: 0.2;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__stroke--warning {
+  fill: none;
+  stroke: var(--chart-warning);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__point--warning {
+  fill: var(--chart-warning);
+  stroke: var(--chart-background);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-areachart__point--warning:hover {
+  fill: var(--chart-warning-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
+}
+
+/* Area styles - Error */
+.db-areachart__area--error {
+  fill: var(--chart-error);
+  fill-opacity: 0.2;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__stroke--error {
+  fill: none;
+  stroke: var(--chart-error);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--chart-transition);
+}
+
+.db-areachart__point--error {
+  fill: var(--chart-error);
+  stroke: var(--chart-background);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-areachart__point--error:hover {
+  fill: var(--chart-error-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
+}
+
+/* Tooltip */
+.db-areachart__tooltip {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  background-color: var(--chart-tooltip-bg);
+  color: var(--chart-tooltip-fg);
+  padding: 12px 16px;
+  border-radius: var(--chart-radius);
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: var(--chart-shadow-md);
+  border: 1px solid var(--chart-border);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 120px;
+  max-width: 300px;
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force hardware acceleration */
+  /* Positioning optimizations */
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Add a subtle arrow pointing down when tooltip is above data point */
+.db-areachart__tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--chart-tooltip-bg);
+  z-index: 1001;
+}
+
+/* Hide arrow when tooltip is positioned below */
+.db-areachart__tooltip.tooltip-below::after {
+  display: none;
+}
+
+.db-areachart__tooltip.tooltip-below::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid var(--chart-tooltip-bg);
+  z-index: 1001;
+}
+
+.db-areachart__tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: max-content;
+}
+
+.db-areachart__tooltip-date {
+  font-size: 12px;
+  color: var(--chart-muted-foreground);
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.db-areachart__tooltip-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--chart-tooltip-fg);
+}
+
+.db-areachart__tooltip-change {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: calc(var(--chart-radius) - 2px);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.db-areachart__tooltip-change--positive {
+  color: var(--chart-success);
+  background-color: hsl(var(--chart-success) / 0.1);
+}
+
+.db-areachart__tooltip-change--negative {
+  color: var(--chart-error);
+  background-color: hsl(var(--chart-error) / 0.1);
+}
+
+/* Vertical line indicator */
+.db-areachart__vertical-line {
+  stroke: var(--chart-muted-foreground);
+  stroke-width: 1;
+  stroke-dasharray: 4,4;
+  pointer-events: none;
+  opacity: 0;
+  transition: var(--chart-transition);
+}
+
+/* Hover circle */
+.db-areachart__hover-circle {
+  stroke: var(--chart-background);
+  stroke-width: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-areachart__hover-circle--primary {
+  fill: var(--chart-primary);
+}
+
+.db-areachart__hover-circle--secondary {
+  fill: var(--chart-secondary);
+}
+
+.db-areachart__hover-circle--success {
+  fill: var(--chart-success);
+}
+
+.db-areachart__hover-circle--warning {
+  fill: var(--chart-warning);
+}
+
+.db-areachart__hover-circle--error {
+  fill: var(--chart-error);
+}
+
+/* Overlay for mouse events */
+.db-areachart__overlay {
+  cursor: crosshair;
+}
+
+/* Variants */
+.db-areachart--minimal .db-areachart__grid {
+  display: none;
+}
+
+.db-areachart--minimal .db-areachart__axis path,
+.db-areachart--minimal .db-areachart__axis line {
+  stroke: none;
+}
+
+.db-areachart--detailed .db-areachart__stroke--primary,
+.db-areachart--detailed .db-areachart__stroke--secondary,
+.db-areachart--detailed .db-areachart__stroke--success,
+.db-areachart--detailed .db-areachart__stroke--warning,
+.db-areachart--detailed .db-areachart__stroke--error {
+  stroke-width: 3;
+}
+
+.db-areachart--detailed .db-areachart__point--primary,
+.db-areachart--detailed .db-areachart__point--secondary,
+.db-areachart--detailed .db-areachart__point--success,
+.db-areachart--detailed .db-areachart__point--warning,
+.db-areachart--detailed .db-areachart__point--error {
+  r: 5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .db-areachart__title {
+    font-size: 14px;
+  }
+  
+  .db-areachart__axis {
+    font-size: 10px;
+  }
+  
+  .db-areachart__axis-label {
+    font-size: 11px;
+  }
+  
+  .db-areachart__tooltip {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+/* Focus and accessibility */
+.db-areachart__point:focus {
+  outline: 2px solid var(--chart-primary);
+  outline-offset: 2px;
+  stroke-width: 3;
+  stroke: var(--chart-primary);
+  filter: drop-shadow(0 0 4px hsl(var(--chart-primary) / 0.4));
+}
+
+.db-areachart__svg:focus {
+  outline: 2px solid var(--chart-primary);
+  outline-offset: 2px;
+}
+
+.db-areachart:focus-visible {
+  outline: 2px solid var(--chart-primary);
+  outline-offset: 2px;
+  border-radius: var(--chart-radius);
+}
+
+/* Animation for area drawing */
+@keyframes db-areachart-draw {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  to {
+    opacity: 0.2;
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+}
+
+.db-areachart--animated .db-areachart__area--primary,
+.db-areachart--animated .db-areachart__area--secondary,
+.db-areachart--animated .db-areachart__area--success,
+.db-areachart--animated .db-areachart__area--warning,
+.db-areachart--animated .db-areachart__area--error {
+  animation: db-areachart-draw 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .db-areachart__stroke--primary,
+  .db-areachart__stroke--secondary,
+  .db-areachart__stroke--success,
+  .db-areachart__stroke--warning,
+  .db-areachart__stroke--error {
+    stroke-width: 3;
+  }
+  
+  .db-areachart__point--primary,
+  .db-areachart__point--secondary,
+  .db-areachart__point--success,
+  .db-areachart__point--warning,
+  .db-areachart__point--error {
+    stroke-width: 3;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .db-areachart * {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+  }
+}
+
+/* Accessibility */
+.db-areachart[tabindex] {
+  outline: none;
+}
+
+/* Keyboard Navigation */
+.db-areachart__point[tabindex] {
+  outline: none;
+}
+
+/* Performance Optimizations */
+.db-areachart--optimized {
+  will-change: transform;
+  contain: layout style paint;
+}
+
+.db-areachart--optimized .db-areachart__area {
+  will-change: d;
+}
+
+.db-areachart--optimized .db-areachart__stroke {
+  will-change: d;
+}
+
+.db-areachart--optimized .db-areachart__point {
+  will-change: cx, cy;
+}

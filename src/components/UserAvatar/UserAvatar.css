@@ -1,0 +1,269 @@
+.db-avatar {
+  position: relative;
+  display: inline-block;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.db-avatar__container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #E8ECF0;
+}
+
+.db-avatar__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+}
+
+.db-avatar__image--loaded {
+  opacity: 1;
+}
+
+.db-avatar__fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  text-align: center;
+}
+
+.db-avatar__initials {
+  line-height: 1;
+  user-select: none;
+}
+
+.db-avatar__status {
+  position: absolute;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* Variants */
+.db-avatar--circle .db-avatar__container {
+  border-radius: 50%;
+}
+
+.db-avatar--rounded .db-avatar__container {
+  border-radius: 6px;
+}
+
+.db-avatar--square .db-avatar__container {
+  border-radius: 0;
+}
+
+/* Sizes */
+.db-avatar--xs {
+  width: 20px;
+  height: 20px;
+}
+
+.db-avatar--xs .db-avatar__container {
+  width: 20px;
+  height: 20px;
+}
+
+.db-avatar--xs .db-avatar__initials {
+  font-size: 8px;
+}
+
+.db-avatar--xs .db-avatar__status {
+  width: 6px;
+  height: 6px;
+  bottom: -1px;
+  right: -1px;
+}
+
+.db-avatar--sm {
+  width: 24px;
+  height: 24px;
+}
+
+.db-avatar--sm .db-avatar__container {
+  width: 24px;
+  height: 24px;
+}
+
+.db-avatar--sm .db-avatar__initials {
+  font-size: 10px;
+}
+
+.db-avatar--sm .db-avatar__status {
+  width: 8px;
+  height: 8px;
+  bottom: -1px;
+  right: -1px;
+}
+
+.db-avatar--md {
+  width: 32px;
+  height: 32px;
+}
+
+.db-avatar--md .db-avatar__container {
+  width: 32px;
+  height: 32px;
+}
+
+.db-avatar--md .db-avatar__initials {
+  font-size: 12px;
+}
+
+.db-avatar--md .db-avatar__status {
+  width: 10px;
+  height: 10px;
+  bottom: -1px;
+  right: -1px;
+}
+
+.db-avatar--lg {
+  width: 40px;
+  height: 40px;
+}
+
+.db-avatar--lg .db-avatar__container {
+  width: 40px;
+  height: 40px;
+}
+
+.db-avatar--lg .db-avatar__initials {
+  font-size: 14px;
+}
+
+.db-avatar--lg .db-avatar__status {
+  width: 12px;
+  height: 12px;
+  bottom: -1px;
+  right: -1px;
+}
+
+.db-avatar--xl {
+  width: 48px;
+  height: 48px;
+}
+
+.db-avatar--xl .db-avatar__container {
+  width: 48px;
+  height: 48px;
+}
+
+.db-avatar--xl .db-avatar__initials {
+  font-size: 16px;
+}
+
+.db-avatar--xl .db-avatar__status {
+  width: 14px;
+  height: 14px;
+  bottom: -1px;
+  right: -1px;
+}
+
+.db-avatar--2xl {
+  width: 64px;
+  height: 64px;
+}
+
+.db-avatar--2xl .db-avatar__container {
+  width: 64px;
+  height: 64px;
+}
+
+.db-avatar--2xl .db-avatar__initials {
+  font-size: 20px;
+}
+
+.db-avatar--2xl .db-avatar__status {
+  width: 16px;
+  height: 16px;
+  bottom: -1px;
+  right: -1px;
+}
+
+/* Status colors */
+.db-avatar__status--online {
+  background-color: #3BA65E;
+}
+
+.db-avatar__status--offline {
+  background-color: #9EA3AD;
+}
+
+.db-avatar__status--away {
+  background-color: #DE7921;
+}
+
+.db-avatar__status--busy {
+  background-color: #E65B77;
+}
+
+/* Clickable state */
+.db-avatar--clickable {
+  cursor: pointer;
+}
+
+.db-avatar--clickable:hover .db-avatar__container {
+  opacity: 0.8;
+  transform: scale(0.98);
+  transition: all 150ms ease-in-out;
+}
+
+.db-avatar--clickable:active .db-avatar__container {
+  transform: scale(0.95);
+}
+
+.db-avatar--clickable:focus-visible {
+  outline: 2px solid #2272B4;
+  outline-offset: 2px;
+  border-radius: inherit;
+}
+
+/* Dark mode support */
+[data-theme="dark"] .db-avatar__container {
+  background-color: #445461;
+}
+
+[data-theme="dark"] .db-avatar__status {
+  border-color: #20272E;
+}
+
+[data-theme="dark"] .db-avatar__status--offline {
+  background-color: #8396A5;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .db-avatar__status {
+    border-width: 3px;
+  }
+  
+  .db-avatar--clickable:focus-visible {
+    outline-width: 3px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .db-avatar__image {
+    transition: none;
+  }
+  
+  .db-avatar--clickable:hover .db-avatar__container {
+    transition: none;
+    transform: none;
+    opacity: 0.9;
+  }
+  
+  .db-avatar--clickable:active .db-avatar__container {
+    transform: none;
+  }
+}

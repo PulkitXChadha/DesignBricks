@@ -1,0 +1,120 @@
+.db-tooltip__trigger {
+  display: inline-block;
+}
+
+.db-tooltip {
+  position: fixed;
+  background-color: #20272E;
+  color: #FFFFFF;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1700;
+  opacity: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.db-tooltip__content {
+  position: relative;
+  z-index: 1;
+}
+
+.db-tooltip__arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #20272E;
+  transform: rotate(45deg);
+  z-index: 0;
+}
+
+/* Arrow positioning for different placements */
+.db-tooltip--top .db-tooltip__arrow,
+.db-tooltip--top-start .db-tooltip__arrow,
+.db-tooltip--top-end .db-tooltip__arrow {
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.db-tooltip--top-start .db-tooltip__arrow {
+  left: 12px;
+  transform: rotate(45deg);
+}
+
+.db-tooltip--top-end .db-tooltip__arrow {
+  left: auto;
+  right: 12px;
+  transform: rotate(45deg);
+}
+
+.db-tooltip--bottom .db-tooltip__arrow,
+.db-tooltip--bottom-start .db-tooltip__arrow,
+.db-tooltip--bottom-end .db-tooltip__arrow {
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.db-tooltip--bottom-start .db-tooltip__arrow {
+  left: 12px;
+  transform: rotate(45deg);
+}
+
+.db-tooltip--bottom-end .db-tooltip__arrow {
+  left: auto;
+  right: 12px;
+  transform: rotate(45deg);
+}
+
+.db-tooltip--left .db-tooltip__arrow {
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.db-tooltip--right .db-tooltip__arrow {
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+}
+
+
+/* Dark mode styles (assuming dark mode uses data attribute) */
+[data-theme="dark"] .db-tooltip {
+  background-color: #37444F;
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .db-tooltip__arrow {
+  background-color: #37444F;
+}
+
+/* Light mode specific adjustments if needed */
+[data-theme="light"] .db-tooltip {
+  background-color: #20272E;
+  color: #FFFFFF;
+}
+
+[data-theme="light"] .db-tooltip__arrow {
+  background-color: #20272E;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .db-tooltip {
+    border: 1px solid #FFFFFF;
+  }
+}
+
+/* Reduced motion support - no animations used */
+@media (prefers-reduced-motion: reduce) {
+  .db-tooltip {
+    /* No animations to disable */
+  }
+}

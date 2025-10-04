@@ -3,7 +3,7 @@ import { Select, SelectOption } from './Select';
 import React, { useState } from 'react';
 
 const meta = {
-  title: 'Components/Select',
+  title: 'Inputs/Select',
   component: Select,
   parameters: {
     layout: 'centered',

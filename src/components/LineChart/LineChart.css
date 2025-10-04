@@ -1,0 +1,845 @@
+/* ===== CSS Custom Properties for Theming ===== */
+:root {
+  --chart-background: hsl(0 0% 100%);
+  --chart-foreground: hsl(222 47% 11%);
+  --chart-muted: hsl(210 40% 95%);
+  --chart-muted-foreground: hsl(215 13% 65%);
+  --chart-border: hsl(214 32% 91%);
+  --chart-input: hsl(214 32% 91%);
+  --chart-grid: hsl(220 13% 91%);
+  --chart-tooltip-bg: hsl(224 71% 4%);
+  --chart-tooltip-fg: hsl(213 31% 91%);
+  --chart-primary: hsl(221 83% 53%);
+  --chart-primary-hover: hsl(221 83% 45%);
+  --chart-secondary: hsl(187 85% 26%);
+  --chart-secondary-hover: hsl(187 85% 18%);
+  --chart-success: hsl(142 76% 36%);
+  --chart-success-hover: hsl(142 76% 28%);
+  --chart-warning: hsl(32 95% 44%);
+  --chart-warning-hover: hsl(32 95% 36%);
+  --chart-error: hsl(346 87% 43%);
+  --chart-error-hover: hsl(346 87% 35%);
+  --chart-radius: 6px;
+  --chart-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --chart-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --chart-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --chart-background: hsl(224 71% 4%);
+  --chart-foreground: hsl(213 31% 91%);
+  --chart-muted: hsl(223 47% 11%);
+  --chart-muted-foreground: hsl(215 13% 65%);
+  --chart-border: hsl(216 34% 17%);
+  --chart-input: hsl(216 34% 17%);
+  --chart-grid: hsl(215 27% 32%);
+  --chart-tooltip-bg: hsl(224 71% 4%);
+  --chart-tooltip-fg: hsl(213 31% 91%);
+}
+
+.db-linechart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  position: relative;
+  background-color: var(--chart-background);
+  color: var(--chart-foreground);
+  border-radius: var(--chart-radius);
+}
+
+.db-linechart__svg {
+  display: block;
+  overflow: visible;
+}
+
+/* Empty state */
+.db-linechart--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border: 2px dashed var(--chart-border);
+  border-radius: var(--chart-radius);
+  background-color: var(--chart-muted);
+  transition: var(--chart-transition);
+}
+
+.db-linechart--empty:hover {
+  border-color: var(--chart-primary);
+  background-color: hsl(var(--chart-primary) / 0.02);
+}
+
+.db-linechart__empty-state {
+  text-align: center;
+  color: var(--chart-muted-foreground);
+}
+
+.db-linechart__empty-state p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Chart title */
+.db-linechart__title {
+  font-size: 16px;
+  font-weight: 600;
+  fill: var(--chart-foreground);
+  dominant-baseline: middle;
+}
+
+/* Axes */
+.db-linechart__axis {
+  font-size: 12px;
+  transition: var(--chart-transition);
+}
+
+.db-linechart__axis text {
+  fill: var(--chart-muted-foreground);
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.db-linechart__axis path,
+.db-linechart__axis line {
+  stroke: var(--chart-border);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+  transition: var(--chart-transition);
+}
+
+/* Axis labels */
+.db-linechart__axis-label {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--chart-foreground);
+  dominant-baseline: middle;
+}
+
+/* Grid lines */
+.db-linechart__grid line {
+  stroke: var(--chart-grid);
+  stroke-width: 1;
+  stroke-dasharray: 2,2;
+  shape-rendering: crispEdges;
+  transition: var(--chart-transition);
+}
+
+.db-linechart__grid path {
+  stroke: none;
+}
+
+/* Line styles - Primary */
+.db-linechart__line--primary {
+  fill: none;
+  stroke: var(--chart-primary);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--chart-transition);
+}
+
+.db-linechart__point--primary {
+  fill: var(--chart-primary);
+  stroke: var(--chart-background);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-linechart__point--primary:hover {
+  fill: var(--chart-primary-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
+}
+
+/* Line styles - Secondary */
+.db-linechart__line--secondary {
+  fill: none;
+  stroke: var(--chart-secondary);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--chart-transition);
+}
+
+.db-linechart__point--secondary {
+  fill: var(--chart-secondary);
+  stroke: var(--chart-background);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-linechart__point--secondary:hover {
+  fill: var(--chart-secondary-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
+}
+
+/* Line styles - Success */
+.db-linechart__line--success {
+  fill: none;
+  stroke: var(--chart-success);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--chart-transition);
+}
+
+.db-linechart__point--success {
+  fill: var(--chart-success);
+  stroke: var(--chart-background);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-linechart__point--success:hover {
+  fill: var(--chart-success-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
+}
+
+/* Line styles - Warning */
+.db-linechart__line--warning {
+  fill: none;
+  stroke: var(--chart-warning);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--chart-transition);
+}
+
+.db-linechart__point--warning {
+  fill: var(--chart-warning);
+  stroke: var(--chart-background);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-linechart__point--warning:hover {
+  fill: var(--chart-warning-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
+}
+
+/* Line styles - Error */
+.db-linechart__line--error {
+  fill: none;
+  stroke: var(--chart-error);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: var(--chart-transition);
+}
+
+.db-linechart__point--error {
+  fill: var(--chart-error);
+  stroke: var(--chart-background);
+  stroke-width: 2;
+  cursor: pointer;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-linechart__point--error:hover {
+  fill: var(--chart-error-hover);
+  transform: scale(1.1);
+  filter: drop-shadow(var(--chart-shadow-md));
+}
+
+/* Tooltip */
+.db-linechart__tooltip {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  background-color: var(--chart-tooltip-bg);
+  color: var(--chart-tooltip-fg);
+  padding: 12px 16px;
+  border-radius: var(--chart-radius);
+  font-size: 13px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: var(--chart-shadow-md);
+  border: 1px solid var(--chart-border);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 120px;
+  max-width: 300px;
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Force hardware acceleration */
+  /* Positioning optimizations */
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Add a subtle arrow pointing down when tooltip is above data point */
+.db-linechart__tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--chart-tooltip-bg);
+  z-index: 1001;
+}
+
+/* Hide arrow when tooltip might be positioned below (handled by JavaScript) */
+.db-linechart__tooltip.tooltip-below::after {
+  display: none;
+}
+
+.db-linechart__tooltip.tooltip-below::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid var(--chart-tooltip-bg);
+  z-index: 1001;
+}
+
+.db-linechart__tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: max-content;
+}
+
+.db-linechart__tooltip-date {
+  font-size: 12px;
+  color: var(--chart-muted-foreground);
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.db-linechart__tooltip-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--chart-tooltip-fg);
+}
+
+.db-linechart__tooltip-change {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: calc(var(--chart-radius) - 2px);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.db-linechart__tooltip-change--positive {
+  color: var(--chart-success);
+  background-color: hsl(var(--chart-success) / 0.1);
+}
+
+.db-linechart__tooltip-change--negative {
+  color: var(--chart-error);
+  background-color: hsl(var(--chart-error) / 0.1);
+}
+
+/* Vertical line indicator */
+.db-linechart__vertical-line {
+  stroke: var(--chart-muted-foreground);
+  stroke-width: 1;
+  stroke-dasharray: 4,4;
+  pointer-events: none;
+  opacity: 0;
+  transition: var(--chart-transition);
+}
+
+/* Hover circle */
+.db-linechart__hover-circle {
+  stroke: var(--chart-background);
+  stroke-width: 3;
+  pointer-events: none;
+  opacity: 0;
+  transition: var(--chart-transition);
+  filter: drop-shadow(var(--chart-shadow-sm));
+}
+
+.db-linechart__hover-circle--primary {
+  fill: var(--chart-primary);
+}
+
+.db-linechart__hover-circle--secondary {
+  fill: var(--chart-secondary);
+}
+
+.db-linechart__hover-circle--success {
+  fill: var(--chart-success);
+}
+
+.db-linechart__hover-circle--warning {
+  fill: var(--chart-warning);
+}
+
+.db-linechart__hover-circle--error {
+  fill: var(--chart-error);
+}
+
+/* Overlay for mouse events */
+.db-linechart__overlay {
+  cursor: crosshair;
+}
+
+/* Variants */
+.db-linechart--minimal .db-linechart__grid {
+  display: none;
+}
+
+.db-linechart--minimal .db-linechart__axis path,
+.db-linechart--minimal .db-linechart__axis line {
+  stroke: none;
+}
+
+.db-linechart--detailed .db-linechart__line--primary,
+.db-linechart--detailed .db-linechart__line--secondary,
+.db-linechart--detailed .db-linechart__line--success,
+.db-linechart--detailed .db-linechart__line--warning,
+.db-linechart--detailed .db-linechart__line--error {
+  stroke-width: 3;
+}
+
+.db-linechart--detailed .db-linechart__point--primary,
+.db-linechart--detailed .db-linechart__point--secondary,
+.db-linechart--detailed .db-linechart__point--success,
+.db-linechart--detailed .db-linechart__point--warning,
+.db-linechart--detailed .db-linechart__point--error {
+  r: 5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .db-linechart__title {
+    font-size: 14px;
+  }
+  
+  .db-linechart__axis {
+    font-size: 10px;
+  }
+  
+  .db-linechart__axis-label {
+    font-size: 11px;
+  }
+  
+  .db-linechart__tooltip {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+/* Focus and accessibility */
+.db-linechart__point:focus {
+  outline: 2px solid var(--chart-primary);
+  outline-offset: 2px;
+  stroke-width: 3;
+  stroke: var(--chart-primary);
+  filter: drop-shadow(0 0 4px hsl(var(--chart-primary) / 0.4));
+}
+
+.db-linechart__svg:focus {
+  outline: 2px solid var(--chart-primary);
+  outline-offset: 2px;
+}
+
+.db-linechart:focus-visible {
+  outline: 2px solid var(--chart-primary);
+  outline-offset: 2px;
+  border-radius: var(--chart-radius);
+}
+
+/* Animation for line drawing */
+@keyframes db-linechart-draw {
+  from {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+  }
+}
+
+.db-linechart--animated .db-linechart__line--primary,
+.db-linechart--animated .db-linechart__line--secondary,
+.db-linechart--animated .db-linechart__line--success,
+.db-linechart--animated .db-linechart__line--warning,
+.db-linechart--animated .db-linechart__line--error {
+  animation: db-linechart-draw 1.5s ease-in-out;
+}
+
+/* Compound Components Styles */
+
+/* Container */
+.db-linechart__container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.db-linechart__container--card {
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #E8ECF0;
+  background-color: #FFFFFF;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.db-linechart__container--minimal {
+  gap: 8px;
+  padding: 0;
+}
+
+/* Header */
+.db-linechart__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.db-linechart__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F272D;
+  line-height: 1.4;
+}
+
+.db-linechart__subtitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #5F7281;
+  line-height: 1.5;
+}
+
+/* Legend */
+.db-linechart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.db-linechart__legend--top {
+  order: -1;
+  margin-bottom: 16px;
+}
+
+.db-linechart__legend--bottom {
+  margin-top: 16px;
+}
+
+.db-linechart__legend--left {
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 16px;
+}
+
+.db-linechart__legend--right {
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 16px;
+}
+
+.db-linechart__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #37444F;
+}
+
+.db-linechart__legend-symbol {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.db-linechart__legend-symbol--line {
+  height: 2px;
+  border-radius: 1px;
+}
+
+.db-linechart__legend-symbol--circle {
+  border-radius: 50%;
+}
+
+.db-linechart__legend-symbol--square {
+  border-radius: 2px;
+}
+
+.db-linechart__legend-label {
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* Content */
+.db-linechart__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Axis Container */
+.db-linechart__axis-container {
+  position: relative;
+}
+
+.db-linechart__axis-container--x {
+  width: 100%;
+  height: auto;
+}
+
+.db-linechart__axis-container--y {
+  height: 100%;
+  width: auto;
+}
+
+/* Grid Compound */
+.db-linechart__grid-compound {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.db-linechart__grid-compound--horizontal .db-linechart__grid line {
+  stroke-dasharray: var(--grid-stroke-dasharray, 2,2);
+  opacity: var(--grid-opacity, 0.3);
+}
+
+.db-linechart__grid-compound--vertical .db-linechart__grid line {
+  stroke-dasharray: var(--grid-stroke-dasharray, 2,2);
+  opacity: var(--grid-opacity, 0.3);
+}
+
+/* Tooltip Compound */
+.db-linechart__tooltip-compound {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.db-linechart__tooltip-compound--compact {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.db-linechart__tooltip-compound--detailed {
+  padding: 16px 20px;
+  font-size: 14px;
+  min-width: 200px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .db-linechart__line--primary,
+  .db-linechart__line--secondary,
+  .db-linechart__line--success,
+  .db-linechart__line--warning,
+  .db-linechart__line--error {
+    stroke-width: 3;
+  }
+  
+  .db-linechart__point--primary,
+  .db-linechart__point--secondary,
+  .db-linechart__point--success,
+  .db-linechart__point--warning,
+  .db-linechart__point--error {
+    stroke-width: 3;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .db-linechart * {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01s !important;
+  }
+}
+
+/* Accessibility */
+.db-linechart[tabindex] {
+  outline: none;
+}
+
+/* Keyboard Navigation */
+.db-linechart__point[tabindex] {
+  outline: none;
+}
+
+/* Performance Optimizations */
+.db-linechart--optimized {
+  will-change: transform;
+  contain: layout style paint;
+}
+
+.db-linechart--optimized .db-linechart__line {
+  will-change: d;
+}
+
+.db-linechart--optimized .db-linechart__point {
+  will-change: cx, cy;
+}
+
+/* Responsive Styles */
+@media (max-width: 640px) {
+  .db-linechart__container--card {
+    padding: 16px;
+  }
+  
+  .db-linechart__legend {
+    gap: 12px;
+  }
+  
+  .db-linechart__legend--left,
+  .db-linechart__legend--right {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 0;
+    margin-top: 16px;
+  }
+  
+  .db-linechart__title {
+    font-size: 16px;
+  }
+  
+  .db-linechart__subtitle {
+    font-size: 13px;
+  }
+}
+
+/* Chart Aggregates */
+.db-chart-aggregates {
+  display: flex;
+  gap: 24px;
+  padding: 16px 0;
+  font-family: -apple-system, "system-ui", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.db-chart-aggregates--horizontal {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.db-chart-aggregates--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.db-chart-aggregates--grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+}
+
+.db-chart-aggregates__metric {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.db-chart-aggregates__label {
+  color: #5F7281;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.db-chart-aggregates__value {
+  color: #1F272D;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.db-chart-aggregates__change {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.db-chart-aggregates__change--positive {
+  color: #3BA65E;
+  background-color: #F3FCF6;
+}
+
+.db-chart-aggregates__change--negative {
+  color: #E65B77;
+  background-color: #FFF5F7;
+}
+
+/* Metric color variants */
+.db-chart-aggregates__metric--primary .db-chart-aggregates__value {
+  color: #2272B4;
+}
+
+.db-chart-aggregates__metric--secondary .db-chart-aggregates__value {
+  color: #04867D;
+}
+
+.db-chart-aggregates__metric--success .db-chart-aggregates__value {
+  color: #3BA65E;
+}
+
+.db-chart-aggregates__metric--warning .db-chart-aggregates__value {
+  color: #DE7921;
+}
+
+.db-chart-aggregates__metric--error .db-chart-aggregates__value {
+  color: #E65B77;
+}
+
+.db-chart-aggregates__metric--neutral .db-chart-aggregates__value {
+  color: #5F7281;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .db-chart-aggregates--horizontal {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .db-chart-aggregates__metric {
+    font-size: 12px;
+  }
+  
+  .db-chart-aggregates__change {
+    font-size: 11px;
+  }
+}

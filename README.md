@@ -6,12 +6,20 @@ DesignBricks is an extended, community-driven implementation offering additional
 
 A React component library implementing the Databricks design system.
 
+## 📊 Project Status
+
+✅ **Phase 1-4 Complete** (80% of improvement plan)  
+🎉 **2,222 tests passing** | **80%+ code coverage** | **37 components**  
+📚 **Comprehensive documentation** | 🛠️ **Developer tools** | ♿ **WCAG 2.1 AA**
+
+[View Full Project Plan →](./project_plan/TEAM-IMPROVEMENT-PLAN.md)
+
 ## 📦 Installation
 
 ```bash
-  npm install designbricks
-  or 
-  yarn install designbricks
+npm install designbricks
+# or
+yarn add designbricks
 ```
 
 ## 🚀 Quick Start
@@ -28,6 +36,8 @@ function App() {
   );
 }
 ```
+
+**New to DesignBricks?** Check out our [Getting Started Guide](./docs/GETTING-STARTED.md) for a comprehensive tutorial (< 30 minutes).
 
 ## 📚 Components
 
@@ -56,18 +66,36 @@ The design system includes comprehensive design tokens for:
 
 ## 🛠 Development
 
-### Setup
+### Quick Start
 
 ```bash
 # Install dependencies
 npm install
 
+# Start Storybook
+npm run storybook
+
+# Run tests
+npm test
+
 # Build the library
 npm run build
-
-# Watch mode for development
-npm run dev
 ```
+
+### Developer Tools 🆕
+
+```bash
+# Generate new component
+npm run generate:component -- MyComponent
+
+# Validate design tokens
+npm run validate:tokens
+
+# Generate API documentation
+npm run docs:generate
+```
+
+[Learn more about Developer Tools →](./docs/DEVELOPER-TOOLS.md)
 
 ### Project Structure
 
@@ -202,9 +230,18 @@ All components are built with accessibility in mind:
 - Screen reader support
 - WCAG 2.1 AA compliance
 
+## 📚 Documentation
+
+- 📖 **[Getting Started](./docs/GETTING-STARTED.md)** - Complete onboarding guide
+- 📋 **[API Documentation](./docs/API.md)** - Full component reference
+- 🔄 **[Migration Guide](./docs/MIGRATION.md)** - Migrate from MUI, Ant Design, Chakra, Bootstrap
+- 🛠️ **[Developer Tools](./docs/DEVELOPER-TOOLS.md)** - CLI tools and workflows
+- 💡 **[Real-World Examples](./examples/README.md)** - 5 production-ready applications
+- 🎨 **[Storybook](https://pulkitxchadha.github.io/DesignBricks/)** - Interactive playground
+
 ## 🤝 Contributing
 
-Contributions are welcome!
+Contributions are welcome! See our [Contributing Guide](./CONTRIBUTING.md).
 
 ## 📄 License
 

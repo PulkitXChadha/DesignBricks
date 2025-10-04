@@ -3,7 +3,7 @@ import { Button } from './Button';
 import React from 'react';
 
 const meta = {
-  title: 'Components/Button',
+  title: 'Foundation/Button',
   component: Button,
   parameters: {
     layout: 'centered',
