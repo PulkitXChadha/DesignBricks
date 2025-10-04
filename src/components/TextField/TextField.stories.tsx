@@ -8,7 +8,7 @@ const meta = {
   parameters: {
     docs: {
       description: {
-        component: 'A TextField (Input) component refactored to align with the Databricks DuBois design system. Features validation states, prefix/suffix content, read-only state, and enhanced accessibility.',
+        component: 'A TextField (Input) component refactored to align with the Databricks design system. Features validation states, prefix/suffix content, read-only state, and enhanced accessibility.',
       },
     },
   },

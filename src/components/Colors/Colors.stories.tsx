@@ -221,7 +221,7 @@ export const ColorUsageExamples: Story = {
           }}>
             Teal Button
           </button>
-          {/* DuBois secondary colors examples */}
+          {/* Secondary colors examples */}
           <button style={{ 
             backgroundColor: '#8A63BF', 
             color: 'white', 
