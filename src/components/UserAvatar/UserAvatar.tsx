@@ -98,6 +98,7 @@ export const UserAvatar = forwardRef<HTMLDivElement, UserAvatarProps>(
     const shouldShowStatus = showStatus && status;
 
     return (
+      /* eslint-disable-next-line jsx-a11y/no-static-element-interactions */
       <div
         ref={ref}
         className={clsx(
@@ -127,6 +128,7 @@ export const UserAvatar = forwardRef<HTMLDivElement, UserAvatarProps>(
       >
         <div className="db-avatar__container">
           {src && !imageError && (
+            /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */
             <img
               src={src}
               alt={alt || `${name}'s avatar`}

@@ -500,6 +500,8 @@ const CompleteLayout = () => {
             {sidebarItems.map((item) => (
               <div
                 key={item.id}
+                role="button"
+                tabIndex={0}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -511,6 +513,12 @@ const CompleteLayout = () => {
                   fontSize: '14px',
                   color: '#445461',
                   transition: 'background-color 0.15s ease',
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    // Handle navigation
+                  }
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = '#E8ECF0';

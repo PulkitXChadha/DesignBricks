@@ -42,10 +42,9 @@ Object.defineProperty(window, 'CSS', {
 });
 
 // Suppress console errors for tests unless debugging
-// eslint-disable-next-line no-console
+/* eslint-disable no-console */
 const originalError = console.error;
 beforeAll(() => {
-  // eslint-disable-next-line no-console
   console.error = (...args: any[]) => {
     if (
       typeof args[0] === 'string' &&
@@ -53,16 +52,15 @@ beforeAll(() => {
     ) {
       return;
     }
-    // eslint-disable-next-line no-console
     originalError.call(console, ...args);
   };
 });
 
 afterAll(() => {
   // Restore original console.error after tests
-  // eslint-disable-next-line no-console
   console.error = originalError;
 });
+/* eslint-enable no-console */
 
 
 

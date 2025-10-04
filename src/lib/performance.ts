@@ -101,7 +101,6 @@ export class PerformanceMonitor {
     // const avg = times.reduce((a, b) => a + b, 0) / times.length;
     // const max = Math.max(...times);
     // const min = Math.min(...times);
-    // eslint-disable-next-line no-console
     // console.log(`${component}: avg=${avg.toFixed(2)}ms, min=${min.toFixed(2)}ms, max=${max.toFixed(2)}ms (${times.length} renders)`);
   });
   // eslint-disable-next-line no-console

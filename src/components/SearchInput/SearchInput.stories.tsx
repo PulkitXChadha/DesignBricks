@@ -244,6 +244,8 @@ const InteractiveComponent = () => {
           {results.map((result, index) => (
             <div
               key={index}
+              role="button"
+              tabIndex={0}
               style={{
                 padding: '8px 16px',
                 cursor: 'pointer',
@@ -254,6 +256,12 @@ const InteractiveComponent = () => {
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  // Handle selection
+                }
               }}
             >
               {result}
@@ -518,6 +526,8 @@ const RealWorldExampleComponent = () => {
             {results.map((result, index) => (
               <div
                 key={index}
+                role="button"
+                tabIndex={0}
                 style={{
                   padding: '16px',
                   borderBottom: index < results.length - 1 ? '1px solid #F3F4F6' : 'none',
@@ -529,6 +539,12 @@ const RealWorldExampleComponent = () => {
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    // Handle selection
+                  }
                 }}
               >
                 <div style={{

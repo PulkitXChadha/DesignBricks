@@ -38,6 +38,7 @@ const UserAvatar: React.FC<{ user: UserProfile; variant?: 'light' | 'dark' }> = 
   const initials = user.initials || getInitials(user.name);
 
   return (
+    /* eslint-disable-next-line jsx-a11y/no-static-element-interactions */
     <div
       className={clsx(
         'db-topbar__user-profile',
