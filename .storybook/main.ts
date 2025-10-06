@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-vite';
+import { mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx|mdx)', '../src/**/*.mdx'],
@@ -15,39 +16,51 @@ const config: StorybookConfig = {
   docs: {
     autodocs: 'tag',
   },
-  async viteFinal(config) {
-    // Configure dependency optimization to handle problematic dependencies
-    config.optimizeDeps = {
-      ...config.optimizeDeps,
-      exclude: [
-        ...(config.optimizeDeps?.exclude || []),
-        '@storybook/blocks',
-        '@storybook/addon-docs',
-        'storybook',
-      ],
-      include: [
-        ...(config.optimizeDeps?.include || []),
-        'react',
-        'react-dom',
-      ],
-    };
-    
-    // Ensure proper handling of globals and build
-    config.define = {
-      ...config.define,
-      global: 'globalThis',
-    };
-    
-    // Configure build options to prevent external marking issues
-    config.build = {
-      ...config.build,
-      rollupOptions: {
-        ...config.build?.rollupOptions,
-        external: [],
+  async viteFinal(config, { configType }) {
+    // Return merged config
+    return mergeConfig(config, {
+      // Resolve configuration for Storybook preview runtime
+      resolve: {
+        alias: {
+          // Ensure Storybook internals resolve correctly
+          '@storybook/blocks': '@storybook/blocks',
+        },
       },
-    };
-    
-    return config;
+      // Configure dependency optimization
+      optimizeDeps: {
+        exclude: [
+          '@storybook/blocks',
+          '@storybook/addon-docs',
+          'storybook',
+        ],
+        include: [
+          'react',
+          'react-dom',
+          'react/jsx-runtime',
+        ],
+        esbuildOptions: {
+          // Node.js global to browser globalThis
+          define: {
+            global: 'globalThis',
+          },
+        },
+      },
+      // Define global variables
+      define: {
+        global: 'globalThis',
+        'process.env': {},
+      },
+      // Build configuration
+      build: {
+        commonjsOptions: {
+          include: [/node_modules/],
+          transformMixedEsModules: true,
+        },
+        rollupOptions: {
+          external: [],
+        },
+      },
+    });
   },
   // staticDirs: ['../public'], // Uncomment if you have static assets
 };
