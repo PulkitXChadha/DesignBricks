@@ -414,57 +414,6 @@ describe('Sidebar', () => {
     });
   });
 
-  // Toggle functionality tests
-  describe('Toggle Functionality', () => {
-    it('shows toggle button by default', () => {
-      render(<Sidebar items={sampleItems} />);
-      
-      expect(screen.getByLabelText('Collapse sidebar')).toBeInTheDocument();
-    });
-
-    it('does not show toggle button when collapsible is false', () => {
-      render(<Sidebar items={sampleItems} collapsible={false} />);
-      
-      expect(screen.queryByLabelText('Collapse sidebar')).not.toBeInTheDocument();
-    });
-
-    it('calls onCollapsedChange when toggle is clicked', async () => {
-      const handleCollapsedChange = jest.fn();
-      const user = userEvent.setup();
-      
-      render(<Sidebar items={sampleItems} onCollapsedChange={handleCollapsedChange} />);
-      
-      await user.click(screen.getByLabelText('Collapse sidebar'));
-      
-      expect(handleCollapsedChange).toHaveBeenCalledWith(true);
-    });
-
-    it('updates toggle label when collapsed', () => {
-      render(<Sidebar items={sampleItems} collapsed />);
-      
-      expect(screen.getByLabelText('Expand sidebar')).toBeInTheDocument();
-    });
-
-    it('toggles collapsed state', async () => {
-      const handleCollapsedChange = jest.fn();
-      const user = userEvent.setup();
-      
-      const { rerender } = render(
-        <Sidebar items={sampleItems} collapsed={false} onCollapsedChange={handleCollapsedChange} />
-      );
-      
-      await user.click(screen.getByLabelText('Collapse sidebar'));
-      expect(handleCollapsedChange).toHaveBeenCalledWith(true);
-      
-      rerender(
-        <Sidebar items={sampleItems} collapsed={true} onCollapsedChange={handleCollapsedChange} />
-      );
-      
-      await user.click(screen.getByLabelText('Expand sidebar'));
-      expect(handleCollapsedChange).toHaveBeenCalledWith(false);
-    });
-  });
-
   // Accessibility tests
   describe('Accessibility', () => {
     it('should not have accessibility violations', async () => {
@@ -479,13 +428,6 @@ describe('Sidebar', () => {
       
       const results = await axe(container);
       expect(results).toHaveNoViolations();
-    });
-
-    it('toggle button has proper aria-label', () => {
-      render(<Sidebar items={sampleItems} />);
-      
-      const toggle = screen.getByLabelText('Collapse sidebar');
-      expect(toggle).toHaveAttribute('aria-label', 'Collapse sidebar');
     });
 
     it('uses semantic aside element', () => {
@@ -505,11 +447,10 @@ describe('Sidebar', () => {
       render(<Sidebar items={sampleItems} />);
       
       // Tab through items
-      await user.tab(); // Toggle button
       await user.tab(); // First item
       
       const buttons = screen.getAllByRole('button');
-      expect(buttons[1]).toHaveFocus(); // First sidebar item (after toggle)
+      expect(buttons[0]).toHaveFocus(); // First sidebar item
     });
   });
 

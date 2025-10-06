@@ -18,11 +18,9 @@ export interface SidebarProps {
   activeItem?: string;
   onItemClick?: (item: SidebarItem) => void;
   collapsed?: boolean;
-  onCollapsedChange?: (collapsed: boolean) => void;
   header?: React.ReactNode;
   footer?: React.ReactNode;
   width?: number;
-  collapsible?: boolean;
   variant?: 'light' | 'dark';
 }
 
@@ -31,11 +29,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   activeItem,
   onItemClick,
   collapsed = false,
-  onCollapsedChange,
   header,
   footer,
   width = 240,
-  collapsible = true,
   variant = 'light',
 }) => {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -137,20 +133,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       style={{ width: collapsed ? 64 : width }}
     >
       {header && <div className="db-sidebar__header">{header}</div>}
-
-      {collapsible && (
-        <button
-          className="db-sidebar__toggle"
-          onClick={() => onCollapsedChange?.(!collapsed)}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="6" x2="21" y2="6"/>
-            <line x1="3" y1="12" x2="21" y2="12"/>
-            <line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-        </button>
-      )}
 
       <nav className="db-sidebar__nav">
         {items.map((item) => renderItem(item))}

@@ -20,7 +20,6 @@ export * from './components/Tabs';
 export * from './components/Sidebar';
 export * from './components/TopBar';
 export * from './components/Breadcrumbs';
-export * from './components/Collapsible';
 
 // Feedback
 export * from './components/Alert';

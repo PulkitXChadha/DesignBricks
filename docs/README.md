@@ -86,7 +86,6 @@ Welcome to the comprehensive documentation for DesignBricks - the Databricks Des
 #### Layout Components
 - **Flex** - Flexbox layouts
 - **Grid** - Grid layouts
-- **Collapsible** - Collapsible sections
 
 #### Chart Components
 - **LineChart** - Line charts

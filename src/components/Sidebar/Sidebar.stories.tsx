@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Sidebar, SidebarItem } from './Sidebar';
+import { TopBar } from '../TopBar/TopBar';
 import React, { useState } from 'react';
 
 const meta = {
@@ -25,16 +26,9 @@ const meta = {
     },
     collapsed: {
       control: 'boolean',
-      description: 'Collapsed state',
+      description: 'Collapsed state (controlled externally)',
       table: {
         defaultValue: { summary: false },
-      },
-    },
-    collapsible: {
-      control: 'boolean',
-      description: 'Allow collapse/expand',
-      table: {
-        defaultValue: { summary: true },
       },
     },
     width: {
@@ -257,6 +251,65 @@ export const Basic: Story = {
       </div>
     );
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { Sidebar, SidebarItem } from '@designbricks/core';
+import { useState } from 'react';
+
+const items: SidebarItem[] = [
+  {
+    id: 'home',
+    label: 'Home',
+    icon: <HomeIcon />,
+  },
+  {
+    id: 'catalog',
+    label: 'Catalog',
+    icon: <CatalogIcon />,
+  },
+  {
+    id: 'workflows',
+    label: 'Workflows',
+    icon: <WorkflowIcon />,
+    badge: '3',
+  },
+  {
+    id: 'jobs',
+    label: 'Jobs',
+    icon: <JobsIcon />,
+  },
+  {
+    id: 'models',
+    label: 'Models',
+    icon: <ModelsIcon />,
+  },
+  {
+    id: 'compute',
+    label: 'Compute',
+    icon: <ComputeIcon />,
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    icon: <SettingsIcon />,
+  },
+];
+
+function App() {
+  const [activeItem, setActiveItem] = useState('home');
+
+  return (
+    <Sidebar
+      items={items}
+      activeItem={activeItem}
+      onItemClick={(item) => setActiveItem(item.id)}
+    />
+  );
+}`,
+      },
+    },
+  },
 };
 
 export const Dark: Story = {
@@ -277,6 +330,26 @@ export const Dark: Story = {
         </div>
       </div>
     );
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { Sidebar } from '@designbricks/core';
+
+function App() {
+  const [activeItem, setActiveItem] = useState('home');
+
+  return (
+    <Sidebar
+      items={items}
+      activeItem={activeItem}
+      onItemClick={(item) => setActiveItem(item.id)}
+      variant="dark"
+    />
+  );
+}`,
+      },
+    },
   },
 };
 
@@ -340,9 +413,56 @@ export const WithNestedItems: Story = {
       </div>
     );
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { Sidebar, SidebarItem } from '@designbricks/core';
+
+const nestedItems: SidebarItem[] = [
+  {
+    id: 'home',
+    label: 'Home',
+    icon: <HomeIcon />,
+  },
+  {
+    id: 'catalog',
+    label: 'Catalog',
+    icon: <CatalogIcon />,
+    children: [
+      { id: 'databases', label: 'Databases' },
+      { id: 'schemas', label: 'Schemas' },
+      { id: 'tables', label: 'Tables', badge: '12' },
+    ],
+  },
+  {
+    id: 'workflows',
+    label: 'Workflows',
+    icon: <WorkflowIcon />,
+    children: [
+      { id: 'pipelines', label: 'Pipelines' },
+      { id: 'schedules', label: 'Schedules' },
+      { id: 'runs', label: 'Runs', badge: 'NEW' },
+    ],
+  },
+];
+
+function App() {
+  const [activeItem, setActiveItem] = useState('overview');
+
+  return (
+    <Sidebar
+      items={nestedItems}
+      activeItem={activeItem}
+      onItemClick={(item) => setActiveItem(item.id)}
+    />
+  );
+}`,
+      },
+    },
+  },
 };
 
-export const Collapsible: Story = {
+export const WithExternalControl: Story = {
   render: () => {
     const [activeItem, setActiveItem] = useState('home');
     const [collapsed, setCollapsed] = useState(false);
@@ -354,16 +474,56 @@ export const Collapsible: Story = {
           activeItem={activeItem}
           onItemClick={(item) => setActiveItem(item.id)}
           collapsed={collapsed}
-          onCollapsedChange={setCollapsed}
-          collapsible
         />
         <div style={{ flex: 1, padding: '24px', backgroundColor: '#f9f9f9' }}>
-          <h2>Collapsible Sidebar</h2>
-          <p>Click the toggle button to collapse/expand the sidebar.</p>
+          <h2>Externally Controlled Sidebar</h2>
+          <p>The sidebar is controlled by an external button.</p>
+          <button 
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              padding: '8px 16px',
+              marginBottom: '16px',
+              borderRadius: '4px',
+              border: '1px solid #ddd',
+              backgroundColor: '#fff',
+              cursor: 'pointer'
+            }}
+          >
+            {collapsed ? 'Expand' : 'Collapse'} Sidebar
+          </button>
           <p>Selected item: {activeItem}</p>
         </div>
       </div>
     );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'The sidebar should be controlled externally via the `collapsed` prop. Typically, this would be controlled by the TopBar menu button.',
+      },
+      source: {
+        code: `import { Sidebar } from '@designbricks/core';
+
+function App() {
+  const [activeItem, setActiveItem] = useState('home');
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setCollapsed(!collapsed)}>
+        Toggle Sidebar
+      </button>
+      <Sidebar
+        items={items}
+        activeItem={activeItem}
+        onItemClick={(item) => setActiveItem(item.id)}
+        collapsed={collapsed}
+      />
+    </>
+  );
+}`,
+      },
+    },
   },
 };
 
@@ -430,6 +590,70 @@ export const WithHeaderAndFooter: Story = {
       </div>
     );
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { Sidebar } from '@designbricks/core';
+
+const header = (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+    <div style={{
+      width: '32px',
+      height: '32px',
+      borderRadius: '4px',
+      backgroundColor: '#2272B4',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      fontSize: '14px',
+      fontWeight: 'bold',
+    }}>
+      DB
+    </div>
+    <div style={{ flex: 1, overflow: 'hidden' }}>
+      <div style={{ fontSize: '14px', fontWeight: '500' }}>Databricks</div>
+      <div style={{ fontSize: '11px', color: '#6B7280' }}>Workspace</div>
+    </div>
+  </div>
+);
+
+const footer = (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+    <div style={{
+      width: '32px',
+      height: '32px',
+      borderRadius: '50%',
+      backgroundColor: '#EDEFF2',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
+      <span style={{ fontSize: '12px' }}>JD</span>
+    </div>
+    <div style={{ flex: 1, overflow: 'hidden' }}>
+      <div style={{ fontSize: '13px', fontWeight: '500' }}>John Doe</div>
+      <div style={{ fontSize: '11px', color: '#6B7280' }}>john@example.com</div>
+    </div>
+  </div>
+);
+
+function App() {
+  const [activeItem, setActiveItem] = useState('home');
+
+  return (
+    <Sidebar
+      items={items}
+      activeItem={activeItem}
+      onItemClick={(item) => setActiveItem(item.id)}
+      header={header}
+      footer={footer}
+    />
+  );
+}`,
+      },
+    },
+  },
 };
 
 export const DisabledItems: Story = {
@@ -492,12 +716,53 @@ export const DisabledItems: Story = {
       </div>
     );
   },
+  parameters: {
+    docs: {
+      source: {
+        code: `import { Sidebar, SidebarItem } from '@designbricks/core';
+
+const items: SidebarItem[] = [
+  {
+    id: 'home',
+    label: 'Home',
+    icon: <HomeIcon />,
+  },
+  {
+    id: 'workflows',
+    label: 'Workflows (Coming Soon)',
+    icon: <WorkflowIcon />,
+    disabled: true,
+  },
+  {
+    id: 'models',
+    label: 'Models (Beta)',
+    icon: <ModelsIcon />,
+    badge: 'BETA',
+    disabled: true,
+  },
+];
+
+function App() {
+  const [activeItem, setActiveItem] = useState('home');
+
+  return (
+    <Sidebar
+      items={items}
+      activeItem={activeItem}
+      onItemClick={(item) => setActiveItem(item.id)}
+    />
+  );
+}`,
+      },
+    },
+  },
 };
 
-export const DatabricksStyle: Story = {
+export const WithTopBar: Story = {
   render: () => {
     const [activeItem, setActiveItem] = useState('workspace');
     const [collapsed, setCollapsed] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
 
     const databricksItems: SidebarItem[] = [
       {
@@ -636,77 +901,162 @@ export const DatabricksStyle: Story = {
       },
     ];
 
-    const header = (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div style={{
-          width: '32px',
-          height: '32px',
-          borderRadius: '4px',
-          background: 'linear-gradient(135deg, #FF6B35, #FF8E3C)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          fontSize: '12px',
-          fontWeight: 'bold',
-        }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-          </svg>
-        </div>
-        <div style={{ flex: 1, overflow: 'hidden' }}>
-          <div style={{ fontSize: '14px', fontWeight: '600' }}>databricks</div>
-        </div>
-      </div>
-    );
-
     return (
-      <div style={{ display: 'flex', height: '100vh', backgroundColor: '#f8fafc' }}>
-        <Sidebar
-          items={databricksItems}
-          activeItem={activeItem}
-          onItemClick={(item) => setActiveItem(item.id)}
-          collapsed={collapsed}
-          onCollapsedChange={setCollapsed}
-          collapsible
-          header={header}
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+        <TopBar
+          showMenuButton
+          onMenuClick={() => setCollapsed(!collapsed)}
+          sidebarCollapsed={collapsed}
+          searchValue={searchValue}
+          onSearchChange={setSearchValue}
+          notificationCount={5}
+          onNotificationClick={() => console.log('Notifications clicked')}
+          user={{
+            name: 'John Doe',
+            email: 'john.doe@databricks.com',
+            role: 'Data Engineer',
+          }}
           variant="light"
-          width={280}
         />
-        <div style={{ flex: 1, padding: '24px', backgroundColor: '#f8fafc' }}>
-          <div style={{ 
-            backgroundColor: 'white', 
-            borderRadius: '8px', 
-            padding: '24px',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-          }}>
-            <h1 style={{ 
-              fontSize: '24px', 
-              fontWeight: '600', 
-              margin: '0 0 8px 0',
-              color: '#1f2937'
+        <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+          <Sidebar
+            items={databricksItems}
+            activeItem={activeItem}
+            onItemClick={(item) => setActiveItem(item.id)}
+            collapsed={collapsed}
+            variant="light"
+            width={280}
+          />
+          <div style={{ flex: 1, padding: '24px', backgroundColor: '#f8fafc', overflow: 'auto' }}>
+            <div style={{ 
+              backgroundColor: 'white', 
+              borderRadius: '8px', 
+              padding: '24px',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
             }}>
-              Databricks Workspace
-            </h1>
-            <p style={{ 
-              color: '#6b7280', 
-              margin: '0 0 24px 0'
-            }}>
-              A complete analytics platform for data teams
-            </p>
-            <div style={{
-              padding: '16px',
-              backgroundColor: '#f8fafc',
-              borderRadius: '6px',
-              border: '1px solid #e5e7eb'
-            }}>
-              <p style={{ margin: 0, fontSize: '14px', color: '#374151' }}>
-                <strong>Selected:</strong> {activeItem}
+              <h1 style={{ 
+                fontSize: '24px', 
+                fontWeight: '600', 
+                margin: '0 0 8px 0',
+                color: '#1f2937'
+              }}>
+                Databricks Workspace
+              </h1>
+              <p style={{ 
+                color: '#6b7280', 
+                margin: '0 0 24px 0'
+              }}>
+                A complete analytics platform for data teams
               </p>
+              <div style={{
+                padding: '16px',
+                backgroundColor: '#f8fafc',
+                borderRadius: '6px',
+                border: '1px solid #e5e7eb'
+              }}>
+                <p style={{ margin: 0, fontSize: '14px', color: '#374151' }}>
+                  <strong>Selected:</strong> {activeItem}
+                </p>
+                <p style={{ margin: '8px 0 0 0', fontSize: '14px', color: '#6b7280' }}>
+                  Click the menu button in the TopBar to toggle the sidebar
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
     );
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Integration example showing how the TopBar menu button controls the Sidebar collapse state. This is the recommended pattern for using Sidebar with TopBar.',
+      },
+      source: {
+        code: `import { Sidebar, TopBar } from '@designbricks/core';
+
+const databricksItems: SidebarItem[] = [
+  {
+    id: 'new',
+    label: 'New',
+    icon: <PlusIcon />,
+  },
+  {
+    id: 'workspace',
+    label: 'Workspace',
+    icon: <FolderIcon />,
+  },
+  {
+    id: 'catalog',
+    label: 'Catalog',
+    icon: <DatabaseIcon />,
+  },
+  // SQL Section
+  {
+    id: 'sql-header',
+    label: 'SQL',
+    type: 'header',
+  },
+  {
+    id: 'sql-editor',
+    label: 'SQL Editor',
+    icon: <FileIcon />,
+  },
+  {
+    id: 'dashboards',
+    label: 'Dashboards',
+    icon: <BarChartIcon />,
+  },
+  // AI/ML Section
+  {
+    id: 'aiml-header',
+    label: 'AI/ML',
+    type: 'header',
+  },
+  {
+    id: 'agents',
+    label: 'Agents',
+    icon: <UserIcon />,
+    badge: 'Beta',
+  },
+];
+
+function App() {
+  const [activeItem, setActiveItem] = useState('workspace');
+  const [collapsed, setCollapsed] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <TopBar
+        showMenuButton
+        onMenuClick={() => setCollapsed(!collapsed)}
+        sidebarCollapsed={collapsed}
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        user={{
+          name: 'John Doe',
+          email: 'john.doe@databricks.com',
+          role: 'Data Engineer',
+        }}
+      />
+      <div style={{ display: 'flex', flex: 1 }}>
+        <Sidebar
+          items={databricksItems}
+          activeItem={activeItem}
+          onItemClick={(item) => setActiveItem(item.id)}
+          collapsed={collapsed}
+          variant="light"
+          width={280}
+        />
+        <main style={{ flex: 1 }}>
+          {/* Your main content */}
+        </main>
+      </div>
+    </div>
+  );
+}`,
+      },
+    },
   },
 };

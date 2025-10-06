@@ -39,41 +39,6 @@
   border-bottom-color: #3C4047;
 }
 
-/* Toggle button */
-.db-sidebar__toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  margin: 12px 16px;
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 150ms ease;
-}
-
-.db-sidebar--light .db-sidebar__toggle {
-  border-color: #DDE0E5;
-  color: #6B7280;
-}
-
-.db-sidebar--dark .db-sidebar__toggle {
-  border-color: #3C4047;
-  color: #9CA3AF;
-}
-
-.db-sidebar--light .db-sidebar__toggle:hover {
-  background-color: #EDEFF2;
-  color: #1F2328;
-}
-
-.db-sidebar--dark .db-sidebar__toggle:hover {
-  background-color: #2D3139;
-  color: #FFFFFF;
-}
-
 /* Navigation */
 .db-sidebar__nav {
   flex: 1;
