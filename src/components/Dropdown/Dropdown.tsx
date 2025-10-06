@@ -41,9 +41,9 @@ export interface DropdownProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onS
   /** Whether dropdown is open (controlled) */
   open?: boolean;
   /** Open state change handler */
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (_open: boolean) => void;
   /** Item selection handler */
-  onSelect?: (item: DropdownItem) => void;
+  onSelect?: (_item: DropdownItem) => void;
   /** Dropdown placement */
   placement?: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'left' | 'right';
   /** Dropdown trigger */

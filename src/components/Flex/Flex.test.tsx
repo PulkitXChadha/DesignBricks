@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import { Flex, FlexProps } from './Flex';
+import { Flex } from './Flex';
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);
@@ -10,7 +10,7 @@ describe('Flex', () => {
   // Basic rendering tests
   describe('Basic Rendering', () => {
     it('renders with default props', () => {
-      const { container } = render(<Flex>Content</Flex>);
+      const { } = render(<Flex>Content</Flex>);
       
       const flex = container.querySelector('.db-flex');
       expect(flex).toBeInTheDocument();
@@ -30,7 +30,7 @@ describe('Flex', () => {
     });
 
     it('renders with custom className', () => {
-      const { container } = render(
+      const { } = render(
         <Flex className="custom-flex">Content</Flex>
       );
       
@@ -47,7 +47,7 @@ describe('Flex', () => {
     });
 
     it('uses div element by default', () => {
-      const { container } = render(<Flex>Content</Flex>);
+      const { } = render(<Flex>Content</Flex>);
       
       const element = container.firstChild;
       expect(element?.nodeName).toBe('DIV');
@@ -61,7 +61,7 @@ describe('Flex', () => {
     
     directions.forEach(direction => {
       it(`renders ${direction} direction correctly`, () => {
-        const { container } = render(
+        const { } = render(
           <Flex direction={direction}>Content</Flex>
         );
         
@@ -71,14 +71,14 @@ describe('Flex', () => {
     });
 
     it('applies row direction by default', () => {
-      const { container } = render(<Flex>Content</Flex>);
+      const { } = render(<Flex>Content</Flex>);
       
       const flex = container.querySelector('.db-flex');
       expect(flex).toHaveClass('db-flex--direction-row');
     });
 
     it('handles responsive direction prop', () => {
-      const { container } = render(
+      const { } = render(
         <Flex direction={{ base: 'column', md: 'row' }}>Content</Flex>
       );
       
@@ -94,7 +94,7 @@ describe('Flex', () => {
     
     wraps.forEach(wrap => {
       it(`renders ${wrap} correctly`, () => {
-        const { container } = render(
+        const { } = render(
           <Flex wrap={wrap}>Content</Flex>
         );
         
@@ -104,7 +104,7 @@ describe('Flex', () => {
     });
 
     it('applies nowrap by default', () => {
-      const { container } = render(<Flex>Content</Flex>);
+      const { } = render(<Flex>Content</Flex>);
       
       const flex = container.querySelector('.db-flex');
       expect(flex).toHaveClass('db-flex--wrap-nowrap');
@@ -114,7 +114,7 @@ describe('Flex', () => {
   // JustifyContent tests
   describe('JustifyContent', () => {
     it('renders start justification', () => {
-      const { container } = render(
+      const { } = render(
         <Flex justifyContent="start">Content</Flex>
       );
       
@@ -123,7 +123,7 @@ describe('Flex', () => {
     });
 
     it('renders center justification', () => {
-      const { container } = render(
+      const { } = render(
         <Flex justifyContent="center">Content</Flex>
       );
       
@@ -132,7 +132,7 @@ describe('Flex', () => {
     });
 
     it('renders space-between justification', () => {
-      const { container } = render(
+      const { } = render(
         <Flex justifyContent="space-between">Content</Flex>
       );
       
@@ -141,7 +141,7 @@ describe('Flex', () => {
     });
 
     it('strips flex- prefix from values', () => {
-      const { container } = render(
+      const { } = render(
         <Flex justifyContent="flex-start">Content</Flex>
       );
       
@@ -153,7 +153,7 @@ describe('Flex', () => {
   // AlignItems tests
   describe('AlignItems', () => {
     it('renders center alignment', () => {
-      const { container } = render(
+      const { } = render(
         <Flex alignItems="center">Content</Flex>
       );
       
@@ -162,14 +162,14 @@ describe('Flex', () => {
     });
 
     it('renders stretch alignment by default', () => {
-      const { container } = render(<Flex>Content</Flex>);
+      const { } = render(<Flex>Content</Flex>);
       
       const flex = container.querySelector('.db-flex');
       expect(flex).toHaveClass('db-flex--align-items-stretch');
     });
 
     it('renders baseline alignment', () => {
-      const { container } = render(
+      const { } = render(
         <Flex alignItems="baseline">Content</Flex>
       );
       
@@ -181,7 +181,7 @@ describe('Flex', () => {
   // Gap tests
   describe('Gap', () => {
     it('applies gap class', () => {
-      const { container } = render(
+      const { } = render(
         <Flex gap="4">Content</Flex>
       );
       
@@ -190,7 +190,7 @@ describe('Flex', () => {
     });
 
     it('applies row gap class', () => {
-      const { container } = render(
+      const { } = render(
         <Flex rowGap="2">Content</Flex>
       );
       
@@ -199,7 +199,7 @@ describe('Flex', () => {
     });
 
     it('applies column gap class', () => {
-      const { container } = render(
+      const { } = render(
         <Flex columnGap="6">Content</Flex>
       );
       
@@ -211,7 +211,7 @@ describe('Flex', () => {
   // Dimension props tests
   describe('Dimension Props', () => {
     it('applies width style', () => {
-      const { container } = render(
+      const { } = render(
         <Flex width="100%">Content</Flex>
       );
       
@@ -220,7 +220,7 @@ describe('Flex', () => {
     });
 
     it('applies height style', () => {
-      const { container } = render(
+      const { } = render(
         <Flex height="200px">Content</Flex>
       );
       
@@ -229,7 +229,7 @@ describe('Flex', () => {
     });
 
     it('converts spacing tokens to pixels', () => {
-      const { container } = render(
+      const { } = render(
         <Flex width="4">Content</Flex>
       );
       
@@ -238,7 +238,7 @@ describe('Flex', () => {
     });
 
     it('applies minWidth', () => {
-      const { container } = render(
+      const { } = render(
         <Flex minWidth="200px">Content</Flex>
       );
       
@@ -247,7 +247,7 @@ describe('Flex', () => {
     });
 
     it('applies maxWidth', () => {
-      const { container } = render(
+      const { } = render(
         <Flex maxWidth="800px">Content</Flex>
       );
       
@@ -256,7 +256,7 @@ describe('Flex', () => {
     });
 
     it('applies minHeight', () => {
-      const { container } = render(
+      const { } = render(
         <Flex minHeight="100px">Content</Flex>
       );
       
@@ -265,7 +265,7 @@ describe('Flex', () => {
     });
 
     it('applies maxHeight', () => {
-      const { container } = render(
+      const { } = render(
         <Flex maxHeight="500px">Content</Flex>
       );
       
@@ -277,7 +277,7 @@ describe('Flex', () => {
   // Flex properties tests
   describe('Flex Properties', () => {
     it('applies flex grow as boolean', () => {
-      const { container } = render(
+      const { } = render(
         <Flex grow>Content</Flex>
       );
       
@@ -286,7 +286,7 @@ describe('Flex', () => {
     });
 
     it('applies flex grow as number', () => {
-      const { container } = render(
+      const { } = render(
         <Flex grow={2}>Content</Flex>
       );
       
@@ -295,7 +295,7 @@ describe('Flex', () => {
     });
 
     it('applies flex shrink as boolean', () => {
-      const { container } = render(
+      const { } = render(
         <Flex shrink>Content</Flex>
       );
       
@@ -304,7 +304,7 @@ describe('Flex', () => {
     });
 
     it('applies flex shrink as number', () => {
-      const { container } = render(
+      const { } = render(
         <Flex shrink={0}>Content</Flex>
       );
       
@@ -313,7 +313,7 @@ describe('Flex', () => {
     });
 
     it('applies flex basis', () => {
-      const { container } = render(
+      const { } = render(
         <Flex basis="50%">Content</Flex>
       );
       
@@ -325,7 +325,7 @@ describe('Flex', () => {
   // Inline tests
   describe('Inline', () => {
     it('renders as inline-flex when inline is true', () => {
-      const { container } = render(
+      const { } = render(
         <Flex inline>Content</Flex>
       );
       
@@ -334,7 +334,7 @@ describe('Flex', () => {
     });
 
     it('renders as flex by default', () => {
-      const { container } = render(<Flex>Content</Flex>);
+      const { } = render(<Flex>Content</Flex>);
       
       const flex = container.querySelector('.db-flex');
       expect(flex).toBeInTheDocument();
@@ -345,7 +345,7 @@ describe('Flex', () => {
   // IsHidden tests
   describe('IsHidden', () => {
     it('renders null when isHidden is true', () => {
-      const { container } = render(
+      const { } = render(
         <Flex isHidden>Content</Flex>
       );
       
@@ -353,7 +353,7 @@ describe('Flex', () => {
     });
 
     it('renders when isHidden is false', () => {
-      const { container } = render(
+      const { } = render(
         <Flex isHidden={false}>Content</Flex>
       );
       
@@ -362,7 +362,7 @@ describe('Flex', () => {
     });
 
     it('renders when isHidden is not provided', () => {
-      const { container } = render(<Flex>Content</Flex>);
+      const { } = render(<Flex>Content</Flex>);
       
       const flex = container.querySelector('.db-flex');
       expect(flex).toBeInTheDocument();
@@ -372,7 +372,7 @@ describe('Flex', () => {
   // Element type tests
   describe('Element Type', () => {
     it('renders as custom element when as prop is provided', () => {
-      const { container } = render(
+      const { } = render(
         <Flex as="section">Content</Flex>
       );
       
@@ -381,7 +381,7 @@ describe('Flex', () => {
     });
 
     it('renders as span when as="span"', () => {
-      const { container } = render(
+      const { } = render(
         <Flex as="span">Content</Flex>
       );
       
@@ -390,7 +390,7 @@ describe('Flex', () => {
     });
 
     it('renders as article', () => {
-      const { container } = render(
+      const { } = render(
         <Flex as="article">Content</Flex>
       );
       
@@ -421,7 +421,7 @@ describe('Flex', () => {
     });
 
     it('forwards role prop', () => {
-      const { container } = render(
+      const { } = render(
         <Flex role="navigation">Content</Flex>
       );
       
@@ -433,7 +433,7 @@ describe('Flex', () => {
   // Style prop tests
   describe('Style Prop', () => {
     it('merges custom styles with computed styles', () => {
-      const { container } = render(
+      const { } = render(
         <Flex style={{ backgroundColor: 'red' }} grow>Content</Flex>
       );
       
@@ -443,7 +443,7 @@ describe('Flex', () => {
     });
 
     it('allows custom CSS properties', () => {
-      const { container } = render(
+      const { } = render(
         <Flex style={{ padding: '10px', margin: '5px' }}>Content</Flex>
       );
       
@@ -456,14 +456,14 @@ describe('Flex', () => {
   // Edge cases
   describe('Edge Cases', () => {
     it('handles empty children', () => {
-      const { container } = render(<Flex />);
+      const { } = render(<Flex />);
       
       const flex = container.querySelector('.db-flex');
       expect(flex).toBeInTheDocument();
     });
 
     it('handles null children', () => {
-      const { container } = render(<Flex>{null}</Flex>);
+      const { } = render(<Flex>{null}</Flex>);
       
       const flex = container.querySelector('.db-flex');
       expect(flex).toBeInTheDocument();
@@ -484,7 +484,7 @@ describe('Flex', () => {
     });
 
     it('works with all props combined', () => {
-      const { container } = render(
+      const { } = render(
         <Flex
           direction="column"
           wrap="wrap"
@@ -533,7 +533,7 @@ describe('Flex', () => {
   // Responsive values tests
   describe('Responsive Values', () => {
     it('uses base value from responsive prop', () => {
-      const { container } = render(
+      const { } = render(
         <Flex direction={{ base: 'column' }}>Content</Flex>
       );
       
@@ -542,7 +542,7 @@ describe('Flex', () => {
     });
 
     it('uses first value when no base is provided', () => {
-      const { container } = render(
+      const { } = render(
         <Flex direction={{ md: 'row' }}>Content</Flex>
       );
       
@@ -551,7 +551,7 @@ describe('Flex', () => {
     });
 
     it('handles responsive gap values', () => {
-      const { container } = render(
+      const { } = render(
         <Flex gap={{ base: '4', md: '8' }}>Content</Flex>
       );
       
@@ -563,7 +563,7 @@ describe('Flex', () => {
   // Accessibility tests
   describe('Accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(
+      const { } = render(
         <Flex>
           <div>Item 1</div>
           <div>Item 2</div>
@@ -575,7 +575,7 @@ describe('Flex', () => {
     });
 
     it('has no accessibility violations with semantic element', async () => {
-      const { container } = render(
+      const { } = render(
         <Flex as="nav" aria-label="Navigation">
           <a href="/">Home</a>
           <a href="/about">About</a>
@@ -587,7 +587,7 @@ describe('Flex', () => {
     });
 
     it('has no accessibility violations with complex layout', async () => {
-      const { container } = render(
+      const { } = render(
         <Flex direction="column" gap="4">
           <Flex justifyContent="space-between">
             <div>Left</div>
@@ -621,7 +621,7 @@ describe('Flex', () => {
     });
 
     it('maintains independent styling for nested Flex', () => {
-      const { container } = render(
+      const { } = render(
         <Flex direction="column" data-testid="outer">
           <Flex direction="row" data-testid="inner">
             Content

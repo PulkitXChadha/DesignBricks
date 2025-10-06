@@ -1,6 +1,6 @@
+import userEvent from "@testing-library/user-event";
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { TextField, TextFieldProps } from './TextField';
 

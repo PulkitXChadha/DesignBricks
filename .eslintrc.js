@@ -106,6 +106,8 @@ module.exports = {
       files: ['**/*.stories.{ts,tsx}'],
       rules: {
         'no-anonymous-default-export': 'off',
+        'react-hooks/rules-of-hooks': 'off', // Allow hooks in render functions for interactive stories
+        'no-console': 'warn', // Relax for story demos
       },
     },
     {

@@ -1,6 +1,6 @@
+import userEvent from "@testing-library/user-event";
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { PillControl, PillControlProps, PillOption } from './PillControl';
 
@@ -30,7 +30,7 @@ describe('PillControl', () => {
   // Basic rendering tests
   describe('Basic Rendering', () => {
     it('renders with default props', () => {
-      const { container } = render(<PillControl options={mockOptions} />);
+      const { } = render(<PillControl options={mockOptions} />);
       
       const control = container.querySelector('.db-pill-control');
       expect(control).toBeInTheDocument();
@@ -46,7 +46,7 @@ describe('PillControl', () => {
     });
 
     it('renders with custom className', () => {
-      const { container } = render(
+      const { } = render(
         <PillControl options={mockOptions} className="custom-pills" />
       );
       
@@ -76,7 +76,7 @@ describe('PillControl', () => {
     });
 
     it('uses radiogroup role', () => {
-      const { container } = render(<PillControl options={mockOptions} />);
+      const { } = render(<PillControl options={mockOptions} />);
       
       const control = container.querySelector('[role="radiogroup"]');
       expect(control).toBeInTheDocument();
@@ -89,7 +89,7 @@ describe('PillControl', () => {
     
     sizes.forEach(size => {
       it(`renders ${size} size correctly`, () => {
-        const { container } = render(
+        const { } = render(
           <PillControl options={mockOptions} size={size} />
         );
         
@@ -99,7 +99,7 @@ describe('PillControl', () => {
     });
 
     it('applies medium size by default', () => {
-      const { container } = render(<PillControl options={mockOptions} />);
+      const { } = render(<PillControl options={mockOptions} />);
       
       const control = container.querySelector('.db-pill-control');
       expect(control).toHaveClass('db-pill-control--medium');
@@ -172,7 +172,7 @@ describe('PillControl', () => {
   // AllowDeselect tests
   describe('AllowDeselect', () => {
     it('supports deselection in controlled mode', () => {
-      const { container } = render(
+      const { } = render(
         <PillControl
           options={mockOptions}
           value="1"
@@ -187,7 +187,7 @@ describe('PillControl', () => {
     });
 
     it('starts with no selection when allowDeselect is true and no default', () => {
-      const { container } = render(<PillControl options={mockOptions} allowDeselect />);
+      const { } = render(<PillControl options={mockOptions} allowDeselect />);
       
       const inputs = container.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
       inputs.forEach(input => {
@@ -215,7 +215,7 @@ describe('PillControl', () => {
   // Disabled state tests
   describe('Disabled State', () => {
     it('applies disabled class when disabled', () => {
-      const { container } = render(
+      const { } = render(
         <PillControl options={mockOptions} disabled />
       );
       
@@ -224,7 +224,7 @@ describe('PillControl', () => {
     });
 
     it('disables all radio inputs when disabled', () => {
-      const { container } = render(<PillControl options={mockOptions} disabled />);
+      const { } = render(<PillControl options={mockOptions} disabled />);
       
       const inputs = container.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
       inputs.forEach(input => {
@@ -262,7 +262,7 @@ describe('PillControl', () => {
         { value: '3', label: 'Disabled Option', disabled: true },
       ];
       
-      const { container } = render(<PillControl options={options} />);
+      const { } = render(<PillControl options={options} />);
       
       const disabledOption = container.querySelector('.db-pill-control__option--disabled');
       expect(disabledOption).toBeInTheDocument();
@@ -295,14 +295,14 @@ describe('PillControl', () => {
     });
 
     it('applies icon class', () => {
-      const { container } = render(<PillControl options={mockOptionsWithIcons} />);
+      const { } = render(<PillControl options={mockOptionsWithIcons} />);
       
       const icons = container.querySelectorAll('.db-pill-control__icon');
       expect(icons).toHaveLength(3);
     });
 
     it('renders options without icons correctly', () => {
-      const { container } = render(<PillControl options={mockOptions} />);
+      const { } = render(<PillControl options={mockOptions} />);
       
       const icons = container.querySelectorAll('.db-pill-control__icon');
       expect(icons).toHaveLength(0);
@@ -320,7 +320,7 @@ describe('PillControl', () => {
     });
 
     it('applies badge class', () => {
-      const { container } = render(<PillControl options={mockOptionsWithBadges} />);
+      const { } = render(<PillControl options={mockOptionsWithBadges} />);
       
       const badges = container.querySelectorAll('.db-pill-control__badge');
       expect(badges).toHaveLength(3);
@@ -350,7 +350,7 @@ describe('PillControl', () => {
   // FullWidth tests
   describe('FullWidth', () => {
     it('applies full-width class when fullWidth is true', () => {
-      const { container } = render(
+      const { } = render(
         <PillControl options={mockOptions} fullWidth />
       );
       
@@ -359,7 +359,7 @@ describe('PillControl', () => {
     });
 
     it('does not apply full-width class by default', () => {
-      const { container } = render(<PillControl options={mockOptions} />);
+      const { } = render(<PillControl options={mockOptions} />);
       
       const control = container.querySelector('.db-pill-control');
       expect(control).not.toHaveClass('db-pill-control--full-width');
@@ -437,7 +437,7 @@ describe('PillControl', () => {
         { value: '3', label: 'Disabled', disabled: true },
       ];
       
-      const { container } = render(<PillControl options={options} />);
+      const { } = render(<PillControl options={options} />);
       
       const disabledPill = container.querySelector('.db-pill-control__option--disabled .db-pill-control__pill');
       expect(disabledPill).toHaveAttribute('tabIndex', '-1');
@@ -479,7 +479,7 @@ describe('PillControl', () => {
   // Name prop tests
   describe('Name Prop', () => {
     it('uses custom name for radio group', () => {
-      const { container } = render(<PillControl options={mockOptions} name="custom-group" />);
+      const { } = render(<PillControl options={mockOptions} name="custom-group" />);
       
       const inputs = container.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
       inputs.forEach(input => {
@@ -488,7 +488,7 @@ describe('PillControl', () => {
     });
 
     it('generates unique name when not provided', () => {
-      const { container } = render(<PillControl options={mockOptions} />);
+      const { } = render(<PillControl options={mockOptions} />);
       
       const radios = container.querySelectorAll('input[type="radio"]') as NodeListOf<HTMLInputElement>;
       const firstName = radios[0].name;
@@ -503,7 +503,7 @@ describe('PillControl', () => {
   // Edge cases
   describe('Edge Cases', () => {
     it('handles empty options array', () => {
-      const { container } = render(<PillControl options={[]} />);
+      const { } = render(<PillControl options={[]} />);
       
       const control = container.querySelector('.db-pill-control');
       expect(control).toBeInTheDocument();
@@ -561,7 +561,7 @@ describe('PillControl', () => {
         { value: '3', label: 'Active', icon: <span>✓</span>, badge: 'NEW' },
       ];
       
-      const { container } = render(
+      const { } = render(
         <PillControl
           options={options}
           value="1"
@@ -584,7 +584,7 @@ describe('PillControl', () => {
   // Accessibility tests
   describe('Accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(<PillControl options={mockOptions} />);
+      const { } = render(<PillControl options={mockOptions} />);
       
       const results = await axe(container);
       expect(results).toHaveNoViolations();
@@ -596,14 +596,14 @@ describe('PillControl', () => {
         { value: '2', label: 'Search', icon: <span>🔍</span>, badge: 10 },
       ];
       
-      const { container } = render(<PillControl options={options} />);
+      const { } = render(<PillControl options={options} />);
       
       const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
     it('has no accessibility violations when disabled', async () => {
-      const { container } = render(<PillControl options={mockOptions} disabled />);
+      const { } = render(<PillControl options={mockOptions} disabled />);
       
       const results = await axe(container);
       expect(results).toHaveNoViolations();

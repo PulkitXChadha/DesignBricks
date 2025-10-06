@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import { Grid, GridItem, GridProps, GridItemProps } from './Grid';
+import { Grid, GridItem } from './Grid';
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);

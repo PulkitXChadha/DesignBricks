@@ -11,7 +11,7 @@ describe('List', () => {
   // Basic rendering tests
   describe('Basic Rendering', () => {
     it('renders with default props', () => {
-      const { container } = render(
+      const { } = render(
         <List>
           <ListItem>Item 1</ListItem>
           <ListItem>Item 2</ListItem>
@@ -38,7 +38,7 @@ describe('List', () => {
     });
 
     it('renders with custom className', () => {
-      const { container } = render(
+      const { } = render(
         <List className="custom-list">
           <ListItem>Item</ListItem>
         </List>
@@ -61,7 +61,7 @@ describe('List', () => {
     });
 
     it('forwards additional props', () => {
-      const { container } = render(
+      const { } = render(
         <List data-testid="list" id="test-list">
           <ListItem>Item</ListItem>
         </List>
@@ -72,7 +72,7 @@ describe('List', () => {
     });
 
     it('uses ul element', () => {
-      const { container } = render(
+      const { } = render(
         <List>
           <ListItem>Item</ListItem>
         </List>
@@ -89,7 +89,7 @@ describe('List', () => {
     
     variants.forEach(variant => {
       it(`renders ${variant} variant correctly`, () => {
-        const { container } = render(
+        const { } = render(
           <List variant={variant}>
             <ListItem>Item</ListItem>
           </List>
@@ -101,7 +101,7 @@ describe('List', () => {
     });
 
     it('applies default variant by default', () => {
-      const { container } = render(
+      const { } = render(
         <List>
           <ListItem>Item</ListItem>
         </List>
@@ -112,7 +112,7 @@ describe('List', () => {
     });
 
     it('applies default variant when variant is undefined', () => {
-      const { container } = render(
+      const { } = render(
         <List variant={undefined}>
           <ListItem>Item</ListItem>
         </List>
@@ -129,7 +129,7 @@ describe('List', () => {
     
     sizes.forEach(size => {
       it(`renders ${size} size correctly`, () => {
-        const { container } = render(
+        const { } = render(
           <List size={size}>
             <ListItem>Item</ListItem>
           </List>
@@ -141,7 +141,7 @@ describe('List', () => {
     });
 
     it('applies medium size by default', () => {
-      const { container } = render(
+      const { } = render(
         <List>
           <ListItem>Item</ListItem>
         </List>
@@ -152,7 +152,7 @@ describe('List', () => {
     });
 
     it('applies medium size when size is undefined', () => {
-      const { container } = render(
+      const { } = render(
         <List size={undefined}>
           <ListItem>Item</ListItem>
         </List>
@@ -166,7 +166,7 @@ describe('List', () => {
   // Dense prop tests
   describe('Dense Prop', () => {
     it('applies dense class when dense is true', () => {
-      const { container } = render(
+      const { } = render(
         <List dense>
           <ListItem>Item</ListItem>
         </List>
@@ -177,7 +177,7 @@ describe('List', () => {
     });
 
     it('does not apply dense class by default', () => {
-      const { container } = render(
+      const { } = render(
         <List>
           <ListItem>Item</ListItem>
         </List>
@@ -188,7 +188,7 @@ describe('List', () => {
     });
 
     it('does not apply dense class when dense is false', () => {
-      const { container } = render(
+      const { } = render(
         <List dense={false}>
           <ListItem>Item</ListItem>
         </List>
@@ -202,7 +202,7 @@ describe('List', () => {
   // Hoverable prop tests
   describe('Hoverable Prop', () => {
     it('applies hoverable class by default', () => {
-      const { container } = render(
+      const { } = render(
         <List>
           <ListItem>Item</ListItem>
         </List>
@@ -213,7 +213,7 @@ describe('List', () => {
     });
 
     it('applies hoverable class when hoverable is true', () => {
-      const { container } = render(
+      const { } = render(
         <List hoverable={true}>
           <ListItem>Item</ListItem>
         </List>
@@ -224,7 +224,7 @@ describe('List', () => {
     });
 
     it('does not apply hoverable class when hoverable is false', () => {
-      const { container } = render(
+      const { } = render(
         <List hoverable={false}>
           <ListItem>Item</ListItem>
         </List>
@@ -238,7 +238,7 @@ describe('List', () => {
   // Combined props tests
   describe('Combined Props', () => {
     it('renders with multiple props combined', () => {
-      const { container } = render(
+      const { } = render(
         <List variant="bordered" size="large" dense hoverable={false} className="custom">
           <ListItem>Item</ListItem>
         </List>
@@ -342,7 +342,7 @@ describe('List', () => {
   // Edge cases
   describe('Edge Cases', () => {
     it('renders with empty children', () => {
-      const { container } = render(<List>{null}</List>);
+      const { } = render(<List>{null}</List>);
       
       const list = container.querySelector('ul');
       expect(list).toBeInTheDocument();
@@ -354,7 +354,7 @@ describe('List', () => {
         <ListItem key={i}>Item {i + 1}</ListItem>
       ));
       
-      const { container } = render(<List>{items}</List>);
+      const { } = render(<List>{items}</List>);
       
       const list = container.querySelector('ul');
       expect(list?.children).toHaveLength(100);
@@ -403,7 +403,7 @@ describe('List', () => {
   // Styling tests
   describe('Styling', () => {
     it('applies base class', () => {
-      const { container } = render(
+      const { } = render(
         <List>
           <ListItem>Item</ListItem>
         </List>
@@ -414,7 +414,7 @@ describe('List', () => {
     });
 
     it('combines all modifier classes correctly', () => {
-      const { container } = render(
+      const { } = render(
         <List variant="divided" size="small" dense hoverable>
           <ListItem>Item</ListItem>
         </List>
@@ -431,7 +431,7 @@ describe('List', () => {
     });
 
     it('does not add hoverable class when explicitly false', () => {
-      const { container } = render(
+      const { } = render(
         <List hoverable={false}>
           <ListItem>Item</ListItem>
         </List>
@@ -445,7 +445,7 @@ describe('List', () => {
   // Accessibility tests
   describe('Accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { container } = render(
+      const { } = render(
         <List>
           <ListItem>Item 1</ListItem>
           <ListItem>Item 2</ListItem>
@@ -476,7 +476,7 @@ describe('List', () => {
     });
 
     it('uses semantic ul element', () => {
-      const { container } = render(
+      const { } = render(
         <List>
           <ListItem>Item</ListItem>
         </List>
@@ -488,7 +488,7 @@ describe('List', () => {
     });
 
     it('maintains proper list structure', () => {
-      const { container } = render(
+      const { } = render(
         <List>
           <ListItem>Item 1</ListItem>
           <ListItem>Item 2</ListItem>
@@ -519,7 +519,7 @@ describe('List', () => {
     });
 
     it('applies styles that work with hoverable items', () => {
-      const { container } = render(
+      const { } = render(
         <List hoverable>
           <ListItem clickable>Clickable item</ListItem>
         </List>

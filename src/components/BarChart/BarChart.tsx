@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, useCallback, createContext, useContext, useState } from 'react';
+import React, { HTMLAttributes, forwardRef, useEffect, useRef, useMemo, createContext, useContext, useState } from 'react';
 import clsx from 'clsx';
 import * as d3 from 'd3';
 import './BarChart.css';
@@ -6,7 +6,6 @@ import {
   TooltipConfig, 
   ChartTooltip, 
   DefaultTooltipContent, 
-  CustomTooltipProps,
   TooltipPosition 
 } from '../shared/ChartTooltip';
 
@@ -69,7 +68,7 @@ export interface BarChartAxis {
   /** Tick count */
   tickCount?: number;
   /** Custom tick formatter */
-  tickFormatter?: (value: any) => string;
+  tickFormatter?: (_value: any) => string;
   /** Axis style variant */
   variant?: 'default' | 'minimal' | 'detailed';
   /** Rotate tick labels for x-axis */
@@ -152,7 +151,7 @@ export interface BarChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'dat
   /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
   /** @deprecated Use tooltip.content instead */
-  formatTooltip?: (dataPoint: BarChartDataPoint, index?: number) => string;
+  formatTooltip?: (dataPoint: BarChartDataPoint, _index?: number) => string;
   /** Show value labels on bars */
   showValueLabels?: boolean;
   
@@ -187,7 +186,6 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       grid,
       theme,
       animation,
-      responsive,
       tooltip,
       showTooltip = true,
       formatTooltip,
@@ -196,7 +194,6 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       ariaLabel,
       themeClass,
       optimized = false,
-      hoverDebounce = 0,
       className,
       ...props
     },
@@ -401,8 +398,9 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       [mergedYAxis.tickFormatter]
     );
 
-    const defaultFormatTooltip = useMemo(
-      () => formatTooltip || ((dataPoint: BarChartDataPoint, index?: number) => {
+    // Default tooltip formatter (uses formatTooltip if provided)
+    useMemo(
+      () => formatTooltip || ((_dataPoint: BarChartDataPoint) => {
         const categoryFormatted = dataPoint.x;
         const valueFormatted = d3.format('.2s')(dataPoint.y);
         
@@ -516,7 +514,7 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
 
         const xAxisCall = orientation === 'vertical' ? d3.axisBottom(xScale) : d3.axisBottom(xScale).ticks(mergedXAxis.tickCount || 6);
         
-        xAxisCall.tickFormat((d, i) => {
+        xAxisCall.tickFormat((d) => {
           if (orientation === 'vertical') {
             return defaultFormatX(d);
           } else {
@@ -543,7 +541,7 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
 
         const yAxisCall = orientation === 'vertical' ? d3.axisLeft(yScale).ticks(mergedYAxis.tickCount || 6) : d3.axisLeft(yScale);
         
-        yAxisCall.tickFormat((d, i) => {
+        yAxisCall.tickFormat((d) => {
           if (orientation === 'vertical') {
             return defaultFormatY(d as number);
           } else {
@@ -716,7 +714,7 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
           bars
             .attr('tabindex', 0)
             .attr('role', 'button')
-            .attr('aria-label', (d, i) => `${d.x}: ${d3.format('.2s')(d.y)}`)
+            .attr('aria-label', (d) => `${d.x}: ${d3.format('.2s')(d.y)}`)
             .on('focus', function(event: any, d: any) {
               const index = (data as BarChartDataPoint[]).indexOf(d);
               if (mergedTooltip.enabled) {
@@ -823,6 +821,17 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       // State setters (setTooltipVisible, setTooltipData, setTooltipPosition) are stable and don't trigger re-renders
     ]);
 
+    // Context value for compound components (memoized to prevent re-renders)
+    const contextValue: BarChartContextValue = useMemo(() => ({
+      data,
+      width,
+      height,
+      color,
+      xScale,
+      yScale,
+      svgRef,
+    }), [data, width, height, color, xScale, yScale]);
+
     if (!data.length) {
       return (
         <div
@@ -840,17 +849,6 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
         </div>
       );
     }
-
-    // Context value for compound components (memoized to prevent re-renders)
-    const contextValue: BarChartContextValue = useMemo(() => ({
-      data,
-      width,
-      height,
-      color,
-      xScale,
-      yScale,
-      svgRef,
-    }), [data, width, height, color, xScale, yScale]);
 
     return (
       <BarChartContext.Provider value={contextValue}>

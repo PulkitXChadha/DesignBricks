@@ -1,6 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { BarChart, BarChartProps, BarChartDataPoint } from './BarChart';
 
@@ -16,11 +15,12 @@ const sampleData: BarChartDataPoint[] = [
   { x: 'May', y: 160 },
 ];
 
-const smallData: BarChartDataPoint[] = [
-  { x: 'A', y: 50 },
-  { x: 'B', y: 75 },
-  { x: 'C', y: 25 },
-];
+// Small dataset for potential future tests
+// const smallData: BarChartDataPoint[] = [
+//   { x: 'A', y: 50 },
+//   { x: 'B', y: 75 },
+//   { x: 'C', y: 25 },
+// ];
 
 describe('BarChart', () => {
   // Basic rendering tests

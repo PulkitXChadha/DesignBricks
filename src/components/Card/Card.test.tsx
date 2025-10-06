@@ -1,6 +1,6 @@
+import userEvent from "@testing-library/user-event";
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { Card, CardProps } from './Card';
 
@@ -474,7 +474,7 @@ describe('Card', () => {
 
     it('preserves event handler context', () => {
       const context = { value: 'test' };
-      const handleClick = jest.fn(function(this: typeof context) {
+      const handleClick = jest.fn(function(this: typeof context, _event: any) {
         return this.value;
       });
       

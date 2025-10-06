@@ -53,7 +53,7 @@ export interface LineChartAxis {
   /** Tick count */
   tickCount?: number;
   /** Custom tick formatter */
-  tickFormatter?: (value: any) => string;
+  tickFormatter?: (_value: any) => string;
   /** Axis style variant */
   variant?: 'default' | 'minimal' | 'detailed';
 }
@@ -128,11 +128,11 @@ export interface LineChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'da
   /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
   /** @deprecated Use tooltip.content instead */
-  formatTooltip?: (dataPoint: LineChartDataPoint, index?: number) => string;
+  formatTooltip?: (_dataPoint: LineChartDataPoint, _index?: number) => string;
   /** Show percentage change in tooltip */
   showPercentageChange?: boolean;
   /** Function to calculate percentage change */
-  calculatePercentageChange?: (current: LineChartDataPoint, previous: LineChartDataPoint) => number;
+  calculatePercentageChange?: (_current: LineChartDataPoint, _previous: LineChartDataPoint) => number;
   
   /** Enable keyboard navigation */
   keyboard?: boolean;

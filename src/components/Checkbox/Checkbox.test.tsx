@@ -1,6 +1,6 @@
+import userEvent from "@testing-library/user-event";
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { Checkbox, CheckboxProps } from './Checkbox';
 
@@ -714,7 +714,7 @@ describe('Checkbox', () => {
 
     it('preserves event handler context', () => {
       const context = { value: 'test-context' };
-      const handleChange = jest.fn(function(this: typeof context) {
+      const handleChange = jest.fn(function(this: typeof context, _event: any) {
         return this.value;
       });
       
