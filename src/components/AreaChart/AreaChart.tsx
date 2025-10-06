@@ -559,20 +559,26 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
         const seriesData = stacked && stackedData ? stackedData[idx] : series.data;
 
         // Area path
-        g.append('path')
+        const areaPath = g.append('path')
           .datum(seriesData)
           .attr('class', `db-areachart__area db-areachart__area--${seriesColor}`)
           .attr('d', areaGen as any)
-          .style('opacity', fillOpacity)
-          .style('fill', series.customColor || undefined);
+          .style('opacity', fillOpacity);
+        
+        if (series.customColor) {
+          areaPath.style('fill', series.customColor);
+        }
 
         // Stroke line
         if (showStroke && lineGen) {
-          g.append('path')
+          const strokePath = g.append('path')
             .datum(seriesData)
             .attr('class', `db-areachart__stroke db-areachart__stroke--${seriesColor}`)
-            .attr('d', lineGen as any)
-            .style('stroke', series.customColor || undefined);
+            .attr('d', lineGen as any);
+          
+          if (series.customColor) {
+            strokePath.style('stroke', series.customColor);
+          }
         }
 
         // Data points for non-stacked charts
@@ -584,8 +590,11 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
             .attr('class', `db-areachart__point db-areachart__point--${seriesColor} db-areachart__point--series-${idx}`)
             .attr('cx', d => xScale(d.x) || 0)
             .attr('cy', d => yScale(d.y) || 0)
-            .attr('r', variant === 'detailed' ? 5 : 4)
-            .style('fill', series.customColor || undefined);
+            .attr('r', variant === 'detailed' ? 5 : 4);
+          
+          if (series.customColor) {
+            points.style('fill', series.customColor);
+          }
 
           // Add keyboard navigation attributes conditionally
           if (keyboard) {
@@ -627,11 +636,16 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
         // Hover circles for each series
         const hoverCircles = normalizedSeries.map((series, idx) => {
           const seriesColor = getSeriesColor(series);
-          return g.append('circle')
+          const circle = g.append('circle')
             .attr('class', `db-areachart__hover-circle db-areachart__hover-circle--${seriesColor}`)
             .attr('r', 6)
-            .style('opacity', 0)
-            .style('fill', series.customColor || undefined);
+            .style('opacity', 0);
+          
+          if (series.customColor) {
+            circle.style('fill', series.customColor);
+          }
+          
+          return circle;
         });
 
         // Invisible overlay for mouse events
