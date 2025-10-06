@@ -14,7 +14,7 @@ describe('UserAvatar', () => {
   // Basic rendering tests
   describe('Basic Rendering', () => {
     it('renders with default props', () => {
-      const { } = render(<UserAvatar name="John Doe" />);
+      const { container } = render(<UserAvatar name="John Doe" />);
       
       const avatar = container.querySelector('.db-avatar');
       expect(avatar).toBeInTheDocument();
@@ -28,7 +28,7 @@ describe('UserAvatar', () => {
     });
 
     it('renders with custom className', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" className="custom-avatar" />
       );
       
@@ -60,7 +60,7 @@ describe('UserAvatar', () => {
     
     sizes.forEach(size => {
       it(`renders ${size} size correctly`, () => {
-        const { } = render(<UserAvatar name="John Doe" size={size} />);
+        const { container } = render(<UserAvatar name="John Doe" size={size} />);
         
         const avatar = container.querySelector('.db-avatar');
         expect(avatar).toHaveClass(`db-avatar--${size}`);
@@ -68,7 +68,7 @@ describe('UserAvatar', () => {
     });
 
     it('applies md size by default', () => {
-      const { } = render(<UserAvatar name="John Doe" />);
+      const { container } = render(<UserAvatar name="John Doe" />);
       
       const avatar = container.querySelector('.db-avatar');
       expect(avatar).toHaveClass('db-avatar--md');
@@ -81,7 +81,7 @@ describe('UserAvatar', () => {
     
     variants.forEach(variant => {
       it(`renders ${variant} variant correctly`, () => {
-        const { } = render(<UserAvatar name="John Doe" variant={variant} />);
+        const { container } = render(<UserAvatar name="John Doe" variant={variant} />);
         
         const avatar = container.querySelector('.db-avatar');
         expect(avatar).toHaveClass(`db-avatar--${variant}`);
@@ -89,7 +89,7 @@ describe('UserAvatar', () => {
     });
 
     it('applies circle variant by default', () => {
-      const { } = render(<UserAvatar name="John Doe" />);
+      const { container } = render(<UserAvatar name="John Doe" />);
       
       const avatar = container.querySelector('.db-avatar');
       expect(avatar).toHaveClass('db-avatar--circle');
@@ -133,7 +133,7 @@ describe('UserAvatar', () => {
   // Image handling tests
   describe('Image Handling', () => {
     it('renders image when src is provided', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" src={mockImageSrc} />
       );
       
@@ -143,7 +143,7 @@ describe('UserAvatar', () => {
     });
 
     it('uses name for alt text by default', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" src={mockImageSrc} />
       );
       
@@ -152,7 +152,7 @@ describe('UserAvatar', () => {
     });
 
     it('uses custom alt text when provided', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" src={mockImageSrc} alt="Custom alt" />
       );
       
@@ -161,7 +161,7 @@ describe('UserAvatar', () => {
     });
 
     it('applies lazy loading to image', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" src={mockImageSrc} />
       );
       
@@ -170,7 +170,7 @@ describe('UserAvatar', () => {
     });
 
     it('shows initials fallback when image errors', async () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" src={mockImageSrc} />
       );
       
@@ -186,7 +186,7 @@ describe('UserAvatar', () => {
 
     it('calls onError when image fails to load', () => {
       const handleError = jest.fn();
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" src={mockImageSrc} onError={handleError} />
       );
       
@@ -197,7 +197,7 @@ describe('UserAvatar', () => {
     });
 
     it('hides initials when image loads successfully', async () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" src={mockImageSrc} />
       );
       
@@ -216,7 +216,7 @@ describe('UserAvatar', () => {
     
     statuses.forEach(status => {
       it(`renders ${status} status correctly`, () => {
-        const { } = render(
+        const { container } = render(
           <UserAvatar name="John Doe" status={status} showStatus />
         );
         
@@ -226,7 +226,7 @@ describe('UserAvatar', () => {
     });
 
     it('does not show status by default', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" status="online" />
       );
       
@@ -235,7 +235,7 @@ describe('UserAvatar', () => {
     });
 
     it('shows status when showStatus is true', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" status="online" showStatus />
       );
       
@@ -244,7 +244,7 @@ describe('UserAvatar', () => {
     });
 
     it('applies with-status class when showing status', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" status="online" showStatus />
       );
       
@@ -253,7 +253,7 @@ describe('UserAvatar', () => {
     });
 
     it('has aria-label for status', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" status="away" showStatus />
       );
       
@@ -265,7 +265,7 @@ describe('UserAvatar', () => {
   // Color customization tests
   describe('Color Customization', () => {
     it('uses custom background color', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" backgroundColor="#FF0000" />
       );
       
@@ -274,7 +274,7 @@ describe('UserAvatar', () => {
     });
 
     it('uses custom text color', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" textColor="#000000" />
       );
       
@@ -283,7 +283,7 @@ describe('UserAvatar', () => {
     });
 
     it('uses default white text color', () => {
-      const { } = render(<UserAvatar name="John Doe" />);
+      const { container } = render(<UserAvatar name="John Doe" />);
       
       const fallback = container.querySelector('.db-avatar__fallback') as HTMLElement;
       expect(fallback.style.color).toBe('rgb(255, 255, 255)');
@@ -313,7 +313,7 @@ describe('UserAvatar', () => {
   // Clickable tests
   describe('Clickable', () => {
     it('applies clickable class when clickable', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" clickable onClick={() => {}} />
       );
       
@@ -329,7 +329,7 @@ describe('UserAvatar', () => {
     });
 
     it('makes avatar focusable when clickable', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" clickable onClick={() => {}} />
       );
       
@@ -349,7 +349,7 @@ describe('UserAvatar', () => {
 
     it('does not call onClick when not clickable', async () => {
       const handleClick = jest.fn();
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" onClick={handleClick} />
       );
       
@@ -401,7 +401,7 @@ describe('UserAvatar', () => {
   // Fallback tests
   describe('Fallback', () => {
     it('shows fallback with initials when no image', () => {
-      const { } = render(<UserAvatar name="John Doe" />);
+      const { container } = render(<UserAvatar name="John Doe" />);
       
       const fallback = container.querySelector('.db-avatar__fallback');
       expect(fallback).toBeInTheDocument();
@@ -409,21 +409,21 @@ describe('UserAvatar', () => {
     });
 
     it('applies fallback class', () => {
-      const { } = render(<UserAvatar name="John Doe" />);
+      const { container } = render(<UserAvatar name="John Doe" />);
       
       const fallback = container.querySelector('.db-avatar__fallback');
       expect(fallback).toBeInTheDocument();
     });
 
     it('has aria-label on fallback', () => {
-      const { } = render(<UserAvatar name="John Doe" />);
+      const { container } = render(<UserAvatar name="John Doe" />);
       
       const fallback = container.querySelector('.db-avatar__fallback');
       expect(fallback).toHaveAttribute('aria-label', "John Doe's avatar");
     });
 
     it('renders initials in proper wrapper', () => {
-      const { } = render(<UserAvatar name="John Doe" />);
+      const { container } = render(<UserAvatar name="John Doe" />);
       
       const initials = container.querySelector('.db-avatar__initials');
       expect(initials).toBeInTheDocument();
@@ -462,7 +462,7 @@ describe('UserAvatar', () => {
       const handleClick = jest.fn();
       const handleError = jest.fn();
       
-      const { } = render(
+      const { container } = render(
         <UserAvatar
           name="John Doe"
           src={mockImageSrc}
@@ -521,14 +521,14 @@ describe('UserAvatar', () => {
   // Accessibility tests
   describe('Accessibility', () => {
     it('has no accessibility violations', async () => {
-      const { } = render(<UserAvatar name="John Doe" />);
+      const { container } = render(<UserAvatar name="John Doe" />);
       
       const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
     it('has no accessibility violations with image', async () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" src={mockImageSrc} />
       );
       
@@ -537,7 +537,7 @@ describe('UserAvatar', () => {
     });
 
     it('has no accessibility violations with status', async () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" status="online" showStatus />
       );
       
@@ -551,7 +551,7 @@ describe('UserAvatar', () => {
     });
 
     it('has no accessibility violations when clickable', async () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" clickable onClick={() => {}} />
       );
       
@@ -582,7 +582,7 @@ describe('UserAvatar', () => {
     });
 
     it('provides accessible name for image', () => {
-      const { } = render(
+      const { container } = render(
         <UserAvatar name="John Doe" src={mockImageSrc} />
       );
       

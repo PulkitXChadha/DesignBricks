@@ -456,8 +456,8 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       tooltipHtml += `<div class="db-areachart__tooltip-date">${xFormatted}</div>`;
       tooltipHtml += `<div class="db-areachart__tooltip-value">${yFormatted}</div>`;
       
-      if (showPercentageChange && index !== undefined && index > 0) {
-        const previousPoint = data[index - 1];
+      if (showPercentageChange && _index !== undefined && _index > 0) {
+        const previousPoint = data[_index - 1];
         let percentageChange = 0;
         
         if (calculatePercentageChange) {
@@ -478,7 +478,7 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       
       tooltipHtml += `</div>`;      
       return tooltipHtml;
-    }), [formatTooltip, defaultFormatX, defaultFormatY]);
+    }), [formatTooltip, defaultFormatX, defaultFormatY, showPercentageChange, data, calculatePercentageChange]);
 
     useEffect(() => {
       if (!svgRef.current || normalizedSeries.length === 0 || !xScale || !yScale || areaGenerators.length === 0) {

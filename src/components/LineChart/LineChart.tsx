@@ -6,7 +6,6 @@ import {
   TooltipConfig, 
   ChartTooltip, 
   DefaultTooltipContent, 
-  CustomTooltipProps,
   TooltipPosition 
 } from '../shared/ChartTooltip';
 
@@ -161,7 +160,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       grid,
       theme,
       animation,
-      responsive,
+      responsive: _responsive,
       showPoints = true,
       tooltip,
       showTooltip = true,
@@ -172,7 +171,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       ariaLabel,
       themeClass,
       optimized = false,
-      hoverDebounce = 0,
+      hoverDebounce: _hoverDebounce = 0,
       className,
       ...props
     },
@@ -222,7 +221,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       ...theme,
     };
 
-    const mergedAnimation: LineChartAnimation = {
+    const _mergedAnimation: LineChartAnimation = {
       enabled: variant === 'detailed',
       duration: variant === 'detailed' ? 300 : 150,
       easing: 'ease-out',
@@ -403,9 +402,9 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
         const xAxisCall = d3.axisBottom(xScale);
         if (mergedXAxis.tickCount) xAxisCall.ticks(mergedXAxis.tickCount);
         if (mergedXAxis.tickFormatter) {
-          xAxisCall.tickFormat((d, i) => mergedXAxis.tickFormatter!(d));
+          xAxisCall.tickFormat((d, _i) => mergedXAxis.tickFormatter!(d));
         } else {
-          xAxisCall.tickFormat((d, i) => defaultFormatX(d));
+          xAxisCall.tickFormat((d, _i) => defaultFormatX(d));
         }
         
         xAxisGroup.call(xAxisCall);
@@ -419,9 +418,9 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
         const yAxisCall = d3.axisLeft(yScale);
         if (mergedYAxis.tickCount) yAxisCall.ticks(mergedYAxis.tickCount);
         if (mergedYAxis.tickFormatter) {
-          yAxisCall.tickFormat((d, i) => mergedYAxis.tickFormatter!(d as number));
+          yAxisCall.tickFormat((d, _i) => mergedYAxis.tickFormatter!(d as number));
         } else {
-          yAxisCall.tickFormat((d, i) => defaultFormatY(d as number));
+          yAxisCall.tickFormat((d, _i) => defaultFormatY(d as number));
         }
         
         yAxisGroup.call(yAxisCall);

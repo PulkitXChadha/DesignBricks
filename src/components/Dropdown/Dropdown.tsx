@@ -26,7 +26,7 @@ export interface DropdownItem {
   /** Whether to show a divider after this item */
   divider?: boolean;
   /** Click handler */
-  onClick?: (item: DropdownItem) => void;
+  onClick?: (_item: DropdownItem) => void;
   /** Item variant */
   variant?: 'default' | 'danger' | 'success';
 }
@@ -246,7 +246,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [isOpen]);
+    }, [isOpen, closeDropdown]);
 
     // Position update
     useEffect(() => {
@@ -263,7 +263,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
         };
       }
       return undefined;
-    }, [isOpen, placement]);
+    }, [isOpen, placement, updatePosition]);
 
     const triggerProps = {
       ...(trigger === 'click' && {
@@ -293,6 +293,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
             zIndex: 1500,
           }}
           role="menu"
+          tabIndex={-1}
           onKeyDown={handleKeyDown}
         >
           <div className="db-dropdown__content">

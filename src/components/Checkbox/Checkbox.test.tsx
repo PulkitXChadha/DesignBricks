@@ -714,8 +714,8 @@ describe('Checkbox', () => {
 
     it('preserves event handler context', () => {
       const context = { value: 'test-context' };
-      const handleChange = jest.fn(function(this: typeof context, _event: any) {
-        return this.value;
+      const handleChange = jest.fn(function(_this: typeof context, _event: any) {
+        return _this.value;
       });
       
       render(<Checkbox onChange={handleChange.bind(context)} />);

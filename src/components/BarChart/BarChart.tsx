@@ -151,7 +151,7 @@ export interface BarChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'dat
   /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
   /** @deprecated Use tooltip.content instead */
-  formatTooltip?: (dataPoint: BarChartDataPoint, _index?: number) => string;
+  formatTooltip?: (_dataPoint: BarChartDataPoint, _index?: number) => string;
   /** Show value labels on bars */
   showValueLabels?: boolean;
   
@@ -400,7 +400,7 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
 
     // Default tooltip formatter (uses formatTooltip if provided)
     useMemo(
-      () => formatTooltip || ((_dataPoint: BarChartDataPoint) => {
+      () => formatTooltip || ((dataPoint: BarChartDataPoint) => {
         const categoryFormatted = dataPoint.x;
         const valueFormatted = d3.format('.2s')(dataPoint.y);
         

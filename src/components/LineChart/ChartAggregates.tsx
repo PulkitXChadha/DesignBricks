@@ -31,7 +31,7 @@ export const ChartAggregates = forwardRef<HTMLDivElement, ChartAggregatesProps>(
     {
       metrics,
       data = [],
-      formatValue = (_value: number) => value.toLocaleString(),
+      formatValue = (_value: number) => _value.toLocaleString(),
       layout = 'horizontal',
       showChange = true,
       className,
