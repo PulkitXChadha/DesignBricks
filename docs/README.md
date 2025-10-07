@@ -70,7 +70,6 @@ Welcome to the comprehensive documentation for DesignBricks - the Databricks Des
 - **Badge** - Labels and status indicators
 - **Progress** - Linear and circular progress
 - **Modal** - Dialog modals
-- **Notification** - Toast notifications
 - **Tooltip** - Contextual tooltips
 
 #### Data Display Components

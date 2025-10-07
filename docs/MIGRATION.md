@@ -39,7 +39,6 @@ npm install designbricks
 | `Dialog` | `Modal` | Renamed component |
 | `Select` | `Select` | Simplified API |
 | `CircularProgress` | `Progress` | Use variant prop |
-| `Snackbar` | `Notification` | Different positioning API |
 | `Tabs` | `Tabs` | Similar compound component |
 | `Drawer` | `Sidebar` | Similar functionality |
 | `Table` | `Table` | Compound component pattern |
@@ -182,7 +181,6 @@ npm install designbricks
 | `Modal` | `Modal` | Similar API |
 | `Select` | `Select` | Simplified options |
 | `Spin` | `Progress` | Loading indicator |
-| `message` | `Notification` | Hook-based |
 | `Tabs` | `Tabs` | Similar pattern |
 | `Drawer` | `Sidebar` | Navigation focused |
 | `Table` | `Table` | Compound component |
@@ -245,32 +243,6 @@ import { Alert } from 'designbricks';
 </Alert>
 ```
 
-#### message → Notification
-
-```tsx
-// Before (Ant Design)
-import { message } from 'antd';
-
-message.success('Saved successfully');
-
-// After (DesignBricks)
-import { Notification } from 'designbricks';
-import { useState } from 'react';
-
-const [notifications, setNotifications] = useState([]);
-
-// Add notification
-setNotifications([...notifications, {
-  type: 'success',
-  message: 'Saved successfully'
-}]);
-
-// Render
-{notifications.map(n => (
-  <Notification key={n.id} type={n.type} message={n.message} />
-))}
-```
-
 ---
 
 ## Chakra UI to DesignBricks
@@ -298,7 +270,6 @@ npm install designbricks
 | `Modal` | `Modal` | Compound → single component |
 | `Select` | `Select` | Simplified |
 | `Spinner` | `Progress` | Loading states |
-| `useToast` | `Notification` | State-based |
 | `Tabs` | `Tabs` | Similar pattern |
 | `Drawer` | `Sidebar` | Navigation |
 | `Table` | `Table` | Different structure |
@@ -354,37 +325,6 @@ import { Card } from 'designbricks';
 </Card>
 ```
 
-#### useToast → Notification
-
-```tsx
-// Before (Chakra UI)
-import { useToast } from '@chakra-ui/react';
-
-const toast = useToast();
-
-toast({
-  title: 'Success',
-  description: 'Operation completed',
-  status: 'success',
-});
-
-// After (DesignBricks)
-import { Notification } from 'designbricks';
-import { useState } from 'react';
-
-const [showNotification, setShowNotification] = useState(false);
-
-setShowNotification(true);
-
-<Notification
-  type="success"
-  message="Success"
-  onClose={() => setShowNotification(false)}
->
-  Operation completed
-</Notification>
-```
-
 ---
 
 ## Bootstrap React to DesignBricks
@@ -411,7 +351,6 @@ npm install designbricks
 | `Modal` | `Modal` | Similar API |
 | `Dropdown` | `Dropdown` | Enhanced |
 | `Spinner` | `Progress` | Loading states |
-| `Toast` | `Notification` | Different API |
 | `Tabs` | `Tabs` | Similar |
 | `Navbar` | `TopBar` | Navigation |
 | `Table` | `Table` | Enhanced |

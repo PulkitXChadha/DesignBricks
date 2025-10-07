@@ -386,25 +386,6 @@ import { Modal } from 'designbricks';
 
 ---
 
-### Notification
-
-Toast notification component.
-
-```tsx
-import { Notification } from 'designbricks';
-```
-
-#### Props
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `type` | `'success' \| 'error' \| 'warning' \| 'info'` | `'info'` | Notification type |
-| `message` | `string` | - | Notification message |
-| `duration` | `number` | `3000` | Auto-dismiss duration |
-| `onClose` | `() => void` | - | Close handler |
-
----
-
 ## Data Display Components
 
 ### Card

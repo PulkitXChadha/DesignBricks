@@ -40,7 +40,6 @@ export * from './components/List';
 // Overlays
 export * from './components/Dropdown';
 export * from './components/Tooltip';
-export * from './components/Notification';
 
 // Design Tokens
 export * from './tokens';
