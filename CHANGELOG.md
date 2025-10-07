@@ -1,3 +1,9 @@
+## [0.2.1](https://github.com/PulkitXChadha/DesignBricks/compare/v0.2.0...v0.2.1) (2025-10-07)
+
+### ♻️ Code Refactoring
+
+* update Card component stories to use new Typography structure ([c21ef31](https://github.com/PulkitXChadha/DesignBricks/commit/c21ef31db11f84b77d6f18b006d41d90dd01bc88))
+
 ## [0.2.0](https://github.com/PulkitXChadha/DesignBricks/compare/v0.1.6...v0.2.0) (2025-10-07)
 
 ### 🚀 Features
