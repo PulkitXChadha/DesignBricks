@@ -75,22 +75,22 @@ export const Variants: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
       <Card variant="default" style={{ width: '250px' }}>
-        <Typography variant="h5">Default Card</Typography>
-        <Typography variant="body2" color="secondary">
+        <Typography.Title level={3} withoutMargins>Default Card</Typography.Title>
+        <Typography.Text color="secondary">
           Standard card with subtle border
-        </Typography>
+        </Typography.Text>
       </Card>
       <Card variant="outlined" style={{ width: '250px' }}>
-        <Typography variant="h5">Outlined Card</Typography>
-        <Typography variant="body2" color="secondary">
+        <Typography.Title level={3} withoutMargins>Outlined Card</Typography.Title>
+        <Typography.Text color="secondary">
           Card with more prominent border
-        </Typography>
+        </Typography.Text>
       </Card>
       <Card variant="elevated" style={{ width: '250px' }}>
-        <Typography variant="h5">Elevated Card</Typography>
-        <Typography variant="body2" color="secondary">
+        <Typography.Title level={3} withoutMargins>Elevated Card</Typography.Title>
+        <Typography.Text color="secondary">
           Card with shadow for elevation
-        </Typography>
+        </Typography.Text>
       </Card>
     </div>
   ),
@@ -135,16 +135,16 @@ export const Clickable: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '16px' }}>
       <Card clickable style={{ width: '250px' }} onClick={() => alert('Card clicked!')}>
-        <Typography variant="h5">Clickable Card</Typography>
-        <Typography variant="body2" color="secondary">
+        <Typography.Title level={3} withoutMargins>Clickable Card</Typography.Title>
+        <Typography.Text color="secondary">
           Click me to see the interaction
-        </Typography>
+        </Typography.Text>
       </Card>
       <Card clickable selected style={{ width: '250px' }}>
-        <Typography variant="h5">Selected Card</Typography>
-        <Typography variant="body2" color="secondary">
+        <Typography.Title level={3} withoutMargins>Selected Card</Typography.Title>
+        <Typography.Text color="secondary">
           This card is in selected state
-        </Typography>
+        </Typography.Text>
       </Card>
     </div>
   ),
@@ -161,18 +161,18 @@ export const ContentExamples: Story = {
   render: () => (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '16px' }}>
       <Card variant="elevated">
-        <Typography variant="h4">Simple Content</Typography>
-        <Typography variant="body1" style={{ marginTop: '8px' }}>
+        <Typography.Title level={2} withoutMargins>Simple Content</Typography.Title>
+        <Typography.Paragraph style={{ marginTop: '8px' }}>
           A card can contain any type of content, from simple text to complex layouts.
-        </Typography>
+        </Typography.Paragraph>
       </Card>
 
       <Card variant="elevated">
-        <Typography variant="overline" color="secondary">FEATURED</Typography>
-        <Typography variant="h4">With Actions</Typography>
-        <Typography variant="body2" color="secondary" style={{ marginTop: '8px', marginBottom: '16px' }}>
+        <Typography.Text size="sm" color="secondary" bold>FEATURED</Typography.Text>
+        <Typography.Title level={2} withoutMargins>With Actions</Typography.Title>
+        <Typography.Text color="secondary" style={{ display: 'block', marginTop: '8px', marginBottom: '16px' }}>
           Cards can include action buttons for user interaction.
-        </Typography>
+        </Typography.Text>
         <div style={{ display: 'flex', gap: '8px' }}>
           <Button variant="primary" size="small">Learn More</Button>
           <Button variant="tertiary" size="small">Dismiss</Button>
@@ -183,13 +183,13 @@ export const ContentExamples: Story = {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
           <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#2272B4' }} />
           <div>
-            <Typography variant="h5">With Avatar</Typography>
-            <Typography variant="caption" color="secondary">John Doe</Typography>
+            <Typography.Title level={3} withoutMargins>With Avatar</Typography.Title>
+            <Typography.Text size="sm" color="secondary">John Doe</Typography.Text>
           </div>
         </div>
-        <Typography variant="body2">
+        <Typography.Text>
           Cards can include avatars and other media elements.
-        </Typography>
+        </Typography.Text>
       </Card>
     </div>
   ),
@@ -205,11 +205,11 @@ export const ContentExamples: Story = {
 export const MetricCard: Story = {
   render: () => (
     <Card variant="elevated" style={{ maxWidth: '300px' }}>
-      <Typography variant="overline" color="secondary">TOTAL REVENUE</Typography>
-      <Typography variant="h2" style={{ margin: '8px 0' }}>$45,231.89</Typography>
-      <Typography variant="caption" color="success">
+      <Typography.Text size="sm" color="secondary" bold>TOTAL REVENUE</Typography.Text>
+      <Typography.Title level={1} style={{ margin: '8px 0' }}>$45,231.89</Typography.Title>
+      <Typography.Text size="sm" color="success">
         ↑ 20.1% from last month
-      </Typography>
+      </Typography.Text>
     </Card>
   ),
   parameters: {
@@ -225,7 +225,7 @@ export const ListCard: Story = {
   render: () => (
     <Card variant="default" padding="none" style={{ maxWidth: '350px' }}>
       <div style={{ padding: '16px', borderBottom: '1px solid #DDE0E5' }}>
-        <Typography variant="h5">Recent Activity</Typography>
+        <Typography.Title level={3} withoutMargins>Recent Activity</Typography.Title>
       </div>
       {[
         { action: 'File uploaded', time: '2 minutes ago', icon: '📄' },
@@ -245,8 +245,8 @@ export const ListCard: Story = {
         >
           <span style={{ fontSize: '20px' }}>{item.icon}</span>
           <div style={{ flex: 1 }}>
-            <Typography variant="body2">{item.action}</Typography>
-            <Typography variant="caption" color="secondary">{item.time}</Typography>
+            <Typography.Text>{item.action}</Typography.Text>
+            <Typography.Text size="sm" color="secondary" style={{ display: 'block' }}>{item.time}</Typography.Text>
           </div>
         </div>
       ))}
@@ -281,9 +281,9 @@ export const GridOfCards: Story = {
                 marginRight: '8px',
               }}
             />
-            <Typography variant="overline" color="secondary">{item.title}</Typography>
+            <Typography.Text size="sm" color="secondary" bold>{item.title}</Typography.Text>
           </div>
-          <Typography variant="h3">{item.count}</Typography>
+          <Typography.Title level={2} withoutMargins>{item.count}</Typography.Title>
         </Card>
       ))}
     </div>
