@@ -11,6 +11,10 @@
       "import": "./dist/index.js",
       "require": "./dist/index.js"
     },
+    "./styles/*.css": "./dist/styles/*.css",
+    "./dist/styles/*.css": "./dist/styles/*.css",
+    "./components/*/*.css": "./dist/components/*/*.css",
+    "./dist/components/*/*.css": "./dist/components/*/*.css",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -36,7 +40,8 @@
     "docs:serve": "npx http-server ./docs/api -p 8080",
     "docs:build": "npm run build && npm run docs:generate",
     "generate:component": "node scripts/generate-component.js",
-    "validate:tokens": "node scripts/validate-tokens.js"
+    "validate:tokens": "node scripts/validate-tokens.js",
+    "test:css": "node test-css-import.js"
   },
   "dependencies": {
     "@types/d3": "^7.4.3",

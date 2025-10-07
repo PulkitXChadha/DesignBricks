@@ -1,3 +1,27 @@
+## [Unreleased]
+
+### 🎨 CSS Distribution
+
+#### Added
+- Explicit CSS file exports in `package.json` for proper style distribution
+- Comprehensive CSS import guide (`docs/CSS-IMPORTS.md`) with 400+ lines of documentation
+- Enhanced build script to ensure all CSS files are copied to distribution
+- CSS import examples in README and Getting Started guide
+- Test script to verify CSS distribution (`npm run test:css`)
+
+#### Changed
+- Updated `scripts/copy-assets.js` to recursively copy all CSS files from `src/` to `dist/`
+- Improved documentation with three CSS import strategies:
+  - Global styles (recommended for most apps)
+  - Individual component styles (optimal tree-shaking)
+  - Bundler-specific configurations (Webpack, Vite, Next.js, CRA, Remix)
+- Enhanced Quick Start guide with CSS import requirements as step 2
+
+#### Fixed
+- **CSS files are now properly exported and accessible to package consumers**
+- Distribution now includes 34 CSS files (32 component styles + 2 global styles)
+- All components now have their styles available for import
+
 ## [0.2.1](https://github.com/PulkitXChadha/DesignBricks/compare/v0.2.0...v0.2.1) (2025-10-07)
 
 ### ♻️ Code Refactoring
