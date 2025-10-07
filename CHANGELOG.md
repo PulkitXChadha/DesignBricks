@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.2.2](https://github.com/PulkitXChadha/DesignBricks/compare/v0.2.1...v0.2.2) (2025-10-07)
+
 ### 🎨 CSS Distribution
 
 #### Added
