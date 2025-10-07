@@ -6,14 +6,6 @@ DesignBricks is an extended, community-driven implementation offering additional
 
 A React component library implementing the Databricks design system.
 
-## 📊 Project Status
-
-✅ **Phase 1-4 Complete** (80% of improvement plan)  
-🎉 **2,222 tests passing** | **80%+ code coverage** | **37 components**  
-📚 **Comprehensive documentation** | 🛠️ **Developer tools** | ♿ **WCAG 2.1 AA**
-
-[View Full Project Plan →](./project_plan/TEAM-IMPROVEMENT-PLAN.md)
-
 ## 📦 Installation
 
 ```bash
