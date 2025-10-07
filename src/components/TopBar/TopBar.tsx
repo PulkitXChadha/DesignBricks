@@ -25,7 +25,7 @@ const DefaultBrand: React.FC<{ variant?: 'light' | 'dark' }> = ({ variant = 'lig
 // Internal UserAvatar component
 const UserAvatar: React.FC<{ user: UserProfile; variant?: 'light' | 'dark' }> = ({ 
   user, 
-  variant = 'light' 
+  variant: _variant = 'light' 
 }) => {
   const getInitials = (name: string) => {
     return name
@@ -106,9 +106,9 @@ export interface TopBarProps extends React.HTMLAttributes<HTMLElement> {
   /** Search value */
   searchValue?: string;
   /** Search change handler */
-  onSearchChange?: (value: string) => void;
+  onSearchChange?: (_value: string) => void;
   /** Search submit handler */
-  onSearchSubmit?: (value: string) => void;
+  onSearchSubmit?: (_value: string) => void;
   /** User profile information */
   user?: UserProfile;
   /** Custom user section (overrides user prop if provided) */

@@ -23,7 +23,7 @@ export interface TooltipProps {
   /** Custom className for tooltip content */
   className?: string;
   /** Callback when tooltip visibility changes */
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (_open: boolean) => void;
   /** Max width of tooltip */
   maxWidth?: number | string;
   /** Custom z-index */
@@ -52,8 +52,8 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
     const [position, setPosition] = useState({ top: 0, left: 0 });
     const triggerRef = useRef<HTMLDivElement | null>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
-    const showTimeoutRef = useRef<NodeJS.Timeout>();
-    const hideTimeoutRef = useRef<NodeJS.Timeout>();
+    const showTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+    const hideTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
     
     const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
     const isManual = trigger === 'manual';
@@ -174,6 +174,7 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
         };
       }
       return undefined;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, placement]);
 
     useEffect(() => {

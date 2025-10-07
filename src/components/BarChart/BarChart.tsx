@@ -185,7 +185,7 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       yAxis,
       grid,
       theme,
-      animation,
+      animation, // Used in mergedAnimation config
       tooltip,
       showTooltip = true,
       formatTooltip,
@@ -398,20 +398,22 @@ export const BarChart = forwardRef<HTMLDivElement, BarChartProps>(
       [mergedYAxis.tickFormatter]
     );
 
-    // Default tooltip formatter (uses formatTooltip if provided)
-    useMemo(
-      () => formatTooltip || ((dataPoint: BarChartDataPoint) => {
-        const categoryFormatted = dataPoint.x;
-        const valueFormatted = d3.format('.2s')(dataPoint.y);
-        
-        let tooltipHtml = `<div class="db-barchart__tooltip-content">`;
-        tooltipHtml += `<div class="db-barchart__tooltip-category">${categoryFormatted}</div>`;
-        tooltipHtml += `<div class="db-barchart__tooltip-value">${valueFormatted}</div>`;
-        tooltipHtml += `</div>`;
-        return tooltipHtml;
-      }),
-      [formatTooltip]
-    );
+    // Default tooltip formatter (uses formatTooltip if provided) - kept for backward compatibility
+    // This computed value isn't currently used as we handle tooltip formatting in the component rendering
+    // Prefixed with underscore to indicate intentionally unused
+    // const _defaultFormatTooltip = useMemo(
+    //   () => formatTooltip || ((dataPoint: BarChartDataPoint) => {
+    //     const categoryFormatted = dataPoint.x;
+    //     const valueFormatted = d3.format('.2s')(dataPoint.y);
+    //     
+    //     let tooltipHtml = `<div class="db-barchart__tooltip-content">`;
+    //     tooltipHtml += `<div class="db-barchart__tooltip-category">${categoryFormatted}</div>`;
+    //     tooltipHtml += `<div class="db-barchart__tooltip-value">${valueFormatted}</div>`;
+    //     tooltipHtml += `</div>`;
+    //     return tooltipHtml;
+    //   }),
+    //   [formatTooltip]
+    // );
 
     useEffect(() => {
       if (!svgRef.current || !data.length || !xScale || !yScale) {

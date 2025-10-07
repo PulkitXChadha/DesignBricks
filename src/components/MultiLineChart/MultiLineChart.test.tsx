@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import { MultiLineChart, MultiLineChartProps, MultiLineChartSeries, MultiLineChartDataPoint } from './MultiLineChart';
+import { MultiLineChart, MultiLineChartProps, MultiLineChartSeries } from './MultiLineChart';
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);

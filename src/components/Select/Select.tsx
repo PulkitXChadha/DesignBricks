@@ -11,7 +11,7 @@ export interface SelectOption {
 export interface SelectProps {
   options: SelectOption[];
   value?: string | number | (string | number)[];
-  onChange?: (value: string | number | (string | number)[]) => void;
+  onChange?: (_value: string | number | (string | number)[]) => void;
   placeholder?: string;
   disabled?: boolean;
   error?: boolean;
@@ -282,7 +282,7 @@ export const Select: React.FC<SelectProps> = ({
                 {group && (
                   <div className="db-select__group-label">{group}</div>
                 )}
-                {groupOptions.map((option, index) => {
+                {groupOptions.map((option) => {
                   const globalIndex = filteredOptions.indexOf(option);
                   const isSelected = normalizedValue.includes(option.value);
                   const isFocused = globalIndex === focusedIndex;

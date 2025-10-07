@@ -774,7 +774,6 @@ describe('Select', () => {
     });
 
     it('handles rapid state changes', async () => {
-      const user = userEvent.setup();
       const { rerender } = render(<Select options={sampleOptions} value="1" />);
       
       expect(screen.getByText('Option 1')).toBeInTheDocument();

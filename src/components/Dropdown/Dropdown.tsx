@@ -2,7 +2,8 @@ import React, {
   ReactNode, 
   useState, 
   useRef, 
-  useEffect, 
+  useEffect,
+  useCallback, 
   forwardRef,
   HTMLAttributes,
   KeyboardEvent,
@@ -92,7 +93,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen;
     const isManual = trigger === 'manual';
 
-    const updatePosition = () => {
+    const updatePosition = useCallback(() => {
       if (!triggerRef.current || !dropdownRef.current || !isOpen) return;
 
       const triggerRect = triggerRef.current.getBoundingClientRect();
@@ -137,9 +138,9 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       top = Math.max(8, Math.min(top, viewport.height - dropdownRect.height - 8));
 
       setPosition({ top, left });
-    };
+    }, [isOpen, placement, offset]);
 
-    const openDropdown = () => {
+    const openDropdown = useCallback(() => {
       if (disabled || isManual) return;
       
       const newOpen = true;
@@ -148,9 +149,9 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       }
       onOpenChange?.(newOpen);
       setFocusedIndex(-1);
-    };
+    }, [disabled, isManual, controlledOpen, onOpenChange]);
 
-    const closeDropdown = () => {
+    const closeDropdown = useCallback(() => {
       if (disabled || isManual) return;
       
       const newOpen = false;
@@ -159,7 +160,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       }
       onOpenChange?.(newOpen);
       setFocusedIndex(-1);
-    };
+    }, [disabled, isManual, controlledOpen, onOpenChange]);
 
     const toggleDropdown = () => {
       if (isOpen) {

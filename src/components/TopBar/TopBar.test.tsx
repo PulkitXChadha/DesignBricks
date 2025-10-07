@@ -1,8 +1,8 @@
-import userEvent from "@testing-library/user-event";
+import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import { TopBar, TopBarProps, UserProfile } from './TopBar';
+import { TopBar, UserProfile } from './TopBar';
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);
@@ -553,7 +553,7 @@ describe('TopBar', () => {
     });
 
     it('handles empty search value', () => {
-      const { container } = render(<TopBar searchValue="" />);
+      render(<TopBar searchValue="" />);
       
       const input = screen.getByPlaceholderText('Search...') as HTMLInputElement;
       expect(input.value).toBe('');

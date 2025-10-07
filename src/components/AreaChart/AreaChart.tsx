@@ -138,7 +138,7 @@ export interface AreaChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'da
   /** Theme configuration */
   theme?: AreaChartTheme;
   /** Animation configuration */
-  animation?: AreaChartAnimation;
+      animation?: AreaChartAnimation; // Currently not used but kept for future functionality
   /** Responsive configuration */
   responsive?: AreaChartResponsive;
   
@@ -263,8 +263,8 @@ export const AreaChart = forwardRef<HTMLDivElement, AreaChartProps>(
       ...theme,
     };
 
-    // Animation configuration (currently not used in rendering)
-    // const mergedAnimation: AreaChartAnimation = {
+    // Animation configuration (currently not used in rendering, kept for future use)
+    // const _mergedAnimation: AreaChartAnimation = {
     //   enabled: variant === 'detailed',
     //   duration: variant === 'detailed' ? 300 : 150,
     //   easing: 'ease-out',

@@ -233,7 +233,7 @@ export const DisabledTab: Story = {
           <p>This tab is active and clickable</p>
         </TabPanel>
         <TabPanel tabId="tab2" activeTab={activeTab}>
-          <p>This content won't be shown as the tab is disabled</p>
+          <p>This content won&apos;t be shown as the tab is disabled</p>
         </TabPanel>
         <TabPanel tabId="tab3" activeTab={activeTab}>
           <p>This tab is also clickable</p>
@@ -296,7 +296,7 @@ export const RealWorldExample: Story = {
             <p>Write and execute SQL queries against your data warehouse.</p>
             <div style={{ backgroundColor: '#f0f0f0', padding: '12px', borderRadius: '4px', fontFamily: 'monospace', fontSize: '12px' }}>
               SELECT * FROM users<br />
-              WHERE created_at &gt; '2024-01-01'<br />
+              WHERE created_at &gt; &apos;2024-01-01&apos;<br />
               ORDER BY created_at DESC<br />
               LIMIT 100;
             </div>

@@ -6,7 +6,7 @@ import {
   TooltipConfig, 
   ChartTooltip, 
   DefaultTooltipContent, 
-  CustomTooltipProps,
+  // CustomTooltipProps, // Reserved for future custom tooltip functionality
   TooltipPosition 
 } from '../shared/ChartTooltip';
 
@@ -71,7 +71,7 @@ export interface MultiLineChartAxis {
   /** Tick count */
   tickCount?: number;
   /** Custom tick formatter */
-  tickFormatter?: (value: any) => string;
+  tickFormatter?: (_value: any) => string;
   /** Axis style variant */
   variant?: 'default' | 'minimal' | 'detailed';
 }
@@ -144,7 +144,7 @@ export interface MultiLineChartProps extends Omit<HTMLAttributes<HTMLDivElement>
   /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
   /** @deprecated Use tooltip.content instead */
-  formatTooltip?: (dataPoints: Array<{ series: MultiLineChartSeries; dataPoint: MultiLineChartDataPoint; index: number }>) => string;
+  formatTooltip?: (_dataPoints: Array<{ series: MultiLineChartSeries; dataPoint: MultiLineChartDataPoint; index: number }>) => string;
   /** Show percentage change in tooltip */
   showPercentageChange?: boolean;
   
@@ -197,18 +197,18 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
       yAxis,
       grid,
       theme,
-      animation,
+      animation: _animation,
       legend,
       showPoints = true,
       tooltip,
       showTooltip = true,
       formatTooltip,
-      showPercentageChange = false,
+      showPercentageChange: _showPercentageChange = false,
       keyboard = false,
       ariaLabel,
       themeClass,
       optimized = false,
-      hoverDebounce = 0,
+      hoverDebounce: _hoverDebounce = 0,
       className,
       ...props
     },
@@ -262,12 +262,13 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
       ...theme,
     };
 
-    const mergedAnimation: MultiLineChartAnimation = {
-      enabled: variant === 'detailed',
-      duration: variant === 'detailed' ? 300 : 150,
-      easing: 'ease-out',
-      ...animation,
-    };
+    // Animation configuration - kept for future use
+    // const _mergedAnimation: MultiLineChartAnimation = {
+    //   enabled: variant === 'detailed',
+    //   duration: variant === 'detailed' ? 300 : 150,
+    //   easing: 'ease-out',
+    //   ...animation,
+    // };
 
     const mergedLegend: MultiLineChartLegend = {
       show: visibleSeries.length > 1,
@@ -393,7 +394,7 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
       let tooltipHtml = `<div class="db-multilinechart__tooltip-content">`;
       tooltipHtml += `<div class="db-multilinechart__tooltip-date">${xFormatted}</div>`;
       
-      dataPoints.forEach(({ series, dataPoint, index }, i) => {
+      dataPoints.forEach(({ series, dataPoint }) => {
         const yFormatted = defaultFormatY(dataPoint.y);
         const seriesColor = getSeriesColor(series, visibleSeries.indexOf(series));
         
@@ -454,9 +455,9 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
         const xAxisCall = d3.axisBottom(xScale);
         if (mergedXAxis.tickCount) xAxisCall.ticks(mergedXAxis.tickCount);
         if (mergedXAxis.tickFormatter) {
-          xAxisCall.tickFormat((d, i) => mergedXAxis.tickFormatter!(d));
+          xAxisCall.tickFormat((d) => mergedXAxis.tickFormatter!(d));
         } else {
-          xAxisCall.tickFormat((d, i) => defaultFormatX(d));
+          xAxisCall.tickFormat((d) => defaultFormatX(d));
         }
         
         xAxisGroup.call(xAxisCall);
@@ -470,9 +471,9 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
         const yAxisCall = d3.axisLeft(yScale);
         if (mergedYAxis.tickCount) yAxisCall.ticks(mergedYAxis.tickCount);
         if (mergedYAxis.tickFormatter) {
-          yAxisCall.tickFormat((d, i) => mergedYAxis.tickFormatter!(d as number));
+          yAxisCall.tickFormat((d) => mergedYAxis.tickFormatter!(d as number));
         } else {
-          yAxisCall.tickFormat((d, i) => defaultFormatY(d as number));
+          yAxisCall.tickFormat((d) => defaultFormatY(d as number));
         }
         
         yAxisGroup.call(yAxisCall);
@@ -605,7 +606,7 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
                 .attr('x2', pointX);
 
               // Show hover circles for each series at this X position
-              closestPointsData.forEach(({ series, dataPoint }, index) => {
+              closestPointsData.forEach(({ series, dataPoint }) => {
                 const pointY = yScale(dataPoint.y) || 0;
                 hoverCircles[visibleSeries.indexOf(series)]
                   .style('opacity', 1)
@@ -723,6 +724,7 @@ export const MultiLineChart = forwardRef<HTMLDivElement, MultiLineChartProps>(
           .text(d => d.name);
       }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [visibleSeries, width, height, xScale, yScale, lineGenerator, mergedGrid.show, showPoints, showTooltip, 
         mergedXAxis.label, mergedYAxis.label, title, defaultMargin, innerWidth, innerHeight, 
         defaultFormatX, defaultFormatY, defaultFormatTooltip, mergedLegend.show]);

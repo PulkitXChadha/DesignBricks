@@ -178,7 +178,7 @@ export const Interactive: Story = {
         </div>
         {notifications.length === 0 && (
           <p style={{ color: '#666', fontStyle: 'italic' }}>
-            All notifications have been dismissed. Click "Add Notification" to create new ones.
+            All notifications have been dismissed. Click &quot;Add Notification&quot; to create new ones.
           </p>
         )}
       </div>

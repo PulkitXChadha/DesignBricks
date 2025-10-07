@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type { Meta, StoryObj } from '@storybook/react';
 import { SearchInput } from './SearchInput';
 import React, { useState } from 'react';
@@ -271,7 +272,7 @@ export const Interactive: Story = {
             color: '#6B7280',
             fontSize: '13px',
           }}>
-            No results found for "{value}"
+            No results found for &quot;{value}&quot;
           </div>
         )}
       </div>
@@ -390,7 +391,7 @@ export const RealWorldExample: Story = {
                 listStyle: 'none',
               }}>
                 {recentSearches.map((item, index) => (
-                  <li 
+                  <button 
                     key={index}
                     style={{
                       padding: '8px 0',
@@ -398,6 +399,10 @@ export const RealWorldExample: Story = {
                       color: '#6B7280',
                       cursor: 'pointer',
                       borderBottom: index < recentSearches.length - 1 ? '1px solid #F3F4F6' : 'none',
+                      background: 'none',
+                      border: 'none',
+                      width: '100%',
+                      textAlign: 'left',
                     }}
                     onClick={() => {
                       setValue(item);
@@ -405,7 +410,7 @@ export const RealWorldExample: Story = {
                     }}
                   >
                     🔍 {item}
-                  </li>
+                  </button>
                 ))}
               </ul>
             </div>
@@ -431,7 +436,7 @@ export const RealWorldExample: Story = {
                 listStyle: 'none',
               }}>
                 {popularItems.map((item, index) => (
-                  <li 
+                  <button 
                     key={index}
                     style={{
                       padding: '8px 0',
@@ -439,6 +444,10 @@ export const RealWorldExample: Story = {
                       color: '#6B7280',
                       cursor: 'pointer',
                       borderBottom: index < popularItems.length - 1 ? '1px solid #F3F4F6' : 'none',
+                      background: 'none',
+                      border: 'none',
+                      width: '100%',
+                      textAlign: 'left',
                     }}
                     onClick={() => {
                       setValue(item);
@@ -446,7 +455,7 @@ export const RealWorldExample: Story = {
                     }}
                   >
                     ⭐ {item}
-                  </li>
+                  </button>
                 ))}
               </ul>
             </div>

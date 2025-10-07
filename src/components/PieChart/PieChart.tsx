@@ -6,7 +6,7 @@ import {
   TooltipConfig, 
   ChartTooltip, 
   DefaultTooltipContent, 
-  CustomTooltipProps,
+  // CustomTooltipProps, // Reserved for future custom tooltip functionality
   TooltipPosition 
 } from '../shared/ChartTooltip';
 
@@ -98,7 +98,7 @@ export interface PieChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 'dat
   /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
   /** @deprecated Use tooltip.content instead */
-  formatTooltip?: (dataPoint: PieChartDataPoint, percentage?: number) => string;
+  formatTooltip?: (_dataPoint: PieChartDataPoint, _percentage?: number) => string;
   /** Show percentage labels on slices */
   showLabels?: boolean;
   /** Show value labels instead of percentages */
@@ -159,7 +159,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
       ariaLabel,
       themeClass,
       optimized = false,
-      hoverDebounce = 0,
+      hoverDebounce: _hoverDebounce = 0,
       colorPalette = DEFAULT_PIE_COLORS,
       className,
       ...props
@@ -325,7 +325,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
 
       // Labels
       if (showLabels && labelArc) {
-        const labels = slices.append('text')
+        slices.append('text')
           .attr('class', 'db-piechart__label')
           .attr('transform', d => `translate(${labelArc.centroid(d as any)})`)
           .attr('dy', '0.35em')
@@ -373,7 +373,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
         paths
           .attr('tabindex', 0)
           .attr('role', 'button')
-          .attr('aria-label', (d, i) => {
+          .attr('aria-label', (d) => {
             const percentage = (d.value / totalValue) * 100;
             return `${d.data.label}: ${d3.format(',')(d.data.value)} (${percentage.toFixed(1)}%)`;
           })
@@ -527,6 +527,7 @@ export const PieChart = forwardRef<HTMLDivElement, PieChartProps>(
           .text(title);
       }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, width, height, radius, innerRadius, arc, labelArc, colorScale, totalValue,
         showLabels, showValues, labelPosition, showTooltip, mergedLegend.show, title,
         defaultMargin, centerX, centerY, defaultFormatTooltip, mergedAnimation.enabled, mergedAnimation.duration]);

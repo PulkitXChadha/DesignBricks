@@ -1,239 +1,239 @@
-import userEvent from "@testing-library/user-event";
-import React from &apos;react&apos;;
-import { render, screen } from &apos;@testing-library/react&apos;;
-import { axe, toHaveNoViolations } from &apos;jest-axe&apos;;
-import { Notification, NotificationProps } from &apos;./Notification&apos;;
+import userEvent from '@testing-library/user-event';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import { Notification, NotificationProps } from './Notification';
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);
 
-describe(&apos;Notification&apos;, () => {
+describe('Notification', () => {
   // Basic rendering tests
-  describe(&apos;Basic Rendering&apos;, () => {
-    it(&apos;renders with default props&apos;, () => {
+  describe('Basic Rendering', () => {
+    it('renders with default props', () => {
       render(<Notification>Notification message</Notification>);
       
-      const notification = screen.getByRole(&apos;alert&apos;);
+      const notification = screen.getByRole('alert');
       expect(notification).toBeInTheDocument();
-      expect(notification).toHaveClass(&apos;db-notification&apos;, &apos;db-notification--info&apos;);
-      expect(notification).toHaveTextContent(&apos;Notification message&apos;);
+      expect(notification).toHaveClass('db-notification', 'db-notification--info');
+      expect(notification).toHaveTextContent('Notification message');
     });
 
-    it(&apos;renders with custom className&apos;, () => {
-      render(<Notification className=\"quot;custom-notification\"quot;>Message</Notification>);
+    it('renders with custom className', () => {
+      render(<Notification className="custom-notification">Message</Notification>);
       
-      const notification = screen.getByRole(&apos;alert&apos;);
-      expect(notification).toHaveClass(&apos;db-notification&apos;, &apos;custom-notification&apos;);
+      const notification = screen.getByRole('alert');
+      expect(notification).toHaveClass('db-notification', 'custom-notification');
     });
 
-    it(&apos;forwards ref correctly&apos;, () => {
+    it('forwards ref correctly', () => {
       const ref = React.createRef<HTMLDivElement>();
       render(<Notification ref={ref}>Message</Notification>);
       
       expect(ref.current).toBeInstanceOf(HTMLDivElement);
-      expect(ref.current).toHaveClass(&apos;db-notification&apos;);
+      expect(ref.current).toHaveClass('db-notification');
     });
 
-    it(&apos;forwards additional props&apos;, () => {
+    it('forwards additional props', () => {
       render(
-        <Notification data-testid=\"quot;notification\"quot; id=\"quot;test-notification\"quot;>
+        <Notification data-testid="notification" id="test-notification">
           Message
         </Notification>
       );
       
-      const notification = screen.getByTestId(&apos;notification&apos;);
-      expect(notification).toHaveAttribute(&apos;id&apos;, &apos;test-notification&apos;);
+      const notification = screen.getByTestId('notification');
+      expect(notification).toHaveAttribute('id', 'test-notification');
     });
 
-    it(&apos;has proper ARIA semantics&apos;, () => {
+    it('has proper ARIA semantics', () => {
       render(<Notification>Semantic notification</Notification>);
       
-      const notification = screen.getByRole(&apos;alert&apos;);
-      expect(notification).toHaveAttribute(&apos;role&apos;, &apos;alert&apos;);
-      expect(notification).toHaveAttribute(&apos;aria-live&apos;, &apos;polite&apos;);
+      const notification = screen.getByRole('alert');
+      expect(notification).toHaveAttribute('role', 'alert');
+      expect(notification).toHaveAttribute('aria-live', 'polite');
     });
 
-    it(&apos;renders children in description element&apos;, () => {
+    it('renders children in description element', () => {
       const { container } = render(<Notification>Notification content</Notification>);
       
-      const description = container.querySelector(&apos;.db-notification__description&apos;);
+      const description = container.querySelector('.db-notification__description');
       expect(description).toBeInTheDocument();
-      expect(description).toHaveTextContent(&apos;Notification content&apos;);
+      expect(description).toHaveTextContent('Notification content');
     });
   });
 
   // Variant tests
-  describe(&apos;Variants&apos;, () => {
-    const variants: Array<NotificationProps[&apos;variant&apos;]> = [&apos;info&apos;, &apos;success&apos;, &apos;warning&apos;, &apos;error&apos;];
+  describe('Variants', () => {
+    const variants: Array<NotificationProps['variant']> = ['info', 'success', 'warning', 'error'];
     
     variants.forEach(variant => {
       it(`renders ${variant} variant correctly`, () => {
         render(<Notification variant={variant}>Variant message</Notification>);
         
-        const notification = screen.getByRole(&apos;alert&apos;);
+        const notification = screen.getByRole('alert');
         expect(notification).toHaveClass(`db-notification--${variant}`);
       });
 
       it(`renders ${variant} variant with default icon`, () => {
         const { container } = render(<Notification variant={variant}>Message</Notification>);
         
-        const icon = container.querySelector(&apos;.db-notification__icon svg&apos;);
+        const icon = container.querySelector('.db-notification__icon svg');
         expect(icon).toBeInTheDocument();
       });
     });
 
-    it(&apos;applies info variant by default&apos;, () => {
+    it('applies info variant by default', () => {
       render(<Notification>Default variant</Notification>);
       
-      const notification = screen.getByRole(&apos;alert&apos;);
-      expect(notification).toHaveClass(&apos;db-notification--info&apos;);
+      const notification = screen.getByRole('alert');
+      expect(notification).toHaveClass('db-notification--info');
     });
 
-    it(&apos;applies info variant when variant is undefined&apos;, () => {
+    it('applies info variant when variant is undefined', () => {
       render(<Notification variant={undefined}>Undefined variant</Notification>);
       
-      const notification = screen.getByRole(&apos;alert&apos;);
-      expect(notification).toHaveClass(&apos;db-notification--info&apos;);
+      const notification = screen.getByRole('alert');
+      expect(notification).toHaveClass('db-notification--info');
     });
   });
 
   // Title tests
-  describe(&apos;Title&apos;, () => {
-    it(&apos;renders with title&apos;, () => {
+  describe('Title', () => {
+    it('renders with title', () => {
       const { container } = render(
-        <Notification title=\"quot;Important\"quot;>Description text</Notification>
+        <Notification title="Important">Description text</Notification>
       );
       
-      const title = container.querySelector(&apos;.db-notification__title&apos;);
+      const title = container.querySelector('.db-notification__title');
       expect(title).toBeInTheDocument();
-      expect(title).toHaveTextContent(&apos;Important&apos;);
+      expect(title).toHaveTextContent('Important');
     });
 
-    it(&apos;renders without title when not provided&apos;, () => {
+    it('renders without title when not provided', () => {
       const { container } = render(<Notification>Message only</Notification>);
       
-      const title = container.querySelector(&apos;.db-notification__title&apos;);
+      const title = container.querySelector('.db-notification__title');
       expect(title).not.toBeInTheDocument();
     });
 
-    it(&apos;renders title with description&apos;, () => {
+    it('renders title with description', () => {
       const { container } = render(
-        <Notification title=\"quot;Title\"quot;>Description</Notification>
+        <Notification title="Title">Description</Notification>
       );
       
-      const title = container.querySelector(&apos;.db-notification__title&apos;);
-      const description = container.querySelector(&apos;.db-notification__description&apos;);
+      const title = container.querySelector('.db-notification__title');
+      const description = container.querySelector('.db-notification__description');
       
-      expect(title).toHaveTextContent(&apos;Title&apos;);
-      expect(description).toHaveTextContent(&apos;Description&apos;);
+      expect(title).toHaveTextContent('Title');
+      expect(description).toHaveTextContent('Description');
     });
 
-    it(&apos;renders empty title&apos;, () => {
+    it('renders empty title', () => {
       const { container } = render(
-        <Notification title=\"quot;\"quot;>Message</Notification>
+        <Notification title="">Message</Notification>
       );
       
-      const title = container.querySelector(&apos;.db-notification__title&apos;);
+      const title = container.querySelector('.db-notification__title');
       expect(title).not.toBeInTheDocument();
     });
 
-    it(&apos;renders title as ReactNode&apos;, () => {
+    it('renders title as ReactNode', () => {
       const { container } = render(
         <Notification title={<strong>Bold Title</strong>}>Message</Notification>
       );
       
-      const title = container.querySelector(&apos;.db-notification__title&apos;);
+      const title = container.querySelector('.db-notification__title');
       expect(title).toBeInTheDocument();
-      expect(title?.querySelector(&apos;strong&apos;)).toHaveTextContent(&apos;Bold Title&apos;);
+      expect(title?.querySelector('strong')).toHaveTextContent('Bold Title');
     });
   });
 
   // Custom icon tests
-  describe(&apos;Custom Icon&apos;, () => {
-    const CustomIcon = () => <span data-testid=\"quot;custom-icon\"quot;>🔔</span>;
+  describe('Custom Icon', () => {
+    const CustomIcon = () => <span data-testid="custom-icon">🔔</span>;
 
-    it(&apos;renders with custom icon&apos;, () => {
+    it('renders with custom icon', () => {
       const { container } = render(
         <Notification icon={<CustomIcon />}>Message</Notification>
       );
       
-      expect(screen.getByTestId(&apos;custom-icon&apos;)).toBeInTheDocument();
-      const icon = container.querySelector(&apos;.db-notification__icon&apos;);
-      expect(icon).toContainElement(screen.getByTestId(&apos;custom-icon&apos;));
+      expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
+      const icon = container.querySelector('.db-notification__icon');
+      expect(icon).toContainElement(screen.getByTestId('custom-icon'));
     });
 
-    it(&apos;overrides default icon with custom icon&apos;, () => {
+    it('overrides default icon with custom icon', () => {
       const { container } = render(
-        <Notification variant=\"quot;success\"quot; icon={<CustomIcon />}>Message</Notification>
+        <Notification variant="success" icon={<CustomIcon />}>Message</Notification>
       );
       
-      expect(screen.getByTestId(&apos;custom-icon&apos;)).toBeInTheDocument();
+      expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
       
       // Should not have the default success icon SVG alongside custom icon
-      const icon = container.querySelector(&apos;.db-notification__icon&apos;);
-      const svgs = icon?.querySelectorAll(&apos;svg&apos;);
+      const icon = container.querySelector('.db-notification__icon');
+      const svgs = icon?.querySelectorAll('svg');
       expect(svgs?.length).toBe(0);
     });
 
-    it(&apos;renders icon with null value&apos;, () => {
+    it('renders icon with null value', () => {
       const { container } = render(
         <Notification icon={null}>Message</Notification>
       );
       
-      const icon = container.querySelector(&apos;.db-notification__icon&apos;);
+      const icon = container.querySelector('.db-notification__icon');
       expect(icon).toBeInTheDocument();
       // Should render default icon for info variant
-      expect(icon?.querySelector(&apos;svg&apos;)).toBeInTheDocument();
+      expect(icon?.querySelector('svg')).toBeInTheDocument();
     });
   });
 
   // Closable functionality tests
-  describe(&apos;Closable Functionality&apos;, () => {
-    it(&apos;renders without close button by default&apos;, () => {
+  describe('Closable Functionality', () => {
+    it('renders without close button by default', () => {
       const { container } = render(<Notification>Message</Notification>);
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;);
+      const closeButton = container.querySelector('.db-notification__close');
       expect(closeButton).not.toBeInTheDocument();
     });
 
-    it(&apos;renders close button when closable is true&apos;, () => {
+    it('renders close button when closable is true', () => {
       const { container } = render(
         <Notification closable>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;);
+      const closeButton = container.querySelector('.db-notification__close');
       expect(closeButton).toBeInTheDocument();
-      expect(closeButton?.tagName).toBe(&apos;BUTTON&apos;);
+      expect(closeButton?.tagName).toBe('BUTTON');
     });
 
-    it(&apos;close button has correct accessibility attributes&apos;, () => {
+    it('close button has correct accessibility attributes', () => {
       const { container } = render(
         <Notification closable>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;);
-      expect(closeButton).toHaveAttribute(&apos;type&apos;, &apos;button&apos;);
-      expect(closeButton).toHaveAttribute(&apos;aria-label&apos;, &apos;Close notification&apos;);
+      const closeButton = container.querySelector('.db-notification__close');
+      expect(closeButton).toHaveAttribute('type', 'button');
+      expect(closeButton).toHaveAttribute('aria-label', 'Close notification');
     });
 
-    it(&apos;calls onClose when close button is clicked&apos;, async () => {
+    it('calls onClose when close button is clicked', async () => {
       const handleClose = jest.fn();
       const { container } = render(
         <Notification closable onClose={handleClose}>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;) as HTMLElement;
+      const closeButton = container.querySelector('.db-notification__close') as HTMLElement;
       await userEvent.click(closeButton);
       
       expect(handleClose).toHaveBeenCalledTimes(1);
     });
 
-    it(&apos;does not call onClose if not provided&apos;, async () => {
+    it('does not call onClose if not provided', async () => {
       const { container } = render(
         <Notification closable>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;) as HTMLElement;
+      const closeButton = container.querySelector('.db-notification__close') as HTMLElement;
       
       // Should not throw error
       expect(async () => {
@@ -241,48 +241,48 @@ describe(&apos;Notification&apos;, () => {
       }).not.toThrow();
     });
 
-    it(&apos;close button renders with icon&apos;, () => {
+    it('close button renders with icon', () => {
       const { container } = render(
         <Notification closable>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;);
-      const icon = closeButton?.querySelector(&apos;svg&apos;);
+      const closeButton = container.querySelector('.db-notification__close');
+      const icon = closeButton?.querySelector('svg');
       expect(icon).toBeInTheDocument();
     });
 
-    it(&apos;supports keyboard interaction on close button&apos;, async () => {
+    it('supports keyboard interaction on close button', async () => {
       const handleClose = jest.fn();
       const { container } = render(
         <Notification closable onClose={handleClose}>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;) as HTMLElement;
+      const closeButton = container.querySelector('.db-notification__close') as HTMLElement;
       closeButton.focus();
       
       expect(closeButton).toHaveFocus();
       
-      await userEvent.keyboard(&apos;{Enter}&apos;);
+      await userEvent.keyboard('{Enter}');
       expect(handleClose).toHaveBeenCalledTimes(1);
     });
   });
 
   // Position tests (prop exists but may not affect rendering)
-  describe(&apos;Position Prop&apos;, () => {
-    const positions: Array<NotificationProps[&apos;position&apos;]> = [
-      &apos;top-right&apos;,
-      &apos;top-left&apos;,
-      &apos;bottom-right&apos;,
-      &apos;bottom-left&apos;,
-      &apos;top-center&apos;,
-      &apos;bottom-center&apos;
+  describe('Position Prop', () => {
+    const positions: Array<NotificationProps['position']> = [
+      'top-right',
+      'top-left',
+      'bottom-right',
+      'bottom-left',
+      'top-center',
+      'bottom-center'
     ];
 
     positions.forEach(position => {
       it(`accepts ${position} position prop`, () => {
         render(<Notification position={position}>Message</Notification>);
         
-        const notification = screen.getByRole(&apos;alert&apos;);
+        const notification = screen.getByRole('alert');
         expect(notification).toBeInTheDocument();
         // Position prop exists but may be used by parent toast container
       });
@@ -290,14 +290,14 @@ describe(&apos;Notification&apos;, () => {
   });
 
   // Content tests
-  describe(&apos;Content&apos;, () => {
-    it(&apos;renders with text content&apos;, () => {
+  describe('Content', () => {
+    it('renders with text content', () => {
       render(<Notification>Simple text message</Notification>);
       
-      expect(screen.getByText(&apos;Simple text message&apos;)).toBeInTheDocument();
+      expect(screen.getByText('Simple text message')).toBeInTheDocument();
     });
 
-    it(&apos;renders with complex ReactNode content&apos;, () => {
+    it('renders with complex ReactNode content', () => {
       render(
         <Notification>
           <div>
@@ -307,164 +307,164 @@ describe(&apos;Notification&apos;, () => {
         </Notification>
       );
       
-      expect(screen.getByText(&apos;Paragraph 1&apos;)).toBeInTheDocument();
-      expect(screen.getByText(&apos;Paragraph 2&apos;)).toBeInTheDocument();
+      expect(screen.getByText('Paragraph 1')).toBeInTheDocument();
+      expect(screen.getByText('Paragraph 2')).toBeInTheDocument();
     });
 
-    it(&apos;renders without children&apos;, () => {
+    it('renders without children', () => {
       const { container } = render(
-        <Notification title=\"quot;Title only\"quot; />
+        <Notification title="Title" only />
       );
       
-      const description = container.querySelector(&apos;.db-notification__description&apos;);
+      const description = container.querySelector('.db-notification__description');
       expect(description).not.toBeInTheDocument();
     });
 
-    it(&apos;renders with title and children&apos;, () => {
+    it('renders with title and children', () => {
       render(
-        <Notification title=\"quot;Success\"quot;>
+        <Notification title="Success">
           Operation completed successfully
         </Notification>
       );
       
-      expect(screen.getByText(&apos;Success&apos;)).toBeInTheDocument();
-      expect(screen.getByText(&apos;Operation completed successfully&apos;)).toBeInTheDocument();
+      expect(screen.getByText('Success')).toBeInTheDocument();
+      expect(screen.getByText('Operation completed successfully')).toBeInTheDocument();
     });
 
-    it(&apos;handles empty children gracefully&apos;, () => {
+    it('handles empty children gracefully', () => {
       const { container } = render(
-        <Notification title=\"quot;Title\"quot;>{&apos;&apos;}</Notification>
+        <Notification title="Title">{''}</Notification>
       );
       
-      const description = container.querySelector(&apos;.db-notification__description&apos;);
+      const description = container.querySelector('.db-notification__description');
       expect(description).not.toBeInTheDocument();
     });
   });
 
   // Edge cases
-  describe(&apos;Edge Cases&apos;, () => {
-    it(&apos;renders with all props combined&apos;, () => {
+  describe('Edge Cases', () => {
+    it('renders with all props combined', () => {
       const handleClose = jest.fn();
       const CustomIcon = () => <span>🔔</span>;
       
       render(
         <Notification
-          variant=\"quot;success\"quot;
-          title=\"quot;Success!\"quot;
+          variant="success"
+          title="Success!"
           closable
           onClose={handleClose}
           icon={<CustomIcon />}
-          position=\"quot;top-right\"quot;
-          className=\"quot;custom-class\"quot;
-          data-testid=\"quot;full-notification\"quot;
+          position="top-right"
+          className="custom-class"
+          data-testid="full-notification"
         >
           All features enabled
         </Notification>
       );
       
-      const notification = screen.getByTestId(&apos;full-notification&apos;);
-      expect(notification).toHaveClass(&apos;db-notification--success&apos;, &apos;custom-class&apos;);
-      expect(screen.getByText(&apos;Success!&apos;)).toBeInTheDocument();
-      expect(screen.getByText(&apos;All features enabled&apos;)).toBeInTheDocument();
+      const notification = screen.getByTestId('full-notification');
+      expect(notification).toHaveClass('db-notification--success', 'custom-class');
+      expect(screen.getByText('Success!')).toBeInTheDocument();
+      expect(screen.getByText('All features enabled')).toBeInTheDocument();
     });
 
-    it(&apos;handles very long content&apos;, () => {
-      const longContent = &apos;A&apos;.repeat(500);
+    it('handles very long content', () => {
+      const longContent = 'A'.repeat(500);
       const { container } = render(
-        <Notification title=\"quot;Long Content\"quot;>{longContent}</Notification>
+        <Notification title="Long Content">{longContent}</Notification>
       );
       
-      const description = container.querySelector(&apos;.db-notification__description&apos;);
+      const description = container.querySelector('.db-notification__description');
       expect(description).toHaveTextContent(longContent);
     });
 
-    it(&apos;handles special characters in content&apos;, () => {
+    it('handles special characters in content', () => {
       render(
-        <Notification>Special chars: &lt;&gt;&amp;\"quot;&apos;</Notification>
+        <Notification>Special chars: &lt;&gt;&amp;&apos;</Notification>
       );
       
       expect(screen.getByText(/Special chars:/)).toBeInTheDocument();
     });
 
-    it(&apos;renders with multiple notifications&apos;, () => {
+    it('renders with multiple notifications', () => {
       const { container } = render(
         <>
-          <Notification variant=\"quot;info\"quot;>Info 1</Notification>
-          <Notification variant=\"quot;success\"quot;>Success 1</Notification>
-          <Notification variant=\"quot;warning\"quot;>Warning 1</Notification>
+          <Notification variant="info">Info 1</Notification>
+          <Notification variant="success">Success 1</Notification>
+          <Notification variant="warning">Warning 1</Notification>
         </>
       );
       
-      const notifications = container.querySelectorAll(&apos;.db-notification&apos;);
+      const notifications = container.querySelectorAll('.db-notification');
       expect(notifications).toHaveLength(3);
     });
 
-    it(&apos;preserves notification content during re-render&apos;, () => {
+    it('preserves notification content during re-render', () => {
       const { rerender } = render(
-        <Notification variant=\"quot;info\"quot;>Original</Notification>
+        <Notification variant="info">Original</Notification>
       );
       
-      expect(screen.getByText(&apos;Original&apos;)).toBeInTheDocument();
+      expect(screen.getByText('Original')).toBeInTheDocument();
       
-      rerender(<Notification variant=\"quot;success\"quot;>Updated</Notification>);
+      rerender(<Notification variant="success">Updated</Notification>);
       
-      expect(screen.queryByText(&apos;Original&apos;)).not.toBeInTheDocument();
-      expect(screen.getByText(&apos;Updated&apos;)).toBeInTheDocument();
+      expect(screen.queryByText('Original')).not.toBeInTheDocument();
+      expect(screen.getByText('Updated')).toBeInTheDocument();
     });
   });
 
   // Style and class tests
-  describe(&apos;Styling&apos;, () => {
-    it(&apos;applies base class&apos;, () => {
+  describe('Styling', () => {
+    it('applies base class', () => {
       const { container } = render(<Notification>Message</Notification>);
       
-      const notification = container.querySelector(&apos;.db-notification&apos;);
+      const notification = container.querySelector('.db-notification');
       expect(notification).toBeInTheDocument();
     });
 
-    it(&apos;applies icon wrapper class&apos;, () => {
+    it('applies icon wrapper class', () => {
       const { container } = render(<Notification>Message</Notification>);
       
-      const iconWrapper = container.querySelector(&apos;.db-notification__icon&apos;);
+      const iconWrapper = container.querySelector('.db-notification__icon');
       expect(iconWrapper).toBeInTheDocument();
     });
 
-    it(&apos;applies content wrapper class&apos;, () => {
+    it('applies content wrapper class', () => {
       const { container } = render(<Notification>Message</Notification>);
       
-      const content = container.querySelector(&apos;.db-notification__content&apos;);
+      const content = container.querySelector('.db-notification__content');
       expect(content).toBeInTheDocument();
     });
 
-    it(&apos;applies title class when title is present&apos;, () => {
+    it('applies title class when title is present', () => {
       const { container } = render(
-        <Notification title=\"quot;Title\"quot;>Message</Notification>
+        <Notification title="Title">Message</Notification>
       );
       
-      const title = container.querySelector(&apos;.db-notification__title&apos;);
+      const title = container.querySelector('.db-notification__title');
       expect(title).toBeInTheDocument();
     });
 
-    it(&apos;applies description class when children are present&apos;, () => {
+    it('applies description class when children are present', () => {
       const { container } = render(<Notification>Description</Notification>);
       
-      const description = container.querySelector(&apos;.db-notification__description&apos;);
+      const description = container.querySelector('.db-notification__description');
       expect(description).toBeInTheDocument();
     });
 
-    it(&apos;applies close button class when closable&apos;, () => {
+    it('applies close button class when closable', () => {
       const { container } = render(
         <Notification closable>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;);
+      const closeButton = container.querySelector('.db-notification__close');
       expect(closeButton).toBeInTheDocument();
     });
   });
 
   // Accessibility tests
-  describe(&apos;Accessibility&apos;, () => {
-    it(&apos;has no accessibility violations&apos;, async () => {
+  describe('Accessibility', () => {
+    it('has no accessibility violations', async () => {
       const { container } = render(
         <Notification>Accessible notification</Notification>
       );
@@ -473,11 +473,11 @@ describe(&apos;Notification&apos;, () => {
       expect(results).toHaveNoViolations();
     });
 
-    it(&apos;has no accessibility violations with all features&apos;, async () => {
+    it('has no accessibility violations with all features', async () => {
       const { container } = render(
         <Notification
-          variant=\"quot;success\"quot;
-          title=\"quot;Success Title\"quot;
+          variant="success"
+          title="Success" Title
           closable
           onClose={() => {}}
         >
@@ -489,9 +489,9 @@ describe(&apos;Notification&apos;, () => {
       expect(results).toHaveNoViolations();
     });
 
-    it(&apos;has no accessibility violations with custom icon&apos;, async () => {
+    it('has no accessibility violations with custom icon', async () => {
       const { container } = render(
-        <Notification icon={<span role=\"quot;img\"quot; aria-label=\"quot;bell\"quot;>🔔</span>}>
+        <Notification icon={<span role="img" aria-label="bell">🔔</span>}>
           Message
         </Notification>
       );
@@ -500,51 +500,51 @@ describe(&apos;Notification&apos;, () => {
       expect(results).toHaveNoViolations();
     });
 
-    it(&apos;has proper alert role&apos;, () => {
+    it('has proper alert role', () => {
       render(<Notification>Alert message</Notification>);
       
-      const alert = screen.getByRole(&apos;alert&apos;);
+      const alert = screen.getByRole('alert');
       expect(alert).toBeInTheDocument();
     });
 
-    it(&apos;has aria-live attribute&apos;, () => {
+    it('has aria-live attribute', () => {
       render(<Notification>Live message</Notification>);
       
-      const notification = screen.getByRole(&apos;alert&apos;);
-      expect(notification).toHaveAttribute(&apos;aria-live&apos;, &apos;polite&apos;);
+      const notification = screen.getByRole('alert');
+      expect(notification).toHaveAttribute('aria-live', 'polite');
     });
 
-    it(&apos;close button is keyboard accessible&apos;, async () => {
+    it('close button is keyboard accessible', async () => {
       const handleClose = jest.fn();
       const { container } = render(
         <Notification closable onClose={handleClose}>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;) as HTMLElement;
+      const closeButton = container.querySelector('.db-notification__close') as HTMLElement;
       
       // Tab to the button
       await userEvent.tab();
       expect(closeButton).toHaveFocus();
       
       // Activate with Space
-      await userEvent.keyboard(&apos; &apos;);
+      await userEvent.keyboard(' ');
       expect(handleClose).toHaveBeenCalled();
     });
 
-    it(&apos;has proper button type for close button&apos;, () => {
+    it('has proper button type for close button', () => {
       const { container } = render(
         <Notification closable>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;);
-      expect(closeButton).toHaveAttribute(&apos;type&apos;, &apos;button&apos;);
+      const closeButton = container.querySelector('.db-notification__close');
+      expect(closeButton).toHaveAttribute('type', 'button');
     });
   });
 
   // Integration tests
-  describe(&apos;Integration&apos;, () => {
-    it(&apos;works with different variant and closable combinations&apos;, () => {
-      const variants: Array<NotificationProps[&apos;variant&apos;]> = [&apos;info&apos;, &apos;success&apos;, &apos;warning&apos;, &apos;error&apos;];
+  describe('Integration', () => {
+    it('works with different variant and closable combinations', () => {
+      const variants: Array<NotificationProps['variant']> = ['info', 'success', 'warning', 'error'];
       
       variants.forEach(variant => {
         const { container, unmount } = render(
@@ -553,22 +553,22 @@ describe(&apos;Notification&apos;, () => {
           </Notification>
         );
         
-        expect(container.querySelector(&apos;.db-notification&apos;)).toHaveClass(
+        expect(container.querySelector('.db-notification')).toHaveClass(
           `db-notification--${variant}`
         );
-        expect(container.querySelector(&apos;.db-notification__close&apos;)).toBeInTheDocument();
+        expect(container.querySelector('.db-notification__close')).toBeInTheDocument();
         
         unmount();
       });
     });
 
-    it(&apos;handles rapid close button clicks&apos;, async () => {
+    it('handles rapid close button clicks', async () => {
       const handleClose = jest.fn();
       const { container } = render(
         <Notification closable onClose={handleClose}>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;) as HTMLElement;
+      const closeButton = container.querySelector('.db-notification__close') as HTMLElement;
       
       await userEvent.click(closeButton);
       await userEvent.click(closeButton);
@@ -577,12 +577,12 @@ describe(&apos;Notification&apos;, () => {
       expect(handleClose).toHaveBeenCalledTimes(3);
     });
 
-    it(&apos;maintains focus on close button after click attempt&apos;, async () => {
+    it('maintains focus on close button after click attempt', async () => {
       const { container } = render(
         <Notification closable>Message</Notification>
       );
       
-      const closeButton = container.querySelector(&apos;.db-notification__close&apos;) as HTMLElement;
+      const closeButton = container.querySelector('.db-notification__close') as HTMLElement;
       closeButton.focus();
       
       expect(closeButton).toHaveFocus();
@@ -595,9 +595,9 @@ describe(&apos;Notification&apos;, () => {
   });
 
   // displayName test
-  describe(&apos;Component Meta&apos;, () => {
-    it(&apos;has correct displayName&apos;, () => {
-      expect(Notification.displayName).toBe(&apos;Notification&apos;);
+  describe('Component Meta', () => {
+    it('has correct displayName', () => {
+      expect(Notification.displayName).toBe('Notification');
     });
   });
 });

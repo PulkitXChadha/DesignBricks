@@ -257,7 +257,7 @@ export const WithActions: Story = {
       header: 'Actions',
       width: 150,
       align: 'center',
-      render: (_, row) => (
+      render: (_) => (
         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
           <Button size="small" variant="tertiary">Edit</Button>
           <Button size="small" variant="tertiary">Delete</Button>

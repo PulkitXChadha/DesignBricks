@@ -139,10 +139,10 @@ export function usePerformanceMonitor(componentName: string, enabled = process.e
 /**
  * Debounce function for performance optimization
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (..._args: any[]) => any>(
   func: T,
   wait: number
-): (...args: Parameters<T>) => void {
+): (..._args: Parameters<T>) => void {
   let timeout: ReturnType<typeof setTimeout> | null = null;
 
   return function executedFunction(...args: Parameters<T>) {
@@ -161,10 +161,10 @@ export function debounce<T extends (...args: any[]) => any>(
 /**
  * Throttle function for performance optimization
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (..._args: any[]) => any>(
   func: T,
   limit: number
-): (...args: Parameters<T>) => void {
+): (..._args: Parameters<T>) => void {
   let inThrottle: boolean;
 
   return function executedFunction(...args: Parameters<T>) {
@@ -198,10 +198,10 @@ export function useDebounce<T>(value: T, delay: number): T {
 /**
  * React hook for throttled callbacks
  */
-export function useThrottle<T extends (...args: any[]) => any>(
+export function useThrottle<T extends (..._args: any[]) => any>(
   callback: T,
   delay: number
-): (...args: Parameters<T>) => void {
+): (..._args: Parameters<T>) => void {
   const throttledCallback = React.useMemo(
     () => throttle(callback, delay),
     [callback, delay]
@@ -224,7 +224,7 @@ export function lazyLoad<T extends React.ComponentType<any>>(
  */
 export function useIntersectionObserver(
   ref: React.RefObject<HTMLElement>,
-  options: IntersectionObserverInit = {}
+  options: Record<string, any> = {}
 ): boolean {
   const [isIntersecting, setIsIntersecting] = React.useState(false);
 
@@ -337,9 +337,9 @@ export interface VitalsMetrics {
  * React hook for Core Web Vitals (placeholder - requires web-vitals package)
  */
 export function useWebVitals(
-  callback?: (metric: { name: string; value: number }) => void
+  callback?: (_metric: { name: string; value: number }) => void
 ): VitalsMetrics {
-  const [metrics, setMetrics] = React.useState<VitalsMetrics>({});
+  const [metrics] = React.useState<VitalsMetrics>({});
 
   React.useEffect(() => {
     // This is a placeholder - actual implementation would use web-vitals package

@@ -1,6 +1,5 @@
-import React, { forwardRef, HTMLAttributes, useContext } from 'react';
+import React, { forwardRef, HTMLAttributes } from 'react';
 import clsx from 'clsx';
-import { LineChartContext } from './LineChart';
 
 // Compound components inspired by shadcn/ui patterns
 
@@ -81,7 +80,7 @@ export interface LineChartAxisProps extends HTMLAttributes<HTMLDivElement> {
 export const LineChartAxis = forwardRef<HTMLDivElement, LineChartAxisProps>(
   ({ type, className, children, ...props }, ref) => {
     // Context is optional for styling purposes
-    const _chartContext = React.useContext(LineChartContext);
+    // const _chartContext = React.useContext(LineChartContext);
     
     return (
       <div
@@ -138,7 +137,7 @@ export interface LineChartGridProps extends HTMLAttributes<HTMLDivElement> {
 export const LineChartGrid = forwardRef<HTMLDivElement, LineChartGridProps>(
   ({ type = 'both', strokeDasharray, opacity, className, ...props }, ref) => {
     // Context is optional for styling purposes
-    const _chartContext = useContext(LineChartContext);
+    // const _chartContext = useContext(LineChartContext);
     
     return (
       <div
@@ -168,7 +167,7 @@ export interface LineChartContentProps extends HTMLAttributes<HTMLDivElement> {
 export const LineChartContent = forwardRef<HTMLDivElement, LineChartContentProps>(
   ({ className, children, ...props }, ref) => {
     // Context is optional for styling purposes
-    const _chartContext = useContext(LineChartContext);
+    // const _chartContext = useContext(LineChartContext);
     
     return (
       <div

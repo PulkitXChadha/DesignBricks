@@ -410,7 +410,7 @@ describe('ScatterChart', () => {
     });
 
     it('handles large datasets efficiently', () => {
-      const largeData: ScatterChartDataPoint[] = Array.from({ length: 500 }, (_, i) => ({
+      const largeData: ScatterChartDataPoint[] = Array.from({ length: 500 }, () => ({
         x: Math.random() * 100,
         y: Math.random() * 100,
       }));

@@ -1,8 +1,8 @@
-import userEvent from "@testing-library/user-event";
+import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
-import { Table, TableProps, Column } from './Table';
+import { Table, Column } from './Table';
 
 // Extend Jest matchers
 expect.extend(toHaveNoViolations);
@@ -744,7 +744,7 @@ describe('Table', () => {
 
     it('preserves context in event handlers', async () => {
       const context = { value: 'test-context' };
-      const handleRowClick = jest.fn(function(this: typeof context, _row: TestData, _index: number) {
+      const handleRowClick = jest.fn(function() {
         return this.value;
       });
       const user = userEvent.setup();

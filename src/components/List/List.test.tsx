@@ -61,7 +61,7 @@ describe('List', () => {
     });
 
     it('forwards additional props', () => {
-      const { container } = render(
+      render(
         <List data-testid="list" id="test-list">
           <ListItem>Item</ListItem>
         </List>

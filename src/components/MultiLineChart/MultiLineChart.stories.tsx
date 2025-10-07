@@ -1,7 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { MultiLineChart } from './MultiLineChart';
-import type { MultiLineChartSeries } from './MultiLineChart';
+import { MultiLineChart, type MultiLineChartSeries } from './MultiLineChart';
 
 /**
  * Modern MultiLineChart Component Stories
@@ -125,7 +124,7 @@ const generateNumericData = (points: number = 10, multiplier: number = 1, offset
 };
 
 // Sample series data
-const salesData = generateTimeSeriesData(12, 80, 15);
+// const salesData = generateTimeSeriesData(12, 80, 15);
 const profitData = generateTimeSeriesData(12, 45, 12);
 const revenueData = generateTimeSeriesData(12, 120, 25);
 

@@ -21,7 +21,7 @@ export interface ListItemProps extends Omit<HTMLAttributes<HTMLLIElement>, 'onCl
   /** Whether the item is disabled */
   disabled?: boolean;
   /** Click handler */
-  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
+  onClick?: (_event: React.MouseEvent<HTMLElement>) => void;
   /** Element to render as (default: li, but can be 'a' for links) */
   as?: ElementType;
   /** Href when rendered as link */

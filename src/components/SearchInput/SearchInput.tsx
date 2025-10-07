@@ -14,7 +14,7 @@ export interface SearchInputProps extends Omit<InputHTMLAttributes<HTMLInputElem
   /** Keyboard shortcut hint */
   shortcut?: string;
   /** Search handler */
-  onSearch?: (value: string) => void;
+  onSearch?: (_value: string) => void;
   /** Clear handler */
   onClear?: () => void;
 }

@@ -159,7 +159,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       yAxis,
       grid,
       theme,
-      animation,
+      animation: _animation,
       responsive: _responsive,
       showPoints = true,
       tooltip,
@@ -221,12 +221,13 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
       ...theme,
     };
 
-    const _mergedAnimation: LineChartAnimation = {
-      enabled: variant === 'detailed',
-      duration: variant === 'detailed' ? 300 : 150,
-      easing: 'ease-out',
-      ...animation,
-    };
+    // Animation configuration - kept for future use
+    // const _mergedAnimation: LineChartAnimation = {
+    //   enabled: variant === 'detailed',
+    //   duration: variant === 'detailed' ? 300 : 150,
+    //   easing: 'ease-out',
+    //   ...animation,
+    // };
 
     // Merge tooltip configuration with backward compatibility
     const mergedTooltip: TooltipConfig<LineChartDataPoint> = useMemo(() => ({
@@ -602,6 +603,7 @@ export const LineChart = forwardRef<HTMLDivElement, LineChartProps>(
           .text(title);
       }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, width, height, xScale, yScale, lineGenerator, mergedGrid.show, showPoints, mergedTooltip, 
         color, mergedXAxis.label, mergedYAxis.label, title, defaultMargin, innerWidth, innerHeight, 
         defaultFormatX, defaultFormatY, defaultFormatTooltip, showPercentageChange, calculatePercentageChange]);

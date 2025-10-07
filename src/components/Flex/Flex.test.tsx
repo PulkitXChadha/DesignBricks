@@ -484,7 +484,7 @@ describe('Flex', () => {
     });
 
     it('works with all props combined', () => {
-      const { container } = render(
+      render(
         <Flex
           direction="column"
           wrap="wrap"
@@ -621,7 +621,7 @@ describe('Flex', () => {
     });
 
     it('maintains independent styling for nested Flex', () => {
-      const { container } = render(
+      render(
         <Flex direction="column" data-testid="outer">
           <Flex direction="row" data-testid="inner">
             Content

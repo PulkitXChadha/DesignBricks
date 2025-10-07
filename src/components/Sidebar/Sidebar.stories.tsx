@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import type { Meta, StoryObj } from '@storybook/react';
 import { Sidebar, SidebarItem } from './Sidebar';
 import { TopBar } from '../TopBar/TopBar';

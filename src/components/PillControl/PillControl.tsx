@@ -23,7 +23,7 @@ export interface PillControlProps extends Omit<HTMLAttributes<HTMLDivElement>, '
   /** Default selected value (uncontrolled) */
   defaultValue?: string;
   /** Change handler */
-  onChange?: (value: string) => void;
+  onChange?: (_value: string) => void;
   /** Name for the radio group */
   name?: string;
   /** Size of the pills */

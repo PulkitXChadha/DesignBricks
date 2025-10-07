@@ -6,7 +6,7 @@ import {
   TooltipConfig, 
   ChartTooltip, 
   DefaultTooltipContent, 
-  CustomTooltipProps,
+  // CustomTooltipProps, // Reserved for future custom tooltip functionality
   TooltipPosition 
 } from '../shared/ChartTooltip';
 
@@ -57,7 +57,7 @@ export interface ScatterChartAxis {
   /** Tick count */
   tickCount?: number;
   /** Custom tick formatter */
-  tickFormatter?: (value: any) => string;
+  tickFormatter?: (_value: any) => string;
   /** Axis style variant */
   variant?: 'default' | 'minimal' | 'detailed';
   /** Axis domain override */
@@ -142,7 +142,7 @@ export interface ScatterChartProps extends Omit<HTMLAttributes<HTMLDivElement>, 
   /** @deprecated Use tooltip.enabled instead */
   showTooltip?: boolean;
   /** @deprecated Use tooltip.content instead */
-  formatTooltip?: (dataPoint: ScatterChartDataPoint, index?: number) => string;
+  formatTooltip?: (_dataPoint: ScatterChartDataPoint, _index?: number) => string;
   
   /** Enable keyboard navigation */
   keyboard?: boolean;
@@ -176,7 +176,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
       grid,
       theme,
       animation,
-      responsive,
+      responsive: _responsive,
       tooltip,
       showTooltip = true,
       formatTooltip,
@@ -184,7 +184,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
       ariaLabel,
       themeClass,
       optimized = false,
-      hoverDebounce = 0,
+      hoverDebounce: _hoverDebounce = 0,
       className,
       ...props
     },
@@ -322,7 +322,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
     const defaultFormatX = mergedXAxis.tickFormatter || d3.format('.2f');
     const defaultFormatY = mergedYAxis.tickFormatter || d3.format('.2f');
 
-    const defaultFormatTooltip = formatTooltip || ((dataPoint: ScatterChartDataPoint, index?: number) => {
+    const defaultFormatTooltip = formatTooltip || ((dataPoint: ScatterChartDataPoint, _index?: number) => {
       const xFormatted = defaultFormatX(dataPoint.x);
       const yFormatted = defaultFormatY(dataPoint.y);
       
@@ -389,7 +389,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
 
         const xAxisCall = d3.axisBottom(xScale);
         if (mergedXAxis.tickCount) xAxisCall.ticks(mergedXAxis.tickCount);
-        xAxisCall.tickFormat((d, i) => defaultFormatX(d as number));
+        xAxisCall.tickFormat((d, _i) => defaultFormatX(d as number));
         
         xAxisGroup.call(xAxisCall);
       }
@@ -401,7 +401,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
 
         const yAxisCall = d3.axisLeft(yScale);
         if (mergedYAxis.tickCount) yAxisCall.ticks(mergedYAxis.tickCount);
-        yAxisCall.tickFormat((d, i) => defaultFormatY(d as number));
+        yAxisCall.tickFormat((d, _i) => defaultFormatY(d as number));
         
         yAxisGroup.call(yAxisCall);
       }
@@ -596,6 +596,7 @@ export const ScatterChart = forwardRef<HTMLDivElement, ScatterChartProps>(
           .text(title);
       }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, width, height, xScale, yScale, sizeScale, trendLineData, mergedGrid.show, showTrendLine,
         enableBubbles, pointRadius, pointOpacity, showTooltip, color, mergedXAxis.label, mergedYAxis.label,
         title, defaultMargin, innerWidth, innerHeight, defaultFormatX, defaultFormatY, defaultFormatTooltip,

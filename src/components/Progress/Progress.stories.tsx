@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Progress, Spinner } from './Progress';
 import { Button } from '../Button/Button';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const meta = {
   title: 'Feedback/Progress',
@@ -234,7 +234,7 @@ export const LoadingStates: Story = {
     const [loading1, setLoading1] = useState(false);
     const [loading2, setLoading2] = useState(false);
 
-    const simulateLoad = (setLoading: (value: boolean) => void) => {
+    const simulateLoad = (setLoading: (_value: boolean) => void) => {
       setLoading(true);
       setTimeout(() => setLoading(false), 3000);
     };
